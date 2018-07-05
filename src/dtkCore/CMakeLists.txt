@@ -54,6 +54,15 @@ set(${PROJECT_NAME}_SOURCES
   dtkCorePluginManagerHandler.cpp
   dtkCorePluginManagerRecorder.cpp)
 
+if(DTK_HAVE_ZLIB)
+  set(${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS}
+    dtkCoreIOCompressor
+    dtkCoreIOCompressor.h)
+
+  set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES}
+    dtkCoreIOCompressor.cpp)
+endif(DTK_HAVE_ZLIB)
+
 ## #################################################################
 ## Build rules
 ## #################################################################
@@ -63,6 +72,10 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+
+if(DTK_HAVE_ZLIB)
+  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
+endif(DTK_HAVE_ZLIB)
 
 ## #################################################################
 ## Target properties
@@ -85,6 +98,18 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_HEADERS}
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
+
+## ###################################################################
+## Config file
+## ###################################################################
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
 
 ## ###################################################################
 ## Install rules - files

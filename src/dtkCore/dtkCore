@@ -1,3 +1,4 @@
+#include "dtkCoreConfig.h"
 #include "dtkCoreLayerManager.h"
 #include "dtkCoreMetaType.h"
 #include "dtkCoreObjectManager.h"
@@ -8,3 +9,7 @@
 #include "dtkCorePluginManagerHandler.h"
 #include "dtkCorePluginManagerRecorder.h"
 #include "dtkCoreSettings.h"
+
+#if defined(DTK_HAVE_ZLIB)
+#include "dtkCoreIOCompressor.h"
+#endif

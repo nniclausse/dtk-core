@@ -30,6 +30,14 @@ set(${PROJECT_NAME}_HEADERS
 set(${PROJECT_NAME}_SOURCES
   dtkCoreMetaTypeTest.cpp)
 
+if(DTK_HAVE_ZLIB)
+  set(${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS}
+    dtkCoreIOCompressorTest.h)
+
+  set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES}
+    dtkCoreIOCompressorTest.cpp)
+endif(DTK_HAVE_ZLIB)
+
 ## ###################################################################
 ## Input - introspected
 ## ###################################################################
@@ -51,6 +59,8 @@ add_executable(${PROJECT_NAME}
 ## Link rules
 ## ###################################################################
 
+target_link_libraries(${PROJECT_NAME} dtkCore)
+
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)
 
@@ -59,6 +69,10 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## ###################################################################
 
 add_test(dtkCoreMetaTypeTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
+
+if(DTK_HAVE_ZLIB)
+  add_test(dtkCoreIOCompressorTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
+endif(DTK_HAVE_ZLIB)
 
 ######################################################################
 ### CMakeLists.txt ends here
