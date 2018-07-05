@@ -22,10 +22,15 @@ set(${PROJECT_NAME}_HEADERS
   dtkCore
   dtkCoreMetaType
   dtkCoreMetaType.h
-  dtkCoreMetaType.tpp)
+  dtkCoreMetaType.tpp
+  dtkCoreObjectManager
+  dtkCoreObjectManager.h
+  dtkCorePluginBase
+  dtkCorePluginBase.h)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkCoreMetaType.cpp)
+  dtkCoreMetaType.cpp
+  dtkCoreObjectManager.cpp)
 
 ## #################################################################
 ## Build rules
