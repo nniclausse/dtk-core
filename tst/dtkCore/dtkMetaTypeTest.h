@@ -30,6 +30,7 @@ private slots:
 
 private slots:
     void testIsQObject(void);
+    void testVariantFromValue(void);
 
 private slots:
     void cleanupTestCase(void);

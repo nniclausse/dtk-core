@@ -16,11 +16,9 @@
 
 class QVariant;
 
-class dtkMetaType
-{
-public:
-    template <typename T> static QVariant variantFromValue(const T&);
-};
+namespace dtk {
+    template <typename T> QVariant variantFromValue(const T&);
+}
 
 // /////////////////////////////////////////////////////////////////
 

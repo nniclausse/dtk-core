@@ -19,6 +19,12 @@ cmake_minimum_required(VERSION 3.6.0)
 project(dtkCore)
 
 ## ###################################################################
+## cmake modules folder
+## ###################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+## ###################################################################
 ## Version setup
 ## ###################################################################
 
@@ -68,6 +74,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+## ###################################################################
+## Test setup
+## ###################################################################
+
+include(CTest)
+enable_testing()
+
+## ###################################################################
+## Code coverage setup
+## ###################################################################
+
+option(ENABLE_COVERAGE        "enable coverage report"        false)
+option(COVERAGE_USE_COBERTURA "use cobertura coverage format" false)
+
+if(ENABLE_COVERAGE)
+  include(CodeCoverage)
+endif(ENABLE_COVERAGE)
 
 ## ###################################################################
 ## Dependencies - cmake

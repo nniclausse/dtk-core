@@ -30,8 +30,45 @@ namespace dtk {
     template <class T>
     using is_qobject = detail::is_qobject_impl<T>;
 
-    template <class T>
-    constexpr bool is_qobject_v = is_qobject<T>::value;
+    namespace detail
+    {
+        template <class T>
+        std::enable_if_t<!is_qobject<T>::value, QVariant> variant_from_value(const T& t)
+        {
+            return QVariant::fromValue(t);
+        }
+
+        template <class T>
+        std::enable_if_t<is_qobject<T>::value, QVariant> variant_from_value(const T& t)
+        {
+            int class_type = QMetaType::type(t.metaObject()->className());
+
+            if (class_type == QMetaType::UnknownType)
+                return QVariant::fromValue(t);
+
+            return QVariant(class_type, &t);
+        }
+
+        template <class T>
+        std::enable_if_t<is_qobject<T>::value, QVariant> variant_from_value(T * const & t)
+        {
+            QString class_name(t->metaObject()->className());
+            int class_type = QMetaType::type(qPrintable(class_name + "*"));
+
+            if (class_type == QMetaType::UnknownType) {
+                return QVariant::fromValue(t);
+            }
+
+            return QVariant(class_type, &t, 1);
+        }
+    }
+}
+
+namespace dtk {
+    template <typename T> inline QVariant variantFromValue(const T& t)
+    {
+        return dtk::detail::variant_from_value(t);
+    }
 }
 
 //
