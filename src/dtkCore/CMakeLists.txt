@@ -20,17 +20,37 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
+  dtkCoreLayerManager
+  dtkCoreLayerManager.h
   dtkCoreMetaType
   dtkCoreMetaType.h
   dtkCoreMetaType.tpp
   dtkCoreObjectManager
   dtkCoreObjectManager.h
   dtkCorePluginBase
-  dtkCorePluginBase.h)
+  dtkCorePluginBase.h
+  dtkCorePluginFactory
+  dtkCorePluginFactory.h
+  dtkCorePluginFactory.tpp
+  dtkCorePluginFactory_p.h
+  dtkCorePluginFactoryRecorder
+  dtkCorePluginFactoryRecorder.h
+  dtkCorePluginManager
+  dtkCorePluginManager.h
+  dtkCorePluginManager.tpp
+  dtkCorePluginManagerHandler
+  dtkCorePluginManagerHandler.h
+  dtkCorePluginManagerRecorder
+  dtkCorePluginManagerRecorder.h)
 
 set(${PROJECT_NAME}_SOURCES
+  dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
-  dtkCoreObjectManager.cpp)
+  dtkCoreObjectManager.cpp
+  dtkCorePluginFactory_p.cpp
+  dtkCorePluginFactoryRecorder.cpp
+  dtkCorePluginManagerHandler.cpp
+  dtkCorePluginManagerRecorder.cpp)
 
 ## #################################################################
 ## Build rules

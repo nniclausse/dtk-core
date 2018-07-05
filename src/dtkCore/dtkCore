@@ -1,2 +1,6 @@
 #include "dtkCoreMetaType.h"
+#include "dtkCoreObjectManager.h"
+#include "dtkCorePluginFactory.h"
 #include "dtkCorePluginBase.h"
+#include "dtkCorePluginManager.h"
+#include "dtkCorePluginManagerHandler.h"
