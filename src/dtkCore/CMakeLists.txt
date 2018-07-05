@@ -41,7 +41,9 @@ set(${PROJECT_NAME}_HEADERS
   dtkCorePluginManagerHandler
   dtkCorePluginManagerHandler.h
   dtkCorePluginManagerRecorder
-  dtkCorePluginManagerRecorder.h)
+  dtkCorePluginManagerRecorder.h
+  dtkCoreSettings
+  dtkCoreSettings.h)
 
 set(${PROJECT_NAME}_SOURCES
   dtkCoreLayerManager.cpp
