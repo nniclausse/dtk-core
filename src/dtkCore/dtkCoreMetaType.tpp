@@ -19,12 +19,12 @@
 #include <type_traits>
 
 // ///////////////////////////////////////////////////////////////////
-// dtkMetaType functions implementations
+// dtkCoreMetaType functions implementations
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
 
-    // Typetrait is_qobject to detect whether a class inherits from QObject
+    // Typetrait is_qobject to detect whether a class inherits from QObject or not
     namespace detail
     {
         template <typename T>
@@ -77,4 +77,4 @@ namespace dtk {
 }
 
 //
-// dtkMetaType.tpp ends here
+// dtkCoreMetaType.tpp ends here

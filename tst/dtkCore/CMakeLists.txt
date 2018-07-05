@@ -25,10 +25,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  dtkMetaTypeTest.h)
+  dtkCoreMetaTypeTest.h)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkMetaTypeTest.cpp)
+  dtkCoreMetaTypeTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -58,7 +58,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## Test rules
 ## ###################################################################
 
-add_test(dtkMetaTypeTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkMetaTypeTest)
+add_test(dtkCoreMetaTypeTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
 
 ######################################################################
 ### CMakeLists.txt ends here

@@ -12,11 +12,11 @@
 
 // Code:
 
-#include "dtkMetaTypeTest.h"
+#include "dtkCoreMetaTypeTest.h"
 
 #include <dtkCoreTest>
 
-#include <dtkCore/dtkMetaType>
+#include <dtkCore/dtkCoreMetaType>
 
 // ///////////////////////////////////////////////////////////////////
 // No Copyable Data concrete classes
@@ -334,10 +334,10 @@ class DerivedTwice : public Derived
 };
 
 // ///////////////////////////////////////////////////////////////////
-// dtkMetaTypeTestCasePrivate declaration
+// dtkCoreMetaTypeTestCasePrivate declaration
 // ///////////////////////////////////////////////////////////////////
 
-class dtkMetaTypeTestCasePrivate
+class dtkCoreMetaTypeTestCasePrivate
 {
 public:
     int count = 0;
@@ -356,7 +356,7 @@ public:
 
 // ///////////////////////////////////////////////////////////////////
 
-dtkMetaTypeTestCase::dtkMetaTypeTestCase(void) : d(new dtkMetaTypeTestCasePrivate)
+dtkCoreMetaTypeTestCase::dtkCoreMetaTypeTestCase(void) : d(new dtkCoreMetaTypeTestCasePrivate)
 {
     QMetaType::registerConverter<DeriveNoCopyableData *, NoCopyableData *>();
     QMetaType::registerDebugStreamOperator<NoCopyableData *>();
@@ -377,17 +377,17 @@ dtkMetaTypeTestCase::dtkMetaTypeTestCase(void) : d(new dtkMetaTypeTestCasePrivat
     QMetaType::registerDebugStreamOperator<VirtualObject *>();
 }
 
-dtkMetaTypeTestCase::~dtkMetaTypeTestCase(void)
+dtkCoreMetaTypeTestCase::~dtkCoreMetaTypeTestCase(void)
 {
     delete d;
 }
 
-void dtkMetaTypeTestCase::initTestCase(void)
+void dtkCoreMetaTypeTestCase::initTestCase(void)
 {
 
 }
 
-void dtkMetaTypeTestCase::init(void)
+void dtkCoreMetaTypeTestCase::init(void)
 {
     d->no_copyable_data = new NoCopyableData(d->count ++, "PNoCopyableData");
     d->derive_no_copyable_data = new DeriveNoCopyableData(d->count++, "PDeriveNoCopyableData", 5573.);
@@ -408,7 +408,7 @@ void dtkMetaTypeTestCase::init(void)
     d->virtual_object2->setId(d->count++);
 }
 
-void dtkMetaTypeTestCase::testIsQObject(void)
+void dtkCoreMetaTypeTestCase::testIsQObject(void)
 {
     QVERIFY(dtk::is_qobject<QObject>::value);
     QVERIFY(dtk::is_qobject<QObject&>::value);
@@ -463,7 +463,7 @@ void dtkMetaTypeTestCase::testIsQObject(void)
     QVERIFY(dtk::is_qobject<const volatile DerivedTwice *>::value);
 }
 
-void dtkMetaTypeTestCase::testVariantFromValue(void)
+void dtkCoreMetaTypeTestCase::testVariantFromValue(void)
 {
     // Non QObject No copyable Data pointer
     {
@@ -575,12 +575,12 @@ void dtkMetaTypeTestCase::testVariantFromValue(void)
     }
 }
 
-void dtkMetaTypeTestCase::cleanupTestCase(void)
+void dtkCoreMetaTypeTestCase::cleanupTestCase(void)
 {
 
 }
 
-void dtkMetaTypeTestCase::cleanup(void)
+void dtkCoreMetaTypeTestCase::cleanup(void)
 {
     delete d->no_copyable_data;
     delete d->derive_no_copyable_data;
@@ -594,9 +594,9 @@ void dtkMetaTypeTestCase::cleanup(void)
     delete d->virtual_object2;
 }
 
-DTKCORETEST_MAIN_NOGUI(dtkMetaTypeTest, dtkMetaTypeTestCase);
+DTKCORETEST_MAIN_NOGUI(dtkCoreMetaTypeTest, dtkCoreMetaTypeTestCase);
 
-#include "dtkMetaTypeTest.moc"
+#include "dtkCoreMetaTypeTest.moc"
 
 //
-// dtkMetaTypeTest.cpp ends here
+// dtkCoreMetaTypeTest.cpp ends here

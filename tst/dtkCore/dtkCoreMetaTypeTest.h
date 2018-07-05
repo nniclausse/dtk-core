@@ -16,13 +16,13 @@
 
 #include <QtCore>
 
-class dtkMetaTypeTestCase : public QObject
+class dtkCoreMetaTypeTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-     dtkMetaTypeTestCase(void);
-    ~dtkMetaTypeTestCase(void);
+     dtkCoreMetaTypeTestCase(void);
+    ~dtkCoreMetaTypeTestCase(void);
 
 private slots:
     void initTestCase(void);
@@ -37,8 +37,8 @@ private slots:
     void cleanup(void);
 
 private:
-    class dtkMetaTypeTestCasePrivate *d;
+    class dtkCoreMetaTypeTestCasePrivate *d;
 };
 
 //
-// dtkMetaTypeTest.h ends here
+// dtkCoreMetaTypeTest.h ends here

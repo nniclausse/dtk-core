@@ -20,12 +20,12 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
-  dtkMetaType
-  dtkMetaType.h
-  dtkMetaType.tpp)
+  dtkCoreMetaType
+  dtkCoreMetaType.h
+  dtkCoreMetaType.tpp)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkMetaType.cpp)
+  dtkCoreMetaType.cpp)
 
 ## #################################################################
 ## Build rules

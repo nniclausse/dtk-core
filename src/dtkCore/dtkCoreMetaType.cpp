@@ -12,7 +12,7 @@
 
 // Code:
 
-#include "dtkMetaType.h"
+#include "dtkCoreMetaType.h"
 
 //
-// dtkMetaType.cpp ends here
+// dtkCoreMetaType.cpp ends here
