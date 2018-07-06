@@ -32,7 +32,7 @@ public:
         RawZipFormat
     };
 
-     dtkCoreIOCompressor(QIODevice *device, int compressionLevel = 6, int bufferSize = 65500);
+     dtkCoreIOCompressor(QIODevice *device, bool clean=false, int compressionLevel = 6, int bufferSize = 65500);
     ~dtkCoreIOCompressor(void);
 
     void setStreamFormat(StreamFormat format);

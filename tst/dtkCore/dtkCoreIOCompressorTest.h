@@ -31,6 +31,7 @@ private slots:
 private slots:
     void testWrite(void);
     void testRead(void);
+    void testdtkIODevice(void);
 
 private slots:
     void cleanupTestCase(void);

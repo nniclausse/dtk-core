@@ -15,6 +15,7 @@
 #include "dtkCoreIOCompressorTest.h"
 
 #include <dtkCore/dtkCoreIOCompressor>
+#include <dtkCore/dtkCoreIODevice.h>
 
 #include <dtkCoreTest>
 
@@ -55,6 +56,44 @@ void dtkCoreIOCompressorTestCase::testRead(void)
     QVERIFY(data == text);
     compressor.close();
 }
+
+void dtkCoreIOCompressorTestCase::testdtkIODevice(void)
+{
+    QByteArray data = QByteArray("The quick brown fox\n");
+    QIODevice *io = dtkCoreIODevice::create("foo.gz");
+    QVERIFY(io != nullptr);
+    io->open(QIODevice::ReadOnly);
+    QByteArray text = io->readLine();
+    QVERIFY(data == text);
+
+    data = QByteArray("hello world\n");
+    text = io->readLine();
+    QVERIFY(data == text);
+    io->close();
+    delete io;
+
+    // read uncompress
+
+    data = QByteArray("The quick brown fox\nhello world\n");
+    QFile file("foobar");
+    file.open(QIODevice::WriteOnly);
+    file.write(data);
+    file.close();
+
+    io = dtkCoreIODevice::create("foobar");
+    data = QByteArray("The quick brown fox\n");
+    QVERIFY(io != nullptr);
+    io->open(QIODevice::ReadOnly);
+    text = io->readLine();
+    QVERIFY(data == text);
+
+    data = QByteArray("hello world\n");
+    text = io->readLine();
+    QVERIFY(data == text);
+    io->close();
+    delete io;
+}
+
 
 void dtkCoreIOCompressorTestCase::cleanup(void)
 {

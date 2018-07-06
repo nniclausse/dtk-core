@@ -45,7 +45,7 @@ public:
         Error
     };
 
-     dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, int compressionLevel, int bufferSize);
+     dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize);
     ~dtkCoreIOCompressorPrivate(void);
 
     void flushZlib(int flushMode);
@@ -55,6 +55,7 @@ public:
 public:
     QIODevice *device;
     bool manageDevice;
+    bool cleanDevice;
     z_stream zlibStream;
     const int compressionLevel;
     const ZlibSize bufferSize;
@@ -68,8 +69,9 @@ public:
 /*!
     \internal
 */
-dtkCoreIOCompressorPrivate::dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, int compressionLevel, int bufferSize) : q_ptr(q_ptr),
+dtkCoreIOCompressorPrivate::dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize) : q_ptr(q_ptr),
                                                                                                                                   device(device),
+                                                                                                                                  cleanDevice(clean),
                                                                                                                                   compressionLevel(compressionLevel),
                                                                                                                                   bufferSize(bufferSize),
                                                                                                                                   buffer(new ZlibByte[bufferSize]),
@@ -88,6 +90,9 @@ dtkCoreIOCompressorPrivate::dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_pt
 dtkCoreIOCompressorPrivate::~dtkCoreIOCompressorPrivate(void)
 {
     delete[] buffer;
+
+    if (cleanDevice && device)
+        delete device;
 }
 
 /*!
@@ -246,8 +251,8 @@ void dtkCoreIOCompressorPrivate::setZlibError(const QString& errorMessage, int z
     underlying device. The default value is 65KB. Using a larger value allows for faster compression and
     deompression at the expense of memory usage.
 */
-dtkCoreIOCompressor::dtkCoreIOCompressor(QIODevice *device, int compressionLevel, int bufferSize)
-    : d_ptr(new dtkCoreIOCompressorPrivate(this, device, compressionLevel, bufferSize))
+dtkCoreIOCompressor::dtkCoreIOCompressor(QIODevice *device, bool clean, int compressionLevel, int bufferSize)
+    : d_ptr(new dtkCoreIOCompressorPrivate(this, device, clean, compressionLevel, bufferSize))
 {
     if (QFile *file = dynamic_cast<QFile *>(device)) {
         QFileInfo info = QFileInfo(file->fileName());

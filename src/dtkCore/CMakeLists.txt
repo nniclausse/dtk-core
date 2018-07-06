@@ -20,6 +20,7 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
+  dtkCoreIODevice.h
   dtkCoreLayerManager
   dtkCoreLayerManager.h
   dtkCoreMetaType
@@ -46,6 +47,7 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreSettings.h)
 
 set(${PROJECT_NAME}_SOURCES
+  dtkCoreIODevice.cpp
   dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
   dtkCoreObjectManager.cpp
