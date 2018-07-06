@@ -16,6 +16,8 @@
 
 #include <QtCore>
 
+#include <dtkCoreConfig.h>
+
 class dtkCoreIOCompressorTestCase : public QObject
 {
     Q_OBJECT
@@ -29,9 +31,11 @@ private slots:
     void init(void);
 
 private slots:
+#if defined(DTK_HAVE_ZLIB)
     void testWrite(void);
     void testRead(void);
-    void testdtkIODevice(void);
+#endif
+    void testCreator(void);
 
 private slots:
     void cleanupTestCase(void);

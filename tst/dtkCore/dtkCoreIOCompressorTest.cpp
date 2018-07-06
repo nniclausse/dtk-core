@@ -15,7 +15,7 @@
 #include "dtkCoreIOCompressorTest.h"
 
 #include <dtkCore/dtkCoreIOCompressor>
-#include <dtkCore/dtkCoreIODevice.h>
+#include <dtkCoreConfig.h>
 
 #include <dtkCoreTest>
 
@@ -31,11 +31,12 @@ void dtkCoreIOCompressorTestCase::init(void)
 {
 }
 
+#if defined(DTK_HAVE_ZLIB)
 void dtkCoreIOCompressorTestCase::testWrite(void)
 {
     QFile file("foo.gz");
     QByteArray data = QByteArray("The quick brown fox\nhello world\n");
-    dtkCoreIOCompressor compressor(&file);
+    dtkCoreIOCompressorImpl compressor(&file);
     compressor.open(QIODevice::WriteOnly);
     compressor.write(data);
     compressor.close();
@@ -45,8 +46,7 @@ void dtkCoreIOCompressorTestCase::testRead(void)
 {
     QByteArray data = QByteArray("The quick brown fox\n");
     QFile file("foo.gz");
-
-    dtkCoreIOCompressor compressor(&file);
+    dtkCoreIOCompressorImpl compressor(&file);
     compressor.open(QIODevice::ReadOnly);
     QByteArray text = compressor.readLine();
     QVERIFY(data == text);
@@ -56,11 +56,12 @@ void dtkCoreIOCompressorTestCase::testRead(void)
     QVERIFY(data == text);
     compressor.close();
 }
+#endif
 
-void dtkCoreIOCompressorTestCase::testdtkIODevice(void)
+void dtkCoreIOCompressorTestCase::testCreator(void)
 {
     QByteArray data = QByteArray("The quick brown fox\n");
-    QIODevice *io = dtkCoreIODevice::create("foo.gz");
+    QIODevice *io = dtkCoreIOCompressor::create("foo.gz");
     QVERIFY(io != nullptr);
     io->open(QIODevice::ReadOnly);
     QByteArray text = io->readLine();
@@ -73,14 +74,13 @@ void dtkCoreIOCompressorTestCase::testdtkIODevice(void)
     delete io;
 
     // read uncompress
-
     data = QByteArray("The quick brown fox\nhello world\n");
     QFile file("foobar");
     file.open(QIODevice::WriteOnly);
     file.write(data);
     file.close();
 
-    io = dtkCoreIODevice::create("foobar");
+    io = dtkCoreIOCompressor::create("foobar");
     data = QByteArray("The quick brown fox\n");
     QVERIFY(io != nullptr);
     io->open(QIODevice::ReadOnly);
@@ -93,7 +93,6 @@ void dtkCoreIOCompressorTestCase::testdtkIODevice(void)
     io->close();
     delete io;
 }
-
 
 void dtkCoreIOCompressorTestCase::cleanup(void)
 {

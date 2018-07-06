@@ -19,7 +19,13 @@
 
 #include <dtkCoreExport>
 
-#include <QIODevice>
+#include "dtkCoreConfig.h"
+
+#include <QtCore>
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreIOCompressor interface
+// ///////////////////////////////////////////////////////////////////
 
 class DTKCORE_EXPORT dtkCoreIOCompressor : public QIODevice
 {
@@ -29,36 +35,77 @@ public:
     enum StreamFormat {
         ZlibFormat,
         GzipFormat,
-        RawZipFormat
+        RawZipFormat,
+        UnsupportedFormat
     };
 
-     dtkCoreIOCompressor(QIODevice *device, bool clean=false, int compressionLevel = 6, int bufferSize = 65500);
-    ~dtkCoreIOCompressor(void);
+     dtkCoreIOCompressor(void) = default;
+    ~dtkCoreIOCompressor(void) = default;
 
-    void setStreamFormat(StreamFormat format);
-    StreamFormat streamFormat(void) const;
+    virtual void setStreamFormat(StreamFormat);
+    virtual StreamFormat streamFormat(void) const;
 
     static bool isGzipSupported(void);
 
-    bool isSequential(void) const;
+    virtual bool isSequential(void) const override;
 
-    bool open(OpenMode mode);
-    void close(void);
-    void flush(void);
+    virtual bool open(OpenMode) override;
+    virtual void close(void) override;
 
-    qint64 bytesAvailable(void) const;
+    virtual void flush(void);
+
+    virtual qint64 bytesAvailable(void) const override;
+
+public:
+    static QIODevice *create(const char *file_name, bool clean = false, int compressionLevel = 6, int bufferSize = 65500);
+    static QIODevice *create(const QString& file_name, bool clean = false, int compressionLevel = 6, int bufferSize = 65500);
+    static QIODevice *create(QIODevice *device, bool clean = false, int compressionLevel = 6, int bufferSize = 65500);
+
+private:
+    Q_DISABLE_COPY(dtkCoreIOCompressor);
+};
+
+#if defined(DTK_HAVE_ZLIB)
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreIOCompressorImpl declaration
+// ///////////////////////////////////////////////////////////////////
+
+class DTKCORE_EXPORT dtkCoreIOCompressorImpl : public dtkCoreIOCompressor
+{
+    Q_OBJECT
+
+public:
+     dtkCoreIOCompressorImpl(QIODevice *device, bool clean=false, int compressionLevel = 6, int bufferSize = 65500);
+    ~dtkCoreIOCompressorImpl(void);
+
+    void setStreamFormat(StreamFormat format) override;
+    StreamFormat streamFormat(void) const override;
+
+    static bool isGzipSupported(void);
+
+    bool isSequential(void) const override;
+
+    bool open(OpenMode mode) override;
+    void close(void) override;
+
+    void flush(void) override;
+
+    qint64 bytesAvailable(void) const override;
 
 protected:
-    qint64 readData(char *data, qint64 maxSize);
-    qint64 writeData(const char *data, qint64 maxSize);
+    qint64 readData(char *data, qint64 maxSize) override;
+    qint64 writeData(const char *data, qint64 maxSize) override;
 
 private:
     static bool checkGzipSupport(const char *const versionString);
 
-    class dtkCoreIOCompressorPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(dtkCoreIOCompressor);
-    Q_DISABLE_COPY(dtkCoreIOCompressor);
+    class dtkCoreIOCompressorImplPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(dtkCoreIOCompressorImpl);
+    Q_DISABLE_COPY(dtkCoreIOCompressorImpl);
 };
+
+#endif
 
 // ///////////////////////////////////////////////////////////////////
 // Credits

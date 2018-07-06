@@ -25,18 +25,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  dtkCoreIOCompressorTest.h
   dtkCoreMetaTypeTest.h)
 
 set(${PROJECT_NAME}_SOURCES
+  dtkCoreIOCompressorTest.cpp
   dtkCoreMetaTypeTest.cpp)
-
-if(DTK_HAVE_ZLIB)
-  set(${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS}
-    dtkCoreIOCompressorTest.h)
-
-  set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES}
-    dtkCoreIOCompressorTest.cpp)
-endif(DTK_HAVE_ZLIB)
 
 ## ###################################################################
 ## Input - introspected
@@ -68,11 +62,8 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## Test rules
 ## ###################################################################
 
-add_test(dtkCoreMetaTypeTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
-
-if(DTK_HAVE_ZLIB)
-  add_test(dtkCoreIOCompressorTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
-endif(DTK_HAVE_ZLIB)
+add_test(dtkCoreMetaTypeTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
+add_test(dtkCoreIOCompressorTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
 
 ######################################################################
 ### CMakeLists.txt ends here

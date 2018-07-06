@@ -14,22 +14,101 @@
 
 #include "dtkCoreIOCompressor.h"
 
-#include <zlib.h>
-#include <QDebug>
-#include <QFile>
-#include <QFileInfo>
+// ///////////////////////////////////////////////////////////////////
+// Default implementation of the interface dtkCoreIOCompressor
+// ///////////////////////////////////////////////////////////////////
 
-using ZlibByte = Bytef;
-using ZlibSize = uInt;
+void dtkCoreIOCompressor::setStreamFormat(StreamFormat)
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+}
+
+dtkCoreIOCompressor::StreamFormat dtkCoreIOCompressor::streamFormat(void) const
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    return dtkCoreIOCompressor::UnsupportedFormat;
+}
+
+bool dtkCoreIOCompressor::isGzipSupported(void)
+{
+#if defined(DTK_HAVE_ZLIB)
+    return dtkCoreIOCompressorImpl::isGzipSupported();
+#endif
+
+    return false;
+}
+
+bool dtkCoreIOCompressor::isSequential(void) const
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    return false;
+}
+
+bool dtkCoreIOCompressor::open(OpenMode)
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    return false;
+}
+
+void dtkCoreIOCompressor::close(void)
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+}
+
+void dtkCoreIOCompressor::flush(void)
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+}
+
+qint64 dtkCoreIOCompressor::bytesAvailable(void) const
+{
+    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    return 0;
+}
+
+QIODevice *dtkCoreIOCompressor::create(const char *file_name, bool clean, int compressionLevel, int bufferSize)
+{
+    return dtkCoreIOCompressor::create(QString(file_name), clean, compressionLevel, bufferSize);
+}
+
+QIODevice *dtkCoreIOCompressor::create(const QString& file_name, bool clean, int compressionLevel, int bufferSize)
+{
+    QFile *file = new QFile(file_name);
+    if (QFileInfo(file_name).suffix() == "gz") {
+#if defined(DTK_HAVE_ZLIB)
+        return new dtkCoreIOCompressorImpl(file, clean, compressionLevel, bufferSize);
+#endif
+        qWarning() << Q_FUNC_INFO << "No zlib support, can't open compressed file !";
+        return nullptr;
+
+    } else {
+        return file;
+    }
+}
+
+QIODevice *dtkCoreIOCompressor::create(QIODevice *device, bool clean, int compressionLevel, int bufferSize)
+{
+#if defined(DTK_HAVE_ZLIB)
+    return new dtkCoreIOCompressorImpl(device, clean, compressionLevel, bufferSize);
+#endif
+    return nullptr;
+}
+
+#if defined(DTK_HAVE_ZLIB)
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreIOCompressorPrivate
 // ///////////////////////////////////////////////////////////////////
 
-class dtkCoreIOCompressorPrivate
+#include <zlib.h>
+
+using ZlibByte = Bytef;
+using ZlibSize = uInt;
+
+class dtkCoreIOCompressorImplPrivate
 {
-    dtkCoreIOCompressor *q_ptr;
-    Q_DECLARE_PUBLIC(dtkCoreIOCompressor)
+    dtkCoreIOCompressorImpl *q_ptr;
+    Q_DECLARE_PUBLIC(dtkCoreIOCompressorImpl)
 
 public:
     enum State {
@@ -45,8 +124,8 @@ public:
         Error
     };
 
-     dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize);
-    ~dtkCoreIOCompressorPrivate(void);
+     dtkCoreIOCompressorImplPrivate(dtkCoreIOCompressorImpl *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize);
+    ~dtkCoreIOCompressorImplPrivate(void);
 
     void flushZlib(int flushMode);
     bool writeBytes(ZlibByte *buffer, ZlibSize outputSize);
@@ -69,7 +148,7 @@ public:
 /*!
     \internal
 */
-dtkCoreIOCompressorPrivate::dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize) : q_ptr(q_ptr),
+dtkCoreIOCompressorImplPrivate::dtkCoreIOCompressorImplPrivate(dtkCoreIOCompressorImpl *q_ptr, QIODevice *device, bool clean, int compressionLevel, int bufferSize) : q_ptr(q_ptr),
                                                                                                                                   device(device),
                                                                                                                                   cleanDevice(clean),
                                                                                                                                   compressionLevel(compressionLevel),
@@ -87,7 +166,7 @@ dtkCoreIOCompressorPrivate::dtkCoreIOCompressorPrivate(dtkCoreIOCompressor *q_pt
 /*!
     \internal
 */
-dtkCoreIOCompressorPrivate::~dtkCoreIOCompressorPrivate(void)
+dtkCoreIOCompressorImplPrivate::~dtkCoreIOCompressorImplPrivate(void)
 {
     delete[] buffer;
 
@@ -99,7 +178,7 @@ dtkCoreIOCompressorPrivate::~dtkCoreIOCompressorPrivate(void)
     \internal
     Flushes the zlib stream.
 */
-void dtkCoreIOCompressorPrivate::flushZlib(int flushMode)
+void dtkCoreIOCompressorImplPrivate::flushZlib(int flushMode)
 {
     // No input.
     zlibStream.next_in = 0;
@@ -112,7 +191,7 @@ void dtkCoreIOCompressorPrivate::flushZlib(int flushMode)
         status = deflate(&zlibStream, flushMode);
 
         if (status != Z_OK && status != Z_STREAM_END) {
-            state = dtkCoreIOCompressorPrivate::Error;
+            state = dtkCoreIOCompressorImplPrivate::Error;
             setZlibError(QT_TRANSLATE_NOOP("QtIOCompressor", "Internal zlib error when compressing: "), status);
             return;
         }
@@ -139,9 +218,9 @@ void dtkCoreIOCompressorPrivate::flushZlib(int flushMode)
     \internal
     Writes outputSize bytes from buffer to the inderlying device.
 */
-bool dtkCoreIOCompressorPrivate::writeBytes(ZlibByte *buffer, ZlibSize outputSize)
+bool dtkCoreIOCompressorImplPrivate::writeBytes(ZlibByte *buffer, ZlibSize outputSize)
 {
-    Q_Q(dtkCoreIOCompressor);
+    Q_Q(dtkCoreIOCompressorImpl);
     ZlibSize totalBytesWritten = 0;
 
     // Loop until all bytes are written to the underlying device.
@@ -165,9 +244,9 @@ bool dtkCoreIOCompressorPrivate::writeBytes(ZlibByte *buffer, ZlibSize outputSiz
     \internal
     Sets the error string to errorMessage + zlib error string for zlibErrorCode
 */
-void dtkCoreIOCompressorPrivate::setZlibError(const QString& errorMessage, int zlibErrorCode)
+void dtkCoreIOCompressorImplPrivate::setZlibError(const QString& errorMessage, int zlibErrorCode)
 {
-    Q_Q(dtkCoreIOCompressor);
+    Q_Q(dtkCoreIOCompressorImpl);
     // Watch out, zlibErrorString may be null.
     const char *const zlibErrorString = zError(zlibErrorCode);
     QString errorString;
@@ -251,8 +330,8 @@ void dtkCoreIOCompressorPrivate::setZlibError(const QString& errorMessage, int z
     underlying device. The default value is 65KB. Using a larger value allows for faster compression and
     deompression at the expense of memory usage.
 */
-dtkCoreIOCompressor::dtkCoreIOCompressor(QIODevice *device, bool clean, int compressionLevel, int bufferSize)
-    : d_ptr(new dtkCoreIOCompressorPrivate(this, device, clean, compressionLevel, bufferSize))
+dtkCoreIOCompressorImpl::dtkCoreIOCompressorImpl(QIODevice *device, bool clean, int compressionLevel, int bufferSize)
+    : dtkCoreIOCompressor(), d_ptr(new dtkCoreIOCompressorImplPrivate(this, device, clean, compressionLevel, bufferSize))
 {
     if (QFile *file = dynamic_cast<QFile *>(device)) {
         QFileInfo info = QFileInfo(file->fileName());
@@ -265,11 +344,11 @@ dtkCoreIOCompressor::dtkCoreIOCompressor(QIODevice *device, bool clean, int comp
 }
 
 /*!
-    Destroys the dtkCoreIOCompressor, closing it if neccesary.
+    Destroys the dtkCoreIOCompressorImpl, closing it if neccesary.
 */
-dtkCoreIOCompressor::~dtkCoreIOCompressor(void)
+dtkCoreIOCompressorImpl::~dtkCoreIOCompressorImpl(void)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
     close();
     delete d;
 }
@@ -279,13 +358,13 @@ dtkCoreIOCompressor::~dtkCoreIOCompressor(void)
 
     \sa dtkCoreIOCompressor::StreamFormat
 */
-void dtkCoreIOCompressor::setStreamFormat(StreamFormat format)
+void dtkCoreIOCompressorImpl::setStreamFormat(StreamFormat format)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
 
     // Print a waning if the compile-time version of zlib does not support gzip.
     if (format == GzipFormat && checkGzipSupport(ZLIB_VERSION) == false)
-        qWarning("dtkCoreIOCompressor::setStreamFormat: zlib 1.2.x or higher is "
+        qWarning("dtkCoreIOCompressorImpl::setStreamFormat: zlib 1.2.x or higher is "
                  "required to use the gzip format. Current version is: %s",
                  ZLIB_VERSION);
 
@@ -296,16 +375,16 @@ void dtkCoreIOCompressor::setStreamFormat(StreamFormat format)
     Returns the format set on the compressed stream.
     \sa dtkCoreIOCompressor::StreamFormat
 */
-dtkCoreIOCompressor::StreamFormat dtkCoreIOCompressor::streamFormat(void) const
+dtkCoreIOCompressor::StreamFormat dtkCoreIOCompressorImpl::streamFormat(void) const
 {
-    Q_D(const dtkCoreIOCompressor);
+    Q_D(const dtkCoreIOCompressorImpl);
     return d->streamFormat;
 }
 
 /*!
     Returns true if the zlib library in use supports the gzip format, false otherwise.
 */
-bool dtkCoreIOCompressor::isGzipSupported(void)
+bool dtkCoreIOCompressorImpl::isGzipSupported(void)
 {
     return checkGzipSupport(zlibVersion());
 }
@@ -313,13 +392,13 @@ bool dtkCoreIOCompressor::isGzipSupported(void)
 /*!
     \reimp
 */
-bool dtkCoreIOCompressor::isSequential(void) const
+bool dtkCoreIOCompressorImpl::isSequential(void) const
 {
     return true;
 }
 
 /*!
-    Opens the dtkCoreIOCompressor in \a mode. Only ReadOnly and WriteOnly is supported.
+    Opens the dtkCoreIOCompressorImpl in \a mode. Only ReadOnly and WriteOnly is supported.
     This functon will return false if you try to open in other modes.
 
     If the underlying device is not opened, this function will open it in a suitable mode. If this happens
@@ -331,12 +410,12 @@ bool dtkCoreIOCompressor::isSequential(void) const
 
     \sa close()
 */
-bool dtkCoreIOCompressor::open(OpenMode mode)
+bool dtkCoreIOCompressorImpl::open(OpenMode mode)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
 
     if (isOpen()) {
-        qWarning("dtkCoreIOCompressor::open: device already open");
+        qWarning("dtkCoreIOCompressorImpl::open: device already open");
         return false;
     }
 
@@ -347,7 +426,7 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
     const bool neither = !(read || write);
 
     if (both || neither) {
-        qWarning("dtkCoreIOCompressor::open: dtkCoreIOCompressor can only be opened in the ReadOnly or WriteOnly modes");
+        qWarning("dtkCoreIOCompressorImpl::open: dtkCoreIOCompressorImpl can only be opened in the ReadOnly or WriteOnly modes");
         return false;
     }
 
@@ -357,10 +436,10 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
         const OpenMode deviceMode = d->device->openMode();
 
         if (read && !(deviceMode & ReadOnly)) {
-            qWarning("dtkCoreIOCompressor::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
+            qWarning("dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
             return false;
         } else if (write && !(deviceMode & WriteOnly)) {
-            qWarning("dtkCoreIOCompressor::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
+            qWarning("dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
             return false;
         }
 
@@ -369,7 +448,7 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
         d->manageDevice = true;
 
         if (d->device->open(mode) == false) {
-            setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressor", "Error opening underlying device: ") + d->device->errorString());
+            setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl", "Error opening underlying device: ") + d->device->errorString());
             return false;
         }
     }
@@ -400,7 +479,7 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
     int status;
 
     if (read) {
-        d->state = dtkCoreIOCompressorPrivate::NotReadFirstByte;
+        d->state = dtkCoreIOCompressorImplPrivate::NotReadFirstByte;
         d->zlibStream.avail_in = 0;
         d->zlibStream.next_in = 0;
 
@@ -408,14 +487,14 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
             status = inflateInit(&d->zlibStream);
         } else {
             if (checkGzipSupport(zlibVersion()) == false) {
-                setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressor::open", "The gzip format not supported in this version of zlib."));
+                setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl::open", "The gzip format not supported in this version of zlib."));
                 return false;
             }
 
             status = inflateInit2(&d->zlibStream, windowBits);
         }
     } else {
-        d->state = dtkCoreIOCompressorPrivate::NoBytesWritten;
+        d->state = dtkCoreIOCompressorImplPrivate::NoBytesWritten;
 
         if (d->streamFormat == dtkCoreIOCompressor::ZlibFormat)
             status = deflateInit(&d->zlibStream, d->compressionLevel);
@@ -425,7 +504,7 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
 
     // Handle error.
     if (status != Z_OK) {
-        d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressor::open", "Internal zlib error: "), status);
+        d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl::open", "Internal zlib error: "), status);
         return false;
     }
 
@@ -433,23 +512,23 @@ bool dtkCoreIOCompressor::open(OpenMode mode)
 }
 
 /*!
-     Closes the dtkCoreIOCompressor, and also the underlying device if it was opened by dtkCoreIOCompressor.
+     Closes the dtkCoreIOCompressorImpl, and also the underlying device if it was opened by dtkCoreIOCompressorImpl.
     \sa open()
 */
-void dtkCoreIOCompressor::close(void)
+void dtkCoreIOCompressorImpl::close(void)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
 
     if (isOpen() == false)
         return;
 
     // Flush and close the zlib stream.
     if (openMode() & ReadOnly) {
-        d->state = dtkCoreIOCompressorPrivate::NotReadFirstByte;
+        d->state = dtkCoreIOCompressorImplPrivate::NotReadFirstByte;
         inflateEnd(&d->zlibStream);
     } else {
-        if (d->state == dtkCoreIOCompressorPrivate::BytesWritten) { // Only flush if we have written anything.
-            d->state = dtkCoreIOCompressorPrivate::NoBytesWritten;
+        if (d->state == dtkCoreIOCompressorImplPrivate::BytesWritten) { // Only flush if we have written anything.
+            d->state = dtkCoreIOCompressorImplPrivate::NoBytesWritten;
             d->flushZlib(Z_FINISH);
         }
 
@@ -466,15 +545,15 @@ void dtkCoreIOCompressor::close(void)
 /*!
     Flushes the internal buffer.
 
-    Each time you call flush, all data written to the dtkCoreIOCompressor is compressed and written to the
+    Each time you call flush, all data written to the dtkCoreIOCompressorImpl is compressed and written to the
     underlying device. Calling this function can reduce the compression ratio. The underlying device
     is not flushed.
 
-    Calling this function when dtkCoreIOCompressor is in ReadOnly mode has no effect.
+    Calling this function when dtkCoreIOCompressorImpl is in ReadOnly mode has no effect.
 */
-void dtkCoreIOCompressor::flush(void)
+void dtkCoreIOCompressorImpl::flush(void)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
 
     if (isOpen() == false || openMode() & ReadOnly)
         return;
@@ -490,9 +569,9 @@ void dtkCoreIOCompressor::flush(void)
     Also, since the remaining compressed data might be a part of the meta-data that ends the compressed stream (and
     therefore will yield no uncompressed data), you cannot assume that a read after getting a 1 from this function will return data.
 */
-qint64 dtkCoreIOCompressor::bytesAvailable(void) const
+qint64 dtkCoreIOCompressorImpl::bytesAvailable(void) const
 {
-    Q_D(const dtkCoreIOCompressor);
+    Q_D(const dtkCoreIOCompressorImpl);
 
     if ((openMode() & ReadOnly) == false)
         return 0;
@@ -500,16 +579,16 @@ qint64 dtkCoreIOCompressor::bytesAvailable(void) const
     int numBytes = 0;
 
     switch (d->state) {
-    case dtkCoreIOCompressorPrivate::NotReadFirstByte:
+    case dtkCoreIOCompressorImplPrivate::NotReadFirstByte:
         numBytes = d->device->bytesAvailable();
         break;
 
-    case dtkCoreIOCompressorPrivate::InStream:
+    case dtkCoreIOCompressorImplPrivate::InStream:
         numBytes = 1;
         break;
 
-    case dtkCoreIOCompressorPrivate::EndOfStream:
-    case dtkCoreIOCompressorPrivate::Error:
+    case dtkCoreIOCompressorImplPrivate::EndOfStream:
+    case dtkCoreIOCompressorImplPrivate::Error:
     default:
         numBytes = 0;
         break;
@@ -527,14 +606,14 @@ qint64 dtkCoreIOCompressor::bytesAvailable(void) const
     \internal
     Reads and decompresses data from the underlying device.
 */
-qint64 dtkCoreIOCompressor::readData(char *data, qint64 maxSize)
+qint64 dtkCoreIOCompressorImpl::readData(char *data, qint64 maxSize)
 {
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
 
-    if (d->state == dtkCoreIOCompressorPrivate::EndOfStream)
+    if (d->state == dtkCoreIOCompressorImplPrivate::EndOfStream)
         return 0;
 
-    if (d->state == dtkCoreIOCompressorPrivate::Error)
+    if (d->state == dtkCoreIOCompressorImplPrivate::Error)
         return -1;
 
     // We are ging to try to fill the data buffer
@@ -552,17 +631,17 @@ qint64 dtkCoreIOCompressor::readData(char *data, qint64 maxSize)
             d->zlibStream.avail_in = bytesAvalible;
 
             if (bytesAvalible == -1) {
-                d->state = dtkCoreIOCompressorPrivate::Error;
-                setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressor", "Error reading data from underlying device: ") + d->device->errorString());
+                d->state = dtkCoreIOCompressorImplPrivate::Error;
+                setErrorString(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl", "Error reading data from underlying device: ") + d->device->errorString());
                 return -1;
             }
 
-            if (d->state != dtkCoreIOCompressorPrivate::InStream) {
+            if (d->state != dtkCoreIOCompressorImplPrivate::InStream) {
                 // If we are not in a stream and get 0 bytes, we are probably trying to read from an empty device.
                 if (bytesAvalible == 0)
                     return 0;
                 else if (bytesAvalible > 0)
-                    d->state = dtkCoreIOCompressorPrivate::InStream;
+                    d->state = dtkCoreIOCompressorImplPrivate::InStream;
             }
         }
 
@@ -573,8 +652,8 @@ qint64 dtkCoreIOCompressor::readData(char *data, qint64 maxSize)
         case Z_NEED_DICT:
         case Z_DATA_ERROR:
         case Z_MEM_ERROR:
-            d->state = dtkCoreIOCompressorPrivate::Error;
-            d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressor", "Internal zlib error when decompressing: "), status);
+            d->state = dtkCoreIOCompressorImplPrivate::Error;
+            d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl", "Internal zlib error when decompressing: "), status);
             return -1;
 
         case Z_BUF_ERROR: // No more input and zlib can not privide more output - Not an error, we can try to read again when we have more input.
@@ -586,7 +665,7 @@ qint64 dtkCoreIOCompressor::readData(char *data, qint64 maxSize)
     } while (d->zlibStream.avail_out != 0 && status != Z_STREAM_END);
 
     if (status == Z_STREAM_END) {
-        d->state = dtkCoreIOCompressorPrivate::EndOfStream;
+        d->state = dtkCoreIOCompressorImplPrivate::EndOfStream;
 
         // Unget any data left in the read buffer.
         for (int i = d->zlibStream.avail_in;  i >= 0; --i)
@@ -602,16 +681,16 @@ qint64 dtkCoreIOCompressor::readData(char *data, qint64 maxSize)
     \internal
     Compresses and writes data to the underlying device.
 */
-qint64 dtkCoreIOCompressor::writeData(const char *data, qint64 maxSize)
+qint64 dtkCoreIOCompressorImpl::writeData(const char *data, qint64 maxSize)
 {
     if (maxSize < 1)
         return 0;
 
-    Q_D(dtkCoreIOCompressor);
+    Q_D(dtkCoreIOCompressorImpl);
     d->zlibStream.next_in = reinterpret_cast<ZlibByte *>(const_cast<char *>(data));
     d->zlibStream.avail_in = maxSize;
 
-    if (d->state == dtkCoreIOCompressorPrivate::Error)
+    if (d->state == dtkCoreIOCompressorImplPrivate::Error)
         return -1;
 
     do {
@@ -620,8 +699,8 @@ qint64 dtkCoreIOCompressor::writeData(const char *data, qint64 maxSize)
         const int status = deflate(&d->zlibStream, Z_NO_FLUSH);
 
         if (status != Z_OK) {
-            d->state = dtkCoreIOCompressorPrivate::Error;
-            d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressor", "Internal zlib error when compressing: "), status);
+            d->state = dtkCoreIOCompressorImplPrivate::Error;
+            d->setZlibError(QT_TRANSLATE_NOOP("dtkCoreIOCompressorImpl", "Internal zlib error when compressing: "), status);
             return -1;
         }
 
@@ -642,7 +721,7 @@ qint64 dtkCoreIOCompressor::writeData(const char *data, qint64 maxSize)
     \internal
     Checks if the run-time zlib version is 1.2.x or higher.
 */
-bool dtkCoreIOCompressor::checkGzipSupport(const char *const versionString)
+bool dtkCoreIOCompressorImpl::checkGzipSupport(const char *const versionString)
 {
     if (strlen(versionString) < 3)
         return false;
@@ -652,6 +731,8 @@ bool dtkCoreIOCompressor::checkGzipSupport(const char *const versionString)
 
     return true;
 }
+
+#endif
 
 // ///////////////////////////////////////////////////////////////////
 // Credits

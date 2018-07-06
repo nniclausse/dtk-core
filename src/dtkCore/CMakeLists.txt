@@ -20,7 +20,8 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
-  dtkCoreIODevice.h
+  dtkCoreIOCompressor
+  dtkCoreIOCompressor.h
   dtkCoreLayerManager
   dtkCoreLayerManager.h
   dtkCoreMetaType
@@ -47,7 +48,7 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreSettings.h)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkCoreIODevice.cpp
+  dtkCoreIOCompressor.cpp
   dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
   dtkCoreObjectManager.cpp
@@ -55,15 +56,6 @@ set(${PROJECT_NAME}_SOURCES
   dtkCorePluginFactoryRecorder.cpp
   dtkCorePluginManagerHandler.cpp
   dtkCorePluginManagerRecorder.cpp)
-
-if(DTK_HAVE_ZLIB)
-  set(${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS}
-    dtkCoreIOCompressor
-    dtkCoreIOCompressor.h)
-
-  set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES}
-    dtkCoreIOCompressor.cpp)
-endif(DTK_HAVE_ZLIB)
 
 ## #################################################################
 ## Build rules

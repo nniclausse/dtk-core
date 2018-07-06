@@ -120,6 +120,7 @@ endif(ZLIB_FOUND)
 ## #################################################################
 
 include_directories(${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR}/src/dtkCore)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/dtkCore)
 
