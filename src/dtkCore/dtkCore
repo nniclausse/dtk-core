@@ -1,3 +1,5 @@
+#include "dtkCoreConfig.h"
+#include "dtkCoreIOCompressor.h"
 #include "dtkCoreLayerManager.h"
 #include "dtkCoreMetaType.h"
 #include "dtkCoreObjectManager.h"

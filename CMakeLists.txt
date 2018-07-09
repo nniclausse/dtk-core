@@ -111,11 +111,20 @@ find_package(Qt5 REQUIRED COMPONENTS Core Test)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(DTK_HAVE_ZLIB "NO")
+find_package(ZLIB QUIET)
+if(ZLIB_FOUND)
+  include_directories(${ZLIB_INCLUDE_DIRS})
+  set(DTK_HAVE_ZLIB "YES")
+endif(ZLIB_FOUND)
+
 ## #################################################################
 ## Dependencies - internal
 ## #################################################################
 
 include_directories(${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR}/src)
+include_directories(${CMAKE_BINARY_DIR}/src/dtkCore)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/dtkCore)
 
