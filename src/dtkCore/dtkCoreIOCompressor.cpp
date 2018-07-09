@@ -78,7 +78,7 @@ QIODevice *dtkCoreIOCompressor::create(const QString& file_name, bool clean, int
 #if defined(DTK_HAVE_ZLIB)
         return new dtkCoreIOCompressorImpl(file, clean, compressionLevel, bufferSize);
 #endif
-        qWarning() << Q_FUNC_INFO << "No zlib support, can't open compressed file !";
+        qWarning() << Q_FUNC_INFO << "No zlib support, can't open compressed file. Nullptr is returned.";
         return nullptr;
 
     } else {
