@@ -51,7 +51,9 @@ set(${PROJECT_NAME}_HEADERS
   dtkCorePluginManagerRecorder
   dtkCorePluginManagerRecorder.h
   dtkCoreSettings
-  dtkCoreSettings.h)
+  dtkCoreSettings.h
+  dtkCoreTypeTraits
+  dtkCoreTypeTraits.h)
 
 set(${PROJECT_NAME}_SOURCES
   dtkCoreApplication.cpp

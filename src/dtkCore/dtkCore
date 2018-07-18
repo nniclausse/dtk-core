@@ -13,3 +13,4 @@
 #include "dtkCorePluginManagerHandler.h"
 #include "dtkCorePluginManagerRecorder.h"
 #include "dtkCoreSettings.h"
+#include "dtkCoreTypeTraits.h"

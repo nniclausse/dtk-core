@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "dtkCoreTypeTraits.h"
+
 #include <QtCore>
 
 #include <type_traits>
@@ -23,58 +25,6 @@
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
-
-
-    // Typetrait is_qobject to detect whether a class inherits from QObject or not
-    namespace detail
-    {
-        template <typename T>
-        struct is_qobject_impl : std::is_base_of<QObject, std::remove_pointer_t<std::decay_t<T>>>
-        {
-        };
-    }
-
-    template <typename T>
-    using is_qobject = detail::is_qobject_impl<T>;
-
-
-    // Typetrait is_instantiable to detect whether an object of the class can be instantiated or not
-    namespace detail
-    {
-        template <typename T>
-        struct is_instantiable_impl : std::conditional_t<!std::is_abstract<std::remove_pointer_t<std::decay_t<T>>>::value, std::is_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
-        {
-        };
-    }
-
-    template <typename T>
-    using is_instantiable = detail::is_instantiable_impl<T>;
-
-
-    // Typetrait is_clonable to detect whether an object of the class is clonable or not
-    namespace detail
-    {
-        template <typename T>
-        struct is_clonable_impl : std::conditional_t<dtk::is_instantiable<T>::value, std::is_copy_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
-        {
-        };
-    }
-
-    template <typename T>
-    using is_clonable = detail::is_clonable_impl<T>;
-
-
-    // Typetrait is_copyable to detect whether an object of the class cna be copied or not
-    namespace detail
-    {
-        template <typename T>
-        struct is_copyable_impl : std::is_copy_assignable<std::remove_pointer_t<std::decay_t<T>>>
-        {
-        };
-    }
-
-    template <typename T>
-    using is_copyable = detail::is_copyable_impl<T>;
 
 
     // Test conversion between list of types given as QMetaTypeId integers and template type
