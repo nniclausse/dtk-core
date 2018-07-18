@@ -20,6 +20,10 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
+  dtkCoreApplication_p
+  dtkCoreApplication_p.h
+  dtkCoreApplication
+  dtkCoreApplication.h
   dtkCoreIOCompressor
   dtkCoreIOCompressor.h
   dtkCoreLayerManager
@@ -50,6 +54,7 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreSettings.h)
 
 set(${PROJECT_NAME}_SOURCES
+  dtkCoreApplication.cpp
   dtkCoreIOCompressor.cpp
   dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
