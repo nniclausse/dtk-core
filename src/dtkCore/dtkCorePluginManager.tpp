@@ -16,6 +16,8 @@
 
 #include "dtkCorePluginManagerHandler.h"
 
+#include <dtkLog>
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCorePluginManagerPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -47,8 +49,7 @@ template <typename T> inline bool dtkCorePluginManagerPrivate<T>::checkConcept(c
 
     if (conceptName != pluginConcept) {
         if (this->verboseLoading) {
-            //dtkDebug() << "skip plugin: not an implementation of the current concept" << conceptName << ", this plugin is for " << pluginConcept;
-            qDebug() << Q_FUNC_INFO << "skip plugin: not an implementation of the current concept" << conceptName << ", this plugin is for " << pluginConcept;
+            dtkDebug() << Q_FUNC_INFO << "skip plugin: not an implementation of the current concept" << conceptName << ", this plugin is for " << pluginConcept;
         }
         return false;
     }
@@ -65,10 +66,7 @@ template <typename T> inline bool dtkCorePluginManagerPrivate<T>::check(const QS
     }
 
     if (checkConceptLayer && !layerVersion.isNull() && !checkVersion(layerVersion , dtkCorePluginManagerHandler::instance()->pluginsLayerVersion(path))) {
-        // dtkWarn() << "    Version mismatch: layer version " << layerVersion
-        //           << " plugin compiled for layer version" << dtkCorePluginManagerHandler::instance()->pluginsLayerVersion(path)
-        //           << " for plugin " << path;
-        qWarning() << Q_FUNC_INFO << "Version mismatch: layer version " << layerVersion
+        dtkWarn() << Q_FUNC_INFO << "Version mismatch: layer version " << layerVersion
                   << " plugin compiled for layer version" << dtk::pluginManagerHandler().pluginsLayerVersion(path)
                   << " for plugin " << path;
         return false;
@@ -82,22 +80,19 @@ template <typename T> inline bool dtkCorePluginManagerPrivate<T>::check(const QS
         QString key = dtk::pluginManagerHandler().pluginPath(na_mitem);
 
         if (!dtk::pluginManagerHandler().hasName(na_mitem)) {
-            //dtkWarn() << "  Missing dependency:" << na_mitem << "for plugin" << path;
-            qWarning() << Q_FUNC_INFO << "Missing dependency:" << na_mitem << "for plugin" << path;
+            dtkWarn() << Q_FUNC_INFO << "Missing dependency:" << na_mitem << "for plugin" << path;
             status = false;
             continue;
         }
 
         if (!checkVersion(dtk::pluginManagerHandler().version(key), ve_mitem)) {
-            //dtkWarn() << "    Version mismatch:" << na_mitem << "version" << dtkCorePluginManagerHandler::instance()->version(key) << "but" << ve_mitem << "required for plugin" << path;
-            qWarning() << Q_FUNC_INFO << "Version mismatch:" << na_mitem << "version" << dtk::pluginManagerHandler().version(key) << "but" << ve_mitem << "required for plugin" << path;
+            dtkWarn() << Q_FUNC_INFO << "Version mismatch:" << na_mitem << "version" << dtk::pluginManagerHandler().version(key) << "but" << ve_mitem << "required for plugin" << path;
             status = false;
             continue;
         }
 
         if (!check(key, false)) {
-            //dtkWarn() << "Corrupted dependency:" << na_mitem << "for plugin" << path;
-            qWarning() << Q_FUNC_INFO << "Corrupted dependency:" << na_mitem << "for plugin" << path;
+            dtkWarn() << Q_FUNC_INFO << "Corrupted dependency:" << na_mitem << "for plugin" << path;
             status = false;
             continue;
         }
@@ -106,7 +101,7 @@ template <typename T> inline bool dtkCorePluginManagerPrivate<T>::check(const QS
     return status;
 }
 
-template <typename T> inline bool checkVersion(const QString ref_version, const QString elem_version)
+template <typename T> inline bool dtkCorePluginManagerPrivate<T>::checkVersion(const QString ref_version, const QString elem_version)
 {
     QStringList ve_ref_list = ref_version.split(".");
     QStringList ve_elem_list = elem_version.split(".");
@@ -184,10 +179,8 @@ template <typename T> inline void dtkCorePluginManager<T>::loadFromName(const QS
         }
         ++i;
     }
-    //dtkWarn() << Q_FUNC_INFO << plugin_name << " not found ";
-    //dtkWarn() << Q_FUNC_INFO << "keys" << dtkCorePluginManagerHandler::instance()->pluginPaths() << dtkCorePluginManagerHandler::instance()->names();
-    qWarning() << Q_FUNC_INFO << plugin_name << " not found ";
-    qWarning() << Q_FUNC_INFO << "keys" << dtk::pluginManagerHandler().pluginPaths() << dtk::pluginManagerHandler().names();
+    dtkWarn() << Q_FUNC_INFO << plugin_name << " not found ";
+    dtkWarn() << Q_FUNC_INFO << "keys" << dtk::pluginManagerHandler().pluginPaths() << dtk::pluginManagerHandler().names();
 }
 
 template <typename T> inline void dtkCorePluginManager<T>::setLayerVersion(const QString& layer_version)
@@ -203,8 +196,7 @@ template <typename T> void dtkCorePluginManager<T>::initialize(const QString& pa
         QDir dir(path2);
 
         if (d->verboseLoading) {
-            //dtkTrace() << "scanning directory for plugins:" << path2;
-            qDebug() << Q_FUNC_INFO << "scanning directory for plugins:" << path2;
+            dtkTrace() << Q_FUNC_INFO << "scanning directory for plugins:" << path2;
         }
 
         for (QFileInfo info : dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot))
@@ -214,15 +206,13 @@ template <typename T> void dtkCorePluginManager<T>::initialize(const QString& pa
             for (QFileInfo info : dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot)) {
                 if (d->checkConcept(info.absoluteFilePath())) {
                     if (d->verboseLoading) {
-                        //dtkInfo() << "load" << info.absoluteFilePath();
-                        qInfo() << Q_FUNC_INFO << "load" << info.absoluteFilePath();
+                        dtkInfo() << Q_FUNC_INFO << "load" << info.absoluteFilePath();
                     }
                     this->load(info.absoluteFilePath());
                 }
             }
         } else {
-            //dtkInfo() << "auto loading disabled";
-            qInfo() << Q_FUNC_INFO << "auto loading disabled";
+            dtkInfo() << Q_FUNC_INFO << "auto loading disabled";
         }
     }
 }
@@ -239,8 +229,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     if (!QLibrary::isLibrary(path)) {
         QString error = "Unable to load non library file " + path;
         if (d->verboseLoading) {
-            //dtkWarn() << error;
-            qWarning() << Q_FUNC_INFO << error;
+            dtkWarn() << Q_FUNC_INFO << error;
         }
         return;
     }
@@ -248,8 +237,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     if (!d->check(path)) {
         QString error = "check failure for plugin file " + path;
         if (d->verboseLoading) {
-            //dtkWarn() << error;
-            qWarning() << Q_FUNC_INFO << error;
+            dtkWarn() << Q_FUNC_INFO << error;
         }
         return;
     }
@@ -259,8 +247,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     if (!loader) {
         QString error = "Empty loader for file " + path;
         if (d->verboseLoading) {
-            //dtkWarn() << error;
-            qWarning() << Q_FUNC_INFO << error;
+            dtkWarn() << Q_FUNC_INFO << error;
         }
         return;
     }
@@ -268,8 +255,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     loader->setLoadHints(QLibrary::ExportExternalSymbolsHint);
 
     if (d->verboseLoading) {
-        //dtkTrace() << "Loading plugin from " << path;
-        qDebug() << Q_FUNC_INFO << "Loading plugin from " << path;
+        dtkTrace() << Q_FUNC_INFO << "Loading plugin from " << path;
     }
 
     if (!loader->load()) {
@@ -277,8 +263,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
         error += path;
         error += " - ";
         error += loader->errorString();
-        //dtkWarn() << error;
-        qWarning() << Q_FUNC_INFO << error;
+        dtkWarn() << Q_FUNC_INFO << error;
         delete loader;
         return;
     }
@@ -288,8 +273,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     if (!plugin) {
         QString error = "Unable to retrieve ";
         error += path;
-        //dtkWarn() << error;
-        qWarning() << Q_FUNC_INFO << error;
+        dtkWarn() << Q_FUNC_INFO << error;
         loader->unload();
         delete loader;
         return;
@@ -301,8 +285,7 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
 
     if (d->verboseLoading) {
         QString name =  loader->metaData().value("MetaData").toObject().value("name").toString();
-        //dtkTrace() << "Loaded plugin " <<  name  << " from " << path;
-        qDebug() << Q_FUNC_INFO << "Loaded plugin " <<  name  << " from " << path;
+        dtkTrace() << Q_FUNC_INFO << "Loaded plugin " <<  name  << " from " << path;
     }
 }
 

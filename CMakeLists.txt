@@ -106,7 +106,7 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Test)
+find_package(Qt5 REQUIRED COMPONENTS Core Test WebSockets)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -117,6 +117,9 @@ if(ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIRS})
   set(DTK_HAVE_ZLIB "YES")
 endif(ZLIB_FOUND)
+
+find_package(dtkLog REQUIRED)
+include_directories(${dtkLog_INCLUDE_DIRS})
 
 ## #################################################################
 ## Dependencies - internal
@@ -165,12 +168,11 @@ mark_as_advanced(${PROJECT_NAME}_VERSION_MAJOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_MINOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
 
+mark_as_advanced(Qt5_DIR)
 mark_as_advanced(Qt5Core_DIR)
 mark_as_advanced(Qt5Test_DIR)
 
 mark_as_advanced(CMAKE_AR)
-mark_as_advanced(CMAKE_BUILD_TYPE)
-mark_as_advanced(CMAKE_INSTALL_PREFIX)
 mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
 mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
 mark_as_advanced(CMAKE_OSX_SYSROOT)

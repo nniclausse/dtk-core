@@ -14,6 +14,8 @@
 
 #include "dtkCorePluginManagerHandler.h"
 
+#include <dtkLog>
+
 // /////////////////////////////////////////////////////////////////
 // dtkCorePluginManagerHandlerPrivate class
 // /////////////////////////////////////////////////////////////////
@@ -53,8 +55,7 @@ void dtkCorePluginManagerHandler::scan(const QString& path, bool verboseLoading)
         return;
 
     if (d->names.contains(path) && verboseLoading) {
-        //dtkTrace() << "scan: skip path" << path << ", already scanned";
-        qDebug() << Q_FUNC_INFO << "scan: skip path" << path << ", already scanned";
+        dtkTrace() << Q_FUNC_INFO << "scan: skip path" << path << ", already scanned";
         return;
     }
 

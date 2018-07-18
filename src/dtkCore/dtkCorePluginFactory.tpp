@@ -18,6 +18,8 @@
 #include "dtkCorePluginBase.h"
 #include "dtkCorePluginFactory_p.h"
 
+#include <dtkLog>
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCorePluginFactory implementation
 // ///////////////////////////////////////////////////////////////////
@@ -35,8 +37,7 @@ template <typename T> inline dtkCorePluginFactory<T>::~dtkCorePluginFactory(void
 template <typename T> inline void dtkCorePluginFactory<T>::record(const QString& key, creator func)
 {
     if (this->creators.contains(key)) {
-        //dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
-        qDebug() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
+        dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
         return;
     }
     this->creators.insert(key, func);
@@ -45,7 +46,7 @@ template <typename T> inline void dtkCorePluginFactory<T>::record(const QString&
 template <typename T> inline void dtkCorePluginFactory<T>::recordPlugin(const QString& key, dtkCorePluginBase *plugin)
 {
     if (this->creators_plugins.contains(key)) {
-        qDebug() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
+        dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
         return;
     }
     this->creators_plugins.insert(key, plugin);
@@ -54,8 +55,7 @@ template <typename T> inline void dtkCorePluginFactory<T>::recordPlugin(const QS
 template <typename T> inline void dtkCorePluginFactory<T>::record(const QString& key, widget_creator func)
 {
     if (this->widget_creators.contains(key)) {
-        //dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
-        qDebug() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
+        dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
         return;
     }
     this->widget_creators.insert(key, func);
@@ -70,8 +70,7 @@ template <typename T> inline T *dtkCorePluginFactory<T>::create(const QString& k
     } else if (this->creators_plugins.contains(key)) {
         void *o = this->creators_plugins.value(key)->create();
         if (!o) {
-            //dtkWarn() << Q_FUNC_INFO << "Nullptr is returned by plugin creator.";
-            qWarning() << Q_FUNC_INFO << "Nullptr is returned by plugin creator.";
+            dtkWarn() << Q_FUNC_INFO << "Nullptr is returned by plugin creator.";
             return nullptr;
         }
         obj = static_cast<T*>(o);

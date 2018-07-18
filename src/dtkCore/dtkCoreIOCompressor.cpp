@@ -14,18 +14,20 @@
 
 #include "dtkCoreIOCompressor.h"
 
+#include <dtkLog>
+
 // ///////////////////////////////////////////////////////////////////
 // Default implementation of the interface dtkCoreIOCompressor
 // ///////////////////////////////////////////////////////////////////
 
 void dtkCoreIOCompressor::setStreamFormat(StreamFormat)
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
 }
 
 dtkCoreIOCompressor::StreamFormat dtkCoreIOCompressor::streamFormat(void) const
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
     return dtkCoreIOCompressor::UnsupportedFormat;
 }
 
@@ -40,29 +42,29 @@ bool dtkCoreIOCompressor::isGzipSupported(void)
 
 bool dtkCoreIOCompressor::isSequential(void) const
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
     return false;
 }
 
 bool dtkCoreIOCompressor::open(OpenMode)
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
     return false;
 }
 
 void dtkCoreIOCompressor::close(void)
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
 }
 
 void dtkCoreIOCompressor::flush(void)
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
 }
 
 qint64 dtkCoreIOCompressor::bytesAvailable(void) const
 {
-    qWarning() << Q_FUNC_INFO << "Default implementation. Nothing is done";
+    dtkWarn() << Q_FUNC_INFO << "Default implementation. Nothing is done";
     return 0;
 }
 
@@ -78,7 +80,7 @@ QIODevice *dtkCoreIOCompressor::create(const QString& file_name, bool clean, int
 #if defined(DTK_HAVE_ZLIB)
         return new dtkCoreIOCompressorImpl(file, clean, compressionLevel, bufferSize);
 #endif
-        qWarning() << Q_FUNC_INFO << "No zlib support, can't open compressed file. Nullptr is returned.";
+        dtkWarn() << Q_FUNC_INFO << "No zlib support, can't open compressed file. Nullptr is returned.";
         return nullptr;
 
     } else {
@@ -364,9 +366,7 @@ void dtkCoreIOCompressorImpl::setStreamFormat(StreamFormat format)
 
     // Print a waning if the compile-time version of zlib does not support gzip.
     if (format == GzipFormat && checkGzipSupport(ZLIB_VERSION) == false)
-        qWarning("dtkCoreIOCompressorImpl::setStreamFormat: zlib 1.2.x or higher is "
-                 "required to use the gzip format. Current version is: %s",
-                 ZLIB_VERSION);
+        dtkWarn() << QString("dtkCoreIOCompressorImpl::setStreamFormat: zlib 1.2.x or higher is required to use the gzip format. Current version is: %1").arg(ZLIB_VERSION);
 
     d->streamFormat = format;
 }
@@ -415,7 +415,7 @@ bool dtkCoreIOCompressorImpl::open(OpenMode mode)
     Q_D(dtkCoreIOCompressorImpl);
 
     if (isOpen()) {
-        qWarning("dtkCoreIOCompressorImpl::open: device already open");
+        dtkWarn() << "dtkCoreIOCompressorImpl::open: device already open";
         return false;
     }
 
@@ -426,7 +426,7 @@ bool dtkCoreIOCompressorImpl::open(OpenMode mode)
     const bool neither = !(read || write);
 
     if (both || neither) {
-        qWarning("dtkCoreIOCompressorImpl::open: dtkCoreIOCompressorImpl can only be opened in the ReadOnly or WriteOnly modes");
+        dtkWarn() << "dtkCoreIOCompressorImpl::open: dtkCoreIOCompressorImpl can only be opened in the ReadOnly or WriteOnly modes";
         return false;
     }
 
@@ -436,10 +436,10 @@ bool dtkCoreIOCompressorImpl::open(OpenMode mode)
         const OpenMode deviceMode = d->device->openMode();
 
         if (read && !(deviceMode & ReadOnly)) {
-            qWarning("dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
+            dtkWarn() << "dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes";
             return false;
         } else if (write && !(deviceMode & WriteOnly)) {
-            qWarning("dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes");
+            dtkWarn() << "dtkCoreIOCompressorImpl::open: underlying device must be open in one of the ReadOnly or WriteOnly modes";
             return false;
         }
 

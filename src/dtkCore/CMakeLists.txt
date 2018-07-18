@@ -29,6 +29,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreMetaType.tpp
   dtkCoreObjectManager
   dtkCoreObjectManager.h
+  dtkCorePlugin
+  dtkCorePlugin.h
   dtkCorePluginBase
   dtkCorePluginBase.h
   dtkCorePluginFactory
@@ -52,6 +54,7 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
   dtkCoreObjectManager.cpp
+  dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
   dtkCorePluginManagerHandler.cpp
@@ -66,6 +69,8 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+
+target_link_libraries(${PROJECT_NAME} dtkLog)
 
 if(DTK_HAVE_ZLIB)
   target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
