@@ -32,6 +32,8 @@ private slots:
     void testIsQObject(void);
     void testCanConvert(void);
     void testVariantFromValue(void);
+    void testClone(void);
+    void testCopy(void);
 
 private slots:
     void cleanupTestCase(void);

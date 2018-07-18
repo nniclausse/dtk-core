@@ -611,6 +611,151 @@ void dtkCoreMetaTypeTestCase::testVariantFromValue(void)
     }
 }
 
+void dtkCoreMetaTypeTestCase::testClone(void)
+{
+    // Non QObject No Copyable Data pointer
+    {
+        // Cloning return nullptr;
+        NoCopyableData *d0 = d->no_copyable_data;
+        NoCopyableData *c0 = dtk::clone(d0);
+        QVERIFY(!c0);
+
+        // Cloning return nullptr;
+        DeriveNoCopyableData *dd0 = d->derive_no_copyable_data;
+        DeriveNoCopyableData *cc0 = dtk::clone(dd0);
+        QVERIFY(!cc0);
+
+        // Cloning return nullptr;
+        NoCopyableData *d1 = dd0;
+        NoCopyableData *c1 = dtk::clone(d1);
+        QVERIFY(!c1);
+    }
+
+    // Non QObject Data pointer
+    {
+        Data *d0 = d->data;
+        Data *c0 = dtk::clone(d0);
+        QCOMPARE(*d0, *c0);
+
+        DeriveData *dd0 = d->derive_data;
+        DeriveData *cc0 = dtk::clone(dd0);
+        QCOMPARE(*dd0, *cc0);
+
+        // When cloning from parent class, slicing occurs.
+        Data *d1 = dd0;
+        Data *c1 = dtk::clone(d1);
+        // The resulting copy is not a DeriveData object.
+        QVERIFY(!dynamic_cast<DeriveData *>(c1));
+    }
+
+    // Non QObject Abstract class
+    {
+        MyAbstract *a0 = d->abstract;
+        QVERIFY(dynamic_cast<DeriveMyAbstract *>(a0));
+
+        // Here again slicing occurs
+        MyAbstract *c0 = dtk::clone(a0);
+        QVERIFY(!dynamic_cast<DeriveMyAbstract *>(c0));
+    }
+
+    // QObject Abstract class
+    {
+        VirtualObject *a0 = d->virtual_object;
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(a0));
+
+        // To avoid slicing when copying, the deriveed class must be
+        // registered at runtime
+        qRegisterMetaType<DeriveVirtualObject>();
+        VirtualObject *c0 = dtk::clone(a0);
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(c0));
+        QCOMPARE(*c0, *a0);
+
+        VirtualObject2 *b1 = d->virtual_object2;
+        VirtualObject2 *c1 = dtk::clone(b1);
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(c1));
+        QCOMPARE(*c1, *b1);
+    }
+
+}
+void dtkCoreMetaTypeTestCase::testCopy(void)
+{
+    // Non QObject No Copyable Data pointer
+#if !defined(Q_CC_MSVC) || _MSC_FULL_VER > 190023025
+    {
+        // Cloning return nullptr;
+        NoCopyableData *d0 = d->no_copyable_data;
+        NoCopyableData *c0 = new NoCopyableData(-12, "dummy");
+        dtk::copy(d0, c0);
+        QCOMPARE(QString("dummy"), c0->name());
+        delete c0;
+
+        // Cloning return nullptr;
+        DeriveNoCopyableData *dd0 = d->derive_no_copyable_data;
+        DeriveNoCopyableData *cc0 = new DeriveNoCopyableData(-12, "dummy", 3.14159);
+        dtk::copy(dd0, cc0);
+        QCOMPARE(3.14159, cc0->value());
+        delete cc0;
+
+    }
+#endif
+
+    // Non QObject Data pointer
+    {
+        Data *d0 = d->data;
+        Data *c0 = new Data();
+        QVERIFY(dtk::copy(d0, c0));
+        QCOMPARE(*d0, *c0);
+        delete c0;
+
+        DeriveData *dd0 = d->derive_data;
+        DeriveData *cc0 = new DeriveData();
+        dtk::copy(dd0, cc0);
+        QCOMPARE(*dd0, *cc0);
+        delete cc0;
+
+        // When cloning from parent class, slicing occurs.
+        Data *d1 = dd0;
+        Data *c1 = new DeriveData;
+        dtk::copy(d1, c1);
+        QVERIFY(!(*dd0 == *dynamic_cast<DeriveData *>(c1)));
+        delete c1;
+    }
+
+    // Non QObject Abstract class
+    {
+        MyAbstract *a0 = d->abstract;
+        QVERIFY(dynamic_cast<DeriveMyAbstract *>(a0));
+
+        // No slicing occurs since the Abstract class is copy
+        // assignable at the top level and handles all the
+        // members. But it is luck.
+        MyAbstract *c0 = new DeriveMyAbstract;
+        QVERIFY(dtk::copy(a0, c0));
+        QCOMPARE(*a0, *c0);
+        delete c0;
+    }
+
+    // QObject Abstract class
+    {
+        VirtualObject *a0 = d->virtual_object;
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(a0));
+
+        // To avoid slicing when copying, the deriveed class must be
+        // registered at runtime
+        qRegisterMetaType<DeriveVirtualObject>();
+        VirtualObject *c0 = new DeriveVirtualObject;
+        dtk::copy(a0, c0);
+        QCOMPARE(*c0, *a0);
+        delete c0;
+
+        VirtualObject2 *b1 = d->virtual_object2;
+        VirtualObject2 *c1 = new DeriveVirtualObject;
+        dtk::copy(b1, c1);
+        QCOMPARE(*c1, *b1);
+        delete c1;
+    }
+}
+
 void dtkCoreMetaTypeTestCase::cleanupTestCase(void)
 {
 
