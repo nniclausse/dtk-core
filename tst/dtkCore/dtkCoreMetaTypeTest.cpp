@@ -358,22 +358,17 @@ public:
 
 dtkCoreMetaTypeTestCase::dtkCoreMetaTypeTestCase(void) : d(new dtkCoreMetaTypeTestCasePrivate)
 {
-    QMetaType::registerConverter<DeriveNoCopyableData *, NoCopyableData *>();
     QMetaType::registerDebugStreamOperator<NoCopyableData *>();
 
-    QMetaType::registerConverter<DeriveData *, Data *>();
     QMetaType::registerDebugStreamOperator<Data>();
 
     QMetaType::registerDebugStreamOperator<MyAbstract *>();
-    QMetaType::registerConverter<DeriveMyAbstract *, MyAbstract *>();
 
-    qRegisterMetaType<VirtualObject2 *>();
     qRegisterMetaType<DeriveVirtualObject>();
     qRegisterMetaType<DeriveVirtualObject *>();
     qRegisterMetaType<DeriveTwiceVirtualObject>();
     qRegisterMetaType<DeriveTwiceVirtualObject *>();
-    QMetaType::registerConverter<VirtualObject2 *, VirtualObject *>();
-    QMetaType::registerConverter<DeriveTwiceVirtualObject *, DeriveVirtualObject *>();
+
     QMetaType::registerDebugStreamOperator<VirtualObject *>();
 }
 
@@ -461,6 +456,47 @@ void dtkCoreMetaTypeTestCase::testIsQObject(void)
     QVERIFY(dtk::is_qobject<const volatile DerivedTwice>::value);
     QVERIFY(dtk::is_qobject<volatile DerivedTwice *>::value);
     QVERIFY(dtk::is_qobject<const volatile DerivedTwice *>::value);
+}
+
+void dtkCoreMetaTypeTestCase::testCanConvert(void)
+{
+    // Non QObject No Copyable Data pointer
+    QVERIFY(!dtk::canConvert<NoCopyableData *>(QList<int>({QMetaType::type("DeriveNoCopyableData*")})));
+
+    QVERIFY(!dtk::canConvert<DeriveNoCopyableData *>(QList<int>({QMetaType::type("NoCopyableData*")})));
+    QMetaType::registerConverter<DeriveNoCopyableData *, NoCopyableData *>();
+    QVERIFY(dtk::canConvert<DeriveNoCopyableData *>(QList<int>({QMetaType::type("NoCopyableData*")})));
+
+
+    // Non QObject Data pointer
+    QVERIFY(!dtk::canConvert<Data *>(QList<int>({QMetaType::type("DeriveData*")})));
+
+    QVERIFY(!dtk::canConvert<DeriveData *>(QList<int>({QMetaType::type("Data*")})));
+    QMetaType::registerConverter<DeriveData *, Data *>();
+    QVERIFY(dtk::canConvert<DeriveData *>(QList<int>({QMetaType::type("Data*")})));
+
+
+    // Non QObject Abstract class
+    QVERIFY(!dtk::canConvert<MyAbstract *>(QList<int>({QMetaType::type("DeriveMyAbstract*")})));
+
+    QVERIFY(!dtk::canConvert<DeriveMyAbstract *>(QList<int>({QMetaType::type("MyAbstract*")})));
+    QMetaType::registerConverter<DeriveMyAbstract *, MyAbstract *>();
+    QVERIFY(dtk::canConvert<DeriveMyAbstract *>(QList<int>({QMetaType::type("MyAbstract*")})));
+
+
+    // QObject Abstract class
+    QVERIFY(dtk::canConvert<DeriveVirtualObject *>(QList<int>({QMetaType::type("VirtualObject*")})));
+
+    QVERIFY(!dtk::canConvert<DeriveVirtualObject *>(QList<int>({QMetaType::type("VirtualObject2*")})));
+    qRegisterMetaType<VirtualObject2 *>();
+    QVERIFY(dtk::canConvert<DeriveVirtualObject *>(QList<int>({QMetaType::type("VirtualObject2*")})));
+
+    QVERIFY(!dtk::canConvert<VirtualObject2 *>(QList<int>({QMetaType::type("VirtualObject *")})));
+    QMetaType::registerConverter<VirtualObject2 *, VirtualObject *>();
+    QVERIFY(dtk::canConvert<VirtualObject2 *>(QList<int>({QMetaType::type("VirtualObject*")})));
+
+    qDebug() << std::is_abstract<VirtualObject2>::value;
+    qDebug() << std::is_abstract<VirtualObject2 *>::value;
 }
 
 void dtkCoreMetaTypeTestCase::testVariantFromValue(void)
