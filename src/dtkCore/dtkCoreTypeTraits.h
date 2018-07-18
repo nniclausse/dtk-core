@@ -108,6 +108,12 @@ namespace dtk {
     template <typename T>
     using is_assignable = detail::is_assignable_impl<T>;
 
+    template <class T, class R = void>
+    using enable_assignment = typename std::enable_if<is_assignable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_assignment = typename std::enable_if<!is_assignable<T>::value, R>::type;
+
 
     // is_add_assignable : detects whether the type supports operator += or not
     namespace detail
@@ -126,6 +132,12 @@ namespace dtk {
     template <typename T>
     using is_add_assignable = detail::is_add_assignable_impl<T>;
 
+    template <class T, class R = void>
+    using enable_add_assignment = typename std::enable_if<is_add_assignable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_add_assignment = typename std::enable_if<!is_add_assignable<T>::value, R>::type;
+
 
     // is_sub_assignable : detects whether the type supports operator -= or not
     namespace detail
@@ -138,6 +150,12 @@ namespace dtk {
 
     template <typename T>
     using is_sub_assignable = detail::is_sub_assignable_impl<T>;
+
+    template <class T, class R = void>
+    using enable_sub_assignment = typename std::enable_if<is_sub_assignable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_sub_assignment = typename std::enable_if<!is_sub_assignable<T>::value, R>::type;
 
 
     // is_mult_assignable : detects whether the type supports operator *= or not
@@ -152,6 +170,12 @@ namespace dtk {
     template <typename T>
     using is_mult_assignable = detail::is_mult_assignable_impl<T>;
 
+    template <class T, class R = void>
+    using enable_mult_assignment = typename std::enable_if<is_mult_assignable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_mult_assignment = typename std::enable_if<!is_mult_assignable<T>::value, R>::type;
+
 
     // is_div_assignable : detects whether the type supports operator /= or not
     namespace detail
@@ -164,6 +188,12 @@ namespace dtk {
 
     template <typename T>
     using is_div_assignable = detail::is_div_assignable_impl<T>;
+
+    template <class T, class R = void>
+    using enable_div_assignment = typename std::enable_if<is_div_assignable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_div_assignment = typename std::enable_if<!is_div_assignable<T>::value, R>::type;
 
 
     // is_bidirectional : detects whether the category of the iterator is bidirectional_iterator_tag or not
