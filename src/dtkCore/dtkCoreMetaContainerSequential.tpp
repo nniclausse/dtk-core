@@ -301,7 +301,7 @@ inline QVariant dtkCoreMetaContainerSequential::const_iterator::operator [] (lon
 
 inline auto dtkCoreMetaContainerSequential::const_iterator::operator ++ (void) -> const_iterator&
 {
-    it->advance(); return *this;
+    it->advance();
     return *this;
 }
 
@@ -453,7 +453,8 @@ inline const T& dtkCoreMetaContainerSequential::at(long long idx) const
 
 inline const QVariant& dtkCoreMetaContainerSequential::at(long long idx) const
 {
-    return m_h->variantAt(idx, m_var);
+    m_h->variantAt(idx, m_var);
+    return m_var;
 }
 
 inline void dtkCoreMetaContainerSequential::removeAt(long long idx)
@@ -463,7 +464,8 @@ inline void dtkCoreMetaContainerSequential::removeAt(long long idx)
 
 inline const QVariant& dtkCoreMetaContainerSequential::first(void) const
 {
-    return m_h->variantAt(0, m_var);
+    m_h->variantAt(0, m_var);
+    return m_var;
 }
 
 inline auto dtkCoreMetaContainerSequential::first(void) -> item&
@@ -474,7 +476,8 @@ inline auto dtkCoreMetaContainerSequential::first(void) -> item&
 
 inline const QVariant& dtkCoreMetaContainerSequential::last(void) const
 {
-    return m_h->variantAt(m_h->size() - 1, m_var);
+    m_h->variantAt(m_h->size() - 1, m_var);
+    return m_var;
 }
 
 inline auto dtkCoreMetaContainerSequential::last(void) -> item&
@@ -486,13 +489,13 @@ inline auto dtkCoreMetaContainerSequential::last(void) -> item&
 
 inline const QVariant& dtkCoreMetaContainerSequential::operator [] (long long idx) const
 {
-    return m_h->variantAt(idx, m_var);
+    m_h->variantAt(idx, m_var);
+    return m_var;
 }
 
 inline auto dtkCoreMetaContainerSequential::operator [] (long long idx) -> item&
 {
-    m_proxy->it = m_h->begin();
-    m_proxy->it->moveForward(idx);
+    m_h->iteratorAt(idx, m_proxy->it);
     return *m_proxy;
 }
 

@@ -320,14 +320,20 @@ inline void *dtkCoreMetaContainerSequentialHandlerTemplate<T>::at(long long idx)
     return &(*it);
 }
 
-
 template <typename T>
-inline QVariant& dtkCoreMetaContainerSequentialHandlerTemplate<T>::variantAt(long long idx, QVariant& var)
+inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::variantAt(long long idx, QVariant& var)
 {
     typename T::const_iterator it(m_container->cbegin());
     std::advance(it, idx);
     var.setValue(*it);
-    return var;
+}
+
+template <typename T>
+inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iteratorAt(long long idx, handler_iterator *pit)
+{
+    auto hit = static_cast<iterator *>(pit);
+    hit->it = m_container->begin();
+    std::advance(hit->it, idx);
 }
 
 template <typename T>

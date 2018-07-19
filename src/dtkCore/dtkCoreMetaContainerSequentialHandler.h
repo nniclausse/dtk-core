@@ -99,7 +99,8 @@ public:
     virtual const void *at(long long idx) const = 0;
     virtual       void *at(long long idx)       = 0;
 
-    virtual QVariant& variantAt(long long idx, QVariant& var) = 0;
+    virtual void variantAt(long long idx, QVariant& var) = 0;
+    virtual void iteratorAt(long long idx, iterator *pit) =0;
 
 public:
     int value_type_id;
@@ -201,7 +202,8 @@ public:
     const void *at(long long idx) const;
           void *at(long long idx);
 
-    QVariant& variantAt(long long idx, QVariant& var);
+    void variantAt(long long idx, QVariant& var);
+    void iteratorAt(qlonglong idx, handler_iterator *pit);
 
     handler_iterator *begin(void);
     handler_iterator   *end(void);

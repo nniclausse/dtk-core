@@ -256,7 +256,7 @@ namespace dtk {
         template <typename T>
         dtk::enable_add_assignment<T> add_assign(T& lhs, const T& rhs)
         {
-            lhs = rhs;
+            lhs += rhs;
         }
 
         template <typename T>
@@ -279,7 +279,7 @@ namespace dtk {
         template <typename T>
         dtk::enable_sub_assignment<T> sub_assign(T& lhs, const T& rhs)
         {
-            lhs = rhs;
+            lhs -= rhs;
         }
 
         template <typename T>
@@ -302,7 +302,7 @@ namespace dtk {
         template <typename T>
         dtk::enable_mul_assignment<T> mul_assign(T& lhs, const T& rhs)
         {
-            lhs = rhs;
+            lhs *= rhs;
         }
 
         template <typename T>
@@ -325,7 +325,7 @@ namespace dtk {
         template <typename T>
         dtk::enable_div_assignment<T> div_assign(T& lhs, const T& rhs)
         {
-            lhs = rhs;
+            lhs /= rhs;
         }
 
         template <typename T>
