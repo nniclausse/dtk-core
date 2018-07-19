@@ -25,10 +25,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  dtkMetaTypeTest.h)
+  dtkCoreIOCompressorTest.h
+  dtkCoreMetaContainerSequentialTest.h
+  dtkCoreMetaContainerSequentialTest.tpp
+  dtkCoreMetaTypeTest.h)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkMetaTypeTest.cpp)
+  dtkCoreIOCompressorTest.cpp
+  dtkCoreMetaContainerSequentialTest.cpp
+  dtkCoreMetaTypeTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -51,6 +56,8 @@ add_executable(${PROJECT_NAME}
 ## Link rules
 ## ###################################################################
 
+target_link_libraries(${PROJECT_NAME} dtkCore)
+
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)
 
@@ -58,7 +65,9 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## Test rules
 ## ###################################################################
 
-add_test(dtkMetaTypeTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkMetaTypeTest)
+add_test(dtkCoreMetaTypeTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
+add_test(dtkCoreMetaContainerSequentialTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaContainerSequentialTest)
+add_test(dtkCoreIOCompressorTest            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
 
 ######################################################################
 ### CMakeLists.txt ends here

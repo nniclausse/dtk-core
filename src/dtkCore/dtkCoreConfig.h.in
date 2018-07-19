@@ -12,7 +12,9 @@
 
 // Code:
 
-#include "dtkMetaType.h"
+#pragma once
+
+#cmakedefine DTK_HAVE_ZLIB
 
 //
-// dtkMetaType.cpp ends here
+// dtkCoreConfig.h.in ends here

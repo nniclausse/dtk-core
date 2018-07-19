@@ -20,12 +20,59 @@ project(dtkCore VERSION ${dtkCore_VERSION})
 
 set(${PROJECT_NAME}_HEADERS
   dtkCore
-  dtkMetaType
-  dtkMetaType.h
-  dtkMetaType.tpp)
+  dtkCoreApplication_p
+  dtkCoreApplication_p.h
+  dtkCoreApplication
+  dtkCoreApplication.h
+  dtkCoreIOCompressor
+  dtkCoreIOCompressor.h
+  dtkCoreLayerManager
+  dtkCoreLayerManager.h
+  dtkCoreMetaContainerSequential
+  dtkCoreMetaContainerSequential.h
+  dtkCoreMetaContainerSequential.tpp
+  dtkCoreMetaContainerSequentialHandler
+  dtkCoreMetaContainerSequentialHandler.h
+  dtkCoreMetaContainerSequentialHandler.tpp
+  dtkCoreMetaType
+  dtkCoreMetaType.h
+  dtkCoreMetaType.tpp
+  dtkCoreObjectManager
+  dtkCoreObjectManager.h
+  dtkCorePlugin
+  dtkCorePlugin.h
+  dtkCorePluginBase
+  dtkCorePluginBase.h
+  dtkCorePluginFactory
+  dtkCorePluginFactory.h
+  dtkCorePluginFactory.tpp
+  dtkCorePluginFactory_p.h
+  dtkCorePluginFactoryRecorder
+  dtkCorePluginFactoryRecorder.h
+  dtkCorePluginManager
+  dtkCorePluginManager.h
+  dtkCorePluginManager.tpp
+  dtkCorePluginManagerHandler
+  dtkCorePluginManagerHandler.h
+  dtkCorePluginManagerRecorder
+  dtkCorePluginManagerRecorder.h
+  dtkCoreSettings
+  dtkCoreSettings.h
+  dtkCoreTypeTraits
+  dtkCoreTypeTraits.h)
 
 set(${PROJECT_NAME}_SOURCES
-  dtkMetaType.cpp)
+  dtkCoreApplication.cpp
+  dtkCoreIOCompressor.cpp
+  dtkCoreLayerManager.cpp
+  dtkCoreMetaType.cpp
+  dtkCoreObjectManager.cpp
+  dtkCoreMetaContainerSequential.cpp
+  dtkCorePlugin.cpp
+  dtkCorePluginFactory_p.cpp
+  dtkCorePluginFactoryRecorder.cpp
+  dtkCorePluginManagerHandler.cpp
+  dtkCorePluginManagerRecorder.cpp)
 
 ## #################################################################
 ## Build rules
@@ -36,6 +83,12 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+
+target_link_libraries(${PROJECT_NAME} dtkLog)
+
+if(DTK_HAVE_ZLIB)
+  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
+endif(DTK_HAVE_ZLIB)
 
 ## #################################################################
 ## Target properties
@@ -58,6 +111,18 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_HEADERS}
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
+
+## ###################################################################
+## Config file
+## ###################################################################
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
 
 ## ###################################################################
 ## Install rules - files

@@ -16,28 +16,28 @@
 
 #include <QtCore>
 
-class dtkMetaTypeTestCase : public QObject
+class dtkCoreIOCompressorTestCase : public QObject
 {
     Q_OBJECT
 
 public:
-     dtkMetaTypeTestCase(void);
-    ~dtkMetaTypeTestCase(void);
+     dtkCoreIOCompressorTestCase(void) = default;
+    ~dtkCoreIOCompressorTestCase(void) = default;
 
 private slots:
     void initTestCase(void);
     void init(void);
 
 private slots:
-    void testIsQObject(void);
+    void testWrite(void);
+    void testRead(void);
+    void testCreator(void);
 
 private slots:
     void cleanupTestCase(void);
     void cleanup(void);
-
-private:
-    class dtkMetaTypeTestCasePrivate *d;
 };
 
+
 //
-// dtkMetaTypeTest.h ends here
+// dtkCoreIOCompressorTest.h ends here
