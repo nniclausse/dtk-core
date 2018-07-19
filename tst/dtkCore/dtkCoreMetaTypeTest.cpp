@@ -756,6 +756,54 @@ void dtkCoreMetaTypeTestCase::testCopy(void)
     }
 }
 
+void dtkCoreMetaTypeTestCase::testAssignments(void)
+{
+    {
+        double lhs = 3.14159;
+        double rhs = 10.5;
+        double res = rhs;
+
+        dtk::assign(lhs, rhs);
+        QCOMPARE(res, lhs);
+    }
+
+    {
+        double lhs = 3.14159;
+        double rhs = 10.5;
+        double res = lhs + rhs;
+
+        dtk::addAssign(lhs, rhs);
+        QCOMPARE(res, lhs);
+    }
+
+    {
+        double lhs = 3.14159;
+        double rhs = 10.5;
+        double res = lhs - rhs;
+
+        dtk::subAssign(lhs, rhs);
+        QCOMPARE(res, lhs);
+    }
+
+    {
+        double lhs = 3.14159;
+        double rhs = 10.5;
+        double res = lhs * rhs;
+
+        dtk::mulAssign(lhs, rhs);
+        QCOMPARE(res, lhs);
+    }
+
+    {
+        double lhs = 3.14159;
+        double rhs = 10.5;
+        double res = lhs / rhs;
+
+        dtk::divAssign(lhs, rhs);
+        QCOMPARE(res, lhs);
+    }
+}
+
 void dtkCoreMetaTypeTestCase::cleanupTestCase(void)
 {
 

@@ -34,6 +34,7 @@ private slots:
     void testVariantFromValue(void);
     void testClone(void);
     void testCopy(void);
+    void testAssignments(void);
 
 private slots:
     void cleanupTestCase(void);
