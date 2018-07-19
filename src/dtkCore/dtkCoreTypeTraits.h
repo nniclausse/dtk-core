@@ -158,23 +158,23 @@ namespace dtk {
     using disable_sub_assignment = typename std::enable_if<!is_sub_assignable<T>::value, R>::type;
 
 
-    // is_mult_assignable : detects whether the type supports operator *= or not
+    // is_mul_assignable : detects whether the type supports operator *= or not
     namespace detail
     {
         template <typename T>
-        struct is_mult_assignable_impl : dtk::is_numeric<T>
+        struct is_mul_assignable_impl : dtk::is_numeric<T>
         {
         };
     }
 
     template <typename T>
-    using is_mult_assignable = detail::is_mult_assignable_impl<T>;
+    using is_mul_assignable = detail::is_mul_assignable_impl<T>;
 
     template <class T, class R = void>
-    using enable_mult_assignment = typename std::enable_if<is_mult_assignable<T>::value, R>::type;
+    using enable_mul_assignment = typename std::enable_if<is_mul_assignable<T>::value, R>::type;
 
     template <class T, class R = void>
-    using disable_mult_assignment = typename std::enable_if<!is_mult_assignable<T>::value, R>::type;
+    using disable_mul_assignment = typename std::enable_if<!is_mul_assignable<T>::value, R>::type;
 
 
     // is_div_assignable : detects whether the type supports operator /= or not
@@ -222,30 +222,33 @@ namespace dtk {
     using is_random_access = detail::is_random_access_impl<T>;
 
 
-    // is_sequential_container_pointer : detects whether the object points to a sequential container or not
+    // is_sequential_container_pointer : detects whether the type is a pointer to a sequential container or not
+    template <typename T>
+    struct is_sequential_container_pointer : std::false_type
+    {
+    };
+
+
+    // is_associative_container_pointer : detects whether the type is a pointer to an associative container or not
+    template <typename T>
+    struct is_associative_container_pointer : std::false_type
+    {
+    };
+
+
+    // is_container_value_type_meta_type : detects whether the value type of a container is registered to the QMetaType system or not
     namespace detail
     {
         template <typename T>
-        struct is_sequential_container_pointer_impl : std::false_type
+        struct is_container_value_type_meta_type_impl : std::conditional_t<QMetaTypeId2<typename std::remove_pointer_t<T>::value_type>::Defined,
+                                                                           std::true_type,
+                                                                           std::false_type>
         {
         };
     }
 
     template <typename T>
-    using is_sequential_container_pointer = detail::is_sequential_container_pointer_impl<T>;
-
-
-    // is_associative_container_pointer : detects whether the object points to an associative container or not
-    namespace detail
-    {
-        template <typename T>
-        struct is_associative_container_pointer_impl : std::false_type
-        {
-        };
-    }
-
-    template <typename T>
-    using is_associative_container_pointer = detail::is_associative_container_pointer_impl<T>;
+    using is_container_value_type_meta_type = detail::is_container_value_type_meta_type_impl<T>;
 
 
     // is_resizable : detects whether the type supports resize operation or not
@@ -278,6 +281,12 @@ namespace dtk {
     struct is_resizable<std::list<T, Allocator>> : std::true_type
     {
     };
+
+    template <class T, class R = void>
+    using enable_resize = typename std::enable_if<is_resizable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_resize = typename std::enable_if<!is_resizable<T>::value, R>::type;
 
 
     // is_reservable : detects whether the type supports reserve operation or not
@@ -320,6 +329,12 @@ namespace dtk {
     struct is_reservable<std::vector<T, Allocator>> : std::true_type
     {
     };
+
+    template <class T, class R = void>
+    using enable_reserve = typename std::enable_if<is_reservable<T>::value, R>::type;
+
+    template <class T, class R = void>
+    using disable_reserve = typename std::enable_if<!is_reservable<T>::value, R>::type;
 
 }
 

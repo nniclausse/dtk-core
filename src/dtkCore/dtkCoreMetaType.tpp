@@ -20,6 +20,8 @@
 
 #include <type_traits>
 
+#include <dtkLog>
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreMetaType functions implementations
 // ///////////////////////////////////////////////////////////////////
@@ -86,7 +88,8 @@ namespace dtk {
         }
     }
 
-    template <typename T> inline bool canConvert(const QList<int>& types)
+    template <typename T>
+    inline bool canConvert(const QList<int>& types)
     {
         if (types.empty()) {
             return true;
@@ -129,7 +132,8 @@ namespace dtk {
         }
     }
 
-    template <typename T> inline QVariant variantFromValue(const T& t)
+    template <typename T>
+    inline QVariant variantFromValue(const T& t)
     {
         return dtk::detail::variant_from_value(t);
     }
@@ -169,13 +173,14 @@ namespace dtk {
         }
     }
 
-    template <typename T> inline T *clone(const T *t)
+    template <typename T>
+    inline T *clone(const T *t)
     {
         return dtk::detail::clone(t);
     }
 
 
-    //
+    // Copying an object by trying to downcasting as much as possible so that it avoids slicing
     namespace detail
     {
         template <typename T>
@@ -215,9 +220,125 @@ namespace dtk {
         }
     }
 
-    template <typename T> inline bool copy(const T *s, T *t)
+    template <typename T>
+    inline bool copy(const T *s, T *t)
     {
         return dtk::detail::copy(s, t);
+    }
+
+
+    // Assign operation (aka =) when type supports it
+    namespace detail
+    {
+        template <typename T>
+        dtk::enable_assignment<T> assign(T& lhs, const T& rhs)
+        {
+            lhs = rhs;
+        }
+
+        template <typename T>
+        dtk::disable_assignment<T> assign(T&, const T&)
+        {
+            dtkTrace() << Q_FUNC_INFO << "Current type does not support assignment";
+        }
+    }
+
+    template <typename T>
+    inline void assign(T& lhs, const T& rhs)
+    {
+        dtk::detail::assign(lhs, rhs);
+    }
+
+
+    // AddAssign operation (aka +=) when type supports it
+    namespace detail
+    {
+        template <typename T>
+        dtk::enable_add_assignment<T> add_assign(T& lhs, const T& rhs)
+        {
+            lhs = rhs;
+        }
+
+        template <typename T>
+        dtk::disable_add_assignment<T> add_assign(T&, const T&)
+        {
+            dtkTrace() << Q_FUNC_INFO << "Current type does not support += operation";
+        }
+    }
+
+    template <typename T>
+    inline void addAssign(T& lhs, const T& rhs)
+    {
+        dtk::detail::add_assign(lhs, rhs);
+    }
+
+
+    // SubAssign operation (aka +=) when type supports it
+    namespace detail
+    {
+        template <typename T>
+        dtk::enable_sub_assignment<T> sub_assign(T& lhs, const T& rhs)
+        {
+            lhs = rhs;
+        }
+
+        template <typename T>
+        dtk::disable_sub_assignment<T> sub_assign(T&, const T&)
+        {
+            dtkTrace() << Q_FUNC_INFO << "Current type does not support -= operation";
+        }
+    }
+
+    template <typename T>
+    inline void subAssign(T& lhs, const T& rhs)
+    {
+        dtk::detail::sub_assign(lhs, rhs);
+    }
+
+
+    // MulAssign operation (aka +=) when type supports it
+    namespace detail
+    {
+        template <typename T>
+        dtk::enable_mul_assignment<T> mul_assign(T& lhs, const T& rhs)
+        {
+            lhs = rhs;
+        }
+
+        template <typename T>
+        dtk::disable_mul_assignment<T> mul_assign(T&, const T&)
+        {
+            dtkTrace() << Q_FUNC_INFO << "Current type does not support *= operation.";
+        }
+    }
+
+    template <typename T>
+    inline void mulAssign(T& lhs, const T& rhs)
+    {
+        dtk::detail::mul_assign(lhs, rhs);
+    }
+
+
+    // DivAssign operation (aka +=) when type supports it
+    namespace detail
+    {
+        template <typename T>
+        dtk::enable_div_assignment<T> div_assign(T& lhs, const T& rhs)
+        {
+            lhs = rhs;
+        }
+
+        template <typename T>
+        dtk::disable_div_assignment<T> div_assign(T&, const T&)
+        {
+            dtkTrace() << Q_FUNC_INFO << "Current type does not support /= operation.";
+        }
+    }
+
+    template <typename T>
+    inline void divAssign(T& lhs, const T& rhs)
+    {
+        dtk::detail::div_assign(lhs, rhs);
     }
 }
 

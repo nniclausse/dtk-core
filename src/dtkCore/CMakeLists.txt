@@ -28,6 +28,12 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreIOCompressor.h
   dtkCoreLayerManager
   dtkCoreLayerManager.h
+  dtkCoreMetaContainerSequential
+  dtkCoreMetaContainerSequential.h
+  dtkCoreMetaContainerSequential.tpp
+  dtkCoreMetaContainerSequentialHandler
+  dtkCoreMetaContainerSequentialHandler.h
+  dtkCoreMetaContainerSequentialHandler.tpp
   dtkCoreMetaType
   dtkCoreMetaType.h
   dtkCoreMetaType.tpp
@@ -61,6 +67,7 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreLayerManager.cpp
   dtkCoreMetaType.cpp
   dtkCoreObjectManager.cpp
+  dtkCoreMetaContainerSequential.cpp
   dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
