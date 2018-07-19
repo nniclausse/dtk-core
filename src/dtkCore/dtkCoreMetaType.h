@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <dtkCoreExport>
+
 #include <QtCore>
 
 // ///////////////////////////////////////////////////////////////////
@@ -35,6 +37,10 @@ namespace dtk {
     template <typename T> void mulAssign(T& lhs, const T& rhs);
     template <typename T> void divAssign(T& lhs, const T& rhs);
 
+    DTKCORE_EXPORT  QString description(const QVariant& v);
+    DTKCORE_EXPORT QVariant cloneContent(const QVariant& v);
+    DTKCORE_EXPORT QVariant createEmptyContainer(const QVariant& v);
+    DTKCORE_EXPORT     bool destroyPointer(QVariant& v);
 }
 
 // /////////////////////////////////////////////////////////////////

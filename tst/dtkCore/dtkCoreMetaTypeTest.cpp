@@ -17,6 +17,7 @@
 #include <dtkCoreTest>
 
 #include <dtkCore/dtkCoreMetaType>
+#include <dtkCore/dtkCoreMetaContainerSequential>
 
 // ///////////////////////////////////////////////////////////////////
 // No Copyable Data concrete classes
@@ -801,6 +802,159 @@ void dtkCoreMetaTypeTestCase::testAssignments(void)
 
         dtk::divAssign(lhs, rhs);
         QCOMPARE(res, lhs);
+    }
+}
+
+void dtkCoreMetaTypeTestCase::testCloneContent(void)
+{
+    // Non QObject Data pointer
+    {
+        int a = 67;
+        QVariant v = dtk::variantFromValue(a);
+
+        QVariant vv = dtk::cloneContent(v);
+
+        QCOMPARE(vv.toInt(), v.toInt());
+    }
+
+    {
+        // QObject *o = new QObject();
+        // QVariant v = QVariant::fromValue(o);
+        // qDebug() << v << QMetaType::TypeFlags(v.userType());
+
+    }
+
+    // Non QObject No copyable Data pointer
+    {
+        NoCopyableData *d0 = d->no_copyable_data;
+        QVariant v = dtk::variantFromValue(d0);
+        QVariant vv = dtk::cloneContent(v);
+        NoCopyableData *c0 = vv.value<NoCopyableData *>();
+        QVERIFY(!c0);
+
+        DeriveNoCopyableData *dd0 = d->derive_no_copyable_data;
+        v = dtk::variantFromValue(dd0);
+
+        if (QMetaType::type("DeriveNoCopyableData*") == QMetaType::UnknownType)
+            qRegisterMetaType<DeriveNoCopyableData *>();
+
+        vv = dtk::cloneContent(v);
+        DeriveNoCopyableData *cc0 = vv.value<DeriveNoCopyableData *>();
+        QVERIFY(!cc0);
+    }
+
+    // Non QObject Data pointer
+    {
+        Data *d0 = d->data;
+        QVariant v = dtk::variantFromValue(d0);
+        QVariant vv = dtk::cloneContent(v);
+        Data *c0 = vv.value<Data *>();
+        QVERIFY(static_cast<void *>(d0) != static_cast<void *>(c0));
+        QCOMPARE(*d0, *c0);
+
+        DeriveData *dd0 = d->derive_data;
+        v = dtk::variantFromValue(dd0);
+
+        if (QMetaType::type("DeriveData") == QMetaType::UnknownType)
+            qRegisterMetaType<DeriveData>();
+
+        vv = dtk::cloneContent(v);
+        DeriveData *cc0 = vv.value<DeriveData *>();
+        QVERIFY(static_cast<void *>(dd0) != static_cast<void *>(cc0));
+        QCOMPARE(*dd0, *cc0);
+
+        // When cloning from parent class, slicing occurs.
+        Data *d1 = dd0;
+        v = dtk::variantFromValue(d1);
+        vv = dtk::cloneContent(v);
+        Data *c1 = vv.value<Data *>();
+        // The resulting copy is not a DeriveData object.
+        QVERIFY(!dynamic_cast<DeriveData *>(c1));
+    }
+
+    // // Non QObject Abstract class
+    // {
+    //     MyAbstract *a0 = d->abstract;
+    //     QVERIFY(dynamic_cast<DeriveMyAbstract*>(a0));
+
+    //     // Here again slicing occurs
+    //     QVariant v = dtk::variantFromValue(a0);
+    //     QVariant vv = dtk::cloneContent(v);
+    //     MyAbstract *c0 = vv.value<MyAbstract *>();
+    //     QVERIFY(!dynamic_cast<DeriveMyAbstract*>(c0));
+    // }
+
+    // QObject Abstract class
+    {
+        VirtualObject *a0 = d->virtual_object;
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(a0));
+
+        // To avoid slicing when copying, the deriveed class must be
+        // registered at runtime
+        qRegisterMetaType<DeriveVirtualObject>();
+        QVariant v = dtk::variantFromValue(a0);
+        QVariant vv = dtk::cloneContent(v);
+        VirtualObject *c0 = vv.value<VirtualObject *>();
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(c0));
+        QCOMPARE(*c0, *a0);
+
+        VirtualObject2 *b1 = d->virtual_object2;
+        v = dtk::variantFromValue(b1);
+        vv = dtk::cloneContent(v);
+        VirtualObject2 *c1 = vv.value<VirtualObject2 *>();
+        QVERIFY(dynamic_cast<DeriveVirtualObject *>(c1));
+        QCOMPARE(*c1, *b1);
+    }
+}
+
+void dtkCoreMetaTypeTestCase::testCreateEmptyContainer(void)
+{
+    {
+        QVector<double> vec(5, 3.14159);
+        QVariant var = dtk::variantFromValue(vec);
+        var.clear();
+        var = dtk::variantFromValue(&vec);
+        QVERIFY(var.canConvert<dtkCoreMetaContainerSequential>());
+
+        QVariant res = dtk::createEmptyContainer(var);
+        QVector<double> *v_res = res.value<QVector<double> *>();
+        QVERIFY(v_res);
+        QVERIFY(v_res->size() == 0);
+        delete v_res;
+    }
+
+    {
+        QList<double> list;
+        list << 3.14159;
+        list << 3.14159;
+        list << 3.14159;
+        list << 3.14159;
+        list << 3.14159;
+
+        QVariant var = dtk::variantFromValue(list);
+        var.clear();
+        var = dtk::variantFromValue(&list);
+        QVERIFY(var.canConvert<dtkCoreMetaContainerSequential>());
+
+        QVariant res = dtk::createEmptyContainer(var);
+        QList<double> *l_res = res.value<QList<double> *>();
+        QVERIFY(l_res);
+        QVERIFY(l_res->size() == 0);
+        delete l_res;
+    }
+}
+
+void dtkCoreMetaTypeTestCase::testDestroyPointer(void)
+{
+    {
+        QVector<double> *vec = nullptr;
+        QVariant var = dtk::variantFromValue(vec);
+        QVERIFY(var.canConvert<dtkCoreMetaContainerSequential>());
+        QVERIFY(!dtk::destroyPointer(var));
+
+        vec = new QVector<double>(5, 3.14159);
+        var = dtk::variantFromValue(vec);
+        QVERIFY(dtk::destroyPointer(var));
     }
 }
 

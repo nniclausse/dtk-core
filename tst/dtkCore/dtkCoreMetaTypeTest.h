@@ -34,7 +34,12 @@ private slots:
     void testVariantFromValue(void);
     void testClone(void);
     void testCopy(void);
+
     void testAssignments(void);
+
+    void testCloneContent(void);
+    void testCreateEmptyContainer(void);
+    void testDestroyPointer(void);
 
 private slots:
     void cleanupTestCase(void);
