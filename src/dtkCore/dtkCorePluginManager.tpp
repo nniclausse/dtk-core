@@ -289,6 +289,23 @@ template <typename T> inline void dtkCorePluginManager<T>::load(const QString& p
     }
 }
 
+template <typename T> inline void dtkCorePluginManager<T>::unload(const QString& path)
+{
+    QPluginLoader *loader = d->loaders.value(path);
+
+    T *plugin = qobject_cast<T *>(loader->instance());
+
+    if (plugin)
+        plugin->uninitialize();
+
+    if (loader->unload()) {
+        d->loaders.remove(path);
+        delete loader;
+    } else {
+        dtkWarn() << Q_FUNC_INFO << loader->errorString();
+    }
+}
+
 template <typename T> inline QStringList dtkCorePluginManager<T>::plugins(void) const
 {
     return d->loaders.keys();
