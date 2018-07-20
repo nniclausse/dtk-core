@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.2.0 - 2018-07-20
+
+- Retrieves `dtkCorePluginWidgetManager`. It is necessary for `dtk-composer`.
+
 ## version 2.1.0 - 2018-07-20
 
 - Add overloads of debug operators in `dtkCoreMetatype`. It is necessary for `dtk-composer`.
