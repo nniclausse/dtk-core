@@ -56,6 +56,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCorePluginManagerHandler.h
   dtkCorePluginManagerRecorder
   dtkCorePluginManagerRecorder.h
+  dtkCorePluginWidgetManager
+  dtkCorePluginWidgetManager.h
   dtkCoreSettings
   dtkCoreSettings.h
   dtkCoreTypeTraits
@@ -72,7 +74,8 @@ set(${PROJECT_NAME}_SOURCES
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
   dtkCorePluginManagerHandler.cpp
-  dtkCorePluginManagerRecorder.cpp)
+  dtkCorePluginManagerRecorder.cpp
+  dtkCorePluginWidgetManager.cpp)
 
 ## #################################################################
 ## Build rules
