@@ -16,7 +16,7 @@
 
 #include <dtkCoreExport>
 
-class QString;
+#include <QtCore>
 
 // /////////////////////////////////////////////////////////////////
 // dtkCoreLayerManager interface
@@ -25,12 +25,14 @@ class QString;
 class DTKCORE_EXPORT dtkCoreLayerManager
 {
 public:
+    using PluginManagers  = QHash<QString, class dtkCorePluginManagerBase *>;
+    using PluginFactories = QHash<QString, class dtkCorePluginFactoryBase *>;
+
      dtkCoreLayerManager(void);
     ~dtkCoreLayerManager(void);
 
-public:
-    void record(const QString& plugin_manager_name, class dtkCorePluginManagerBase *plugin_manager);
-    void record(const QString& plugin_factory_name, class dtkCorePluginFactoryBase *plugin_factory);
+    void record(const QString& plugin_manager_name, dtkCorePluginManagerBase *plugin_manager);
+    void record(const QString& plugin_factory_name, dtkCorePluginFactoryBase *plugin_factory);
 
     void initialize(void);
     void initialize(const QString& path);
@@ -45,6 +47,9 @@ public:
 
     void setObjectManager(class dtkCoreObjectManager *manager);
     dtkCoreObjectManager *objectManager(void) const;
+
+    PluginManagers pluginManagers(void) const;
+    PluginFactories pluginFactories(void) const;
 
 private:
     class dtkCoreLayerManagerPrivate *d;
