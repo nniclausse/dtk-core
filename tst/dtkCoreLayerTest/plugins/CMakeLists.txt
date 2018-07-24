@@ -12,8 +12,7 @@
 ##
 ### Code:
 
-add_subdirectory(src)
-add_subdirectory(plugins)
+add_subdirectory(dtkCoreConceptFooPlugin)
 
 ######################################################################
 ### CMakeLists.txt ends here

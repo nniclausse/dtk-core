@@ -61,16 +61,6 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreLayerTestSettings.cpp
   dtkAbstractCoreConcept.cpp)
 
-## #################################################################
-## Dependencies - internal
-## #################################################################
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-message ("${CMAKE_CURRENT_BINARY_DIR}")
-message ("${CMAKE_BINARY_DIR}")
-
 ## ###################################################################
 ## Build rules
 ## ###################################################################
@@ -89,6 +79,12 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core)
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 target_link_libraries(${PROJECT_NAME} dtkLog)
+
+## #################################################################
+## Target export
+## #################################################################
+
+export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_BINARY_DIR}/dtkCoreLayerTestDepends.cmake")
 
 ## #################################################################
 ## Target properties
@@ -138,12 +134,6 @@ install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT core-layer-test
          EXPORT dtkCoreLayerTestDepends)
-
-## #################################################################
-## Target export
-## #################################################################
-
-export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_BINARY_DIR}/dtkCoreLayerTestDepends.cmake")
 
 ######################################################################
 ### CMakeLists.txt ends here
