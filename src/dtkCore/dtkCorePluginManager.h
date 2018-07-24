@@ -72,11 +72,11 @@ public:
     void   load(const QString& path) override;
     void unload(const QString& path) override;
 
-    void loadFromName(const QString& plugin_name);
-    void setLayerVersion(const QString& layer_version);
+    void loadFromName(const QString& plugin_name) override;
+    void setLayerVersion(const QString& layer_version) override;
 
-    QStringList plugins(void) const;
-    QStringList availablePlugins(void) const;
+    QStringList plugins(void) const override;
+    QStringList availablePlugins(void) const override;
 
 protected:
     dtkCorePluginManagerPrivate<T> *d;

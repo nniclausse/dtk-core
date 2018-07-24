@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include <dtkCore>
+#include <dtkCoreConceptFooPlugin/dtkCoreConceptFooPluginExport>
 
 #include <dtkAbstractCoreConcept>
 
-class dtkCoreConceptFooPlugin : public dtkAbstractCoreConceptPlugin
+class DTKCORECONCEPTFOOPLUGIN_EXPORT dtkCoreConceptFooPlugin : public dtkAbstractCoreConceptPlugin
 {
     Q_OBJECT
     Q_INTERFACES(dtkAbstractCoreConceptPlugin)

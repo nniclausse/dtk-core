@@ -14,9 +14,11 @@
 
 #pragma once
 
+#include <dtkCoreConceptFooPlugin/dtkCoreConceptFooPluginExport>
+
 #include <dtkAbstractCoreConcept>
 
-class dtkCoreConceptFoo final : public dtkAbstractCoreConcept
+class DTKCORECONCEPTFOOPLUGIN_EXPORT dtkCoreConceptFoo final : public dtkAbstractCoreConcept
 {
 public:
      dtkCoreConceptFoo(void);

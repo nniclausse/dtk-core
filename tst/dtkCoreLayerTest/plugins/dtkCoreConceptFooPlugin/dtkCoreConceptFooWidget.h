@@ -14,9 +14,11 @@
 
 #pragma once
 
+#include <dtkCoreConceptFooPluginExport>
+
 #include <QtWidgets>
 
-class dtkCoreConceptFooWidget : public QWidget
+class DTKCORECONCEPTFOOPLUGIN_EXPORT dtkCoreConceptFooWidget : public QWidget
 {
 public:
      dtkCoreConceptFooWidget(QWidget* parent = 0);

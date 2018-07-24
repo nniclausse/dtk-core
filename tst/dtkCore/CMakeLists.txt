@@ -28,12 +28,14 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreIOCompressorTest.h
   dtkCoreMetaContainerSequentialTest.h
   dtkCoreMetaContainerSequentialTest.tpp
-  dtkCoreMetaTypeTest.h)
+  dtkCoreMetaTypeTest.h
+  dtkCorePluginFactoryTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   dtkCoreIOCompressorTest.cpp
   dtkCoreMetaContainerSequentialTest.cpp
-  dtkCoreMetaTypeTest.cpp)
+  dtkCoreMetaTypeTest.cpp
+  dtkCorePluginFactoryTest.cpp)
 
 ## ###################################################################
 ## Input - introspected
@@ -58,6 +60,9 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} dtkCore)
 
+target_link_libraries(${PROJECT_NAME} dtkCoreLayerTest)
+target_link_libraries(${PROJECT_NAME} dtkCoreConceptFooPlugin)
+
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)
 
@@ -65,9 +70,10 @@ target_link_libraries(${PROJECT_NAME} Qt5::Test)
 ## Test rules
 ## ###################################################################
 
+add_test(dtkCoreIOCompressorTest            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
 add_test(dtkCoreMetaTypeTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
 add_test(dtkCoreMetaContainerSequentialTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaContainerSequentialTest)
-add_test(dtkCoreIOCompressorTest            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
+add_test(dtkCorePluginFactoryTest           ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCorePluginFactoryTest)
 
 ######################################################################
 ### CMakeLists.txt ends here

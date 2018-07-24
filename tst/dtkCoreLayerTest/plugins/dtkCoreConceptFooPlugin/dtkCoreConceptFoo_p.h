@@ -14,9 +14,11 @@
 
 #pragma once
 
+#include <dtkCoreConceptFooPlugin/dtkCoreConceptFooPluginExport>
+
 #include <QtCore>
 
-class dtkCoreConceptFooData
+class DTKCORECONCEPTFOOPLUGIN_EXPORT dtkCoreConceptFooData
 {
 public:
      dtkCoreConceptFooData(void) = default;
