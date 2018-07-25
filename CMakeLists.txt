@@ -106,7 +106,7 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Test WebSockets)
+find_package(Qt5 REQUIRED COMPONENTS Core Test Widgets WebSockets)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -128,10 +128,12 @@ include_directories(${dtkLog_INCLUDE_DIRS})
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_BINARY_DIR}/src)
 include_directories(${CMAKE_BINARY_DIR}/src/dtkCore)
+include_directories(${CMAKE_BINARY_DIR}/src/dtkCoreRuntime)
 include_directories(${CMAKE_BINARY_DIR}/tst/dtkCoreLayerTest/src)
 include_directories(${CMAKE_BINARY_DIR}/tst/dtkCoreLayerTest/plugins)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/dtkCore)
+include_directories(${CMAKE_SOURCE_DIR}/src/dtkCoreRuntime)
 include_directories(${CMAKE_SOURCE_DIR}/tst/dtkCoreLayerTest/src)
 include_directories(${CMAKE_SOURCE_DIR}/tst/dtkCoreLayerTest/plugins)
 

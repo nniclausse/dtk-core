@@ -14,7 +14,8 @@
 
 set(dtkCore_INCLUDE_DIRS
   "@CMAKE_INSTALL_PREFIX@/include"
-  "@CMAKE_INSTALL_PREFIX@/include/dtkCore")
+  "@CMAKE_INSTALL_PREFIX@/include/dtkCore"
+  "@CMAKE_INSTALL_PREFIX@/include/dtkCoreRuntime")
 
 include("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake/dtkCore/dtkCoreDepends.cmake")
 
