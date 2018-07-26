@@ -1,0 +1,4 @@
+#include "dtkCoreLayerTestConfig.h"
+#include "dtkCoreLayerTest.h"
+#include "dtkCoreLayerTestSettings.h"
+#include "dtkAbstractCoreConcept.h"

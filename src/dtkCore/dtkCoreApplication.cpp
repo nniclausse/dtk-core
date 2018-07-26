@@ -234,5 +234,10 @@ void dtkCoreApplication::initialize(void)
     d->initialize();
 }
 
+dtkCoreApplication *dtkCoreApplication::create(int& argc, char *argv[])
+{
+    return new dtkCoreApplication(argc, argv);
+}
+
 //
 // dtkCoreApplication.cpp ends here

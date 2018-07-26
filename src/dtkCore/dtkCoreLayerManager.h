@@ -18,6 +18,10 @@
 
 #include <QtCore>
 
+class dtkCorePluginManagerBase;
+class dtkCorePluginFactoryBase;
+class dtkCoreObjectManager;
+
 // /////////////////////////////////////////////////////////////////
 // dtkCoreLayerManager interface
 // /////////////////////////////////////////////////////////////////
@@ -25,8 +29,8 @@
 class DTKCORE_EXPORT dtkCoreLayerManager
 {
 public:
-    using PluginManagers  = QHash<QString, class dtkCorePluginManagerBase *>;
-    using PluginFactories = QHash<QString, class dtkCorePluginFactoryBase *>;
+    using PluginManagers  = QHash<QString, dtkCorePluginManagerBase *>;
+    using PluginFactories = QHash<QString, dtkCorePluginFactoryBase *>;
 
      dtkCoreLayerManager(void);
     ~dtkCoreLayerManager(void);
@@ -45,7 +49,7 @@ public:
     void setAutoLoading(bool value);
     bool autoLoading(void) const;
 
-    void setObjectManager(class dtkCoreObjectManager *manager);
+    void setObjectManager(dtkCoreObjectManager *manager);
     dtkCoreObjectManager *objectManager(void) const;
 
     PluginManagers pluginManagers(void) const;

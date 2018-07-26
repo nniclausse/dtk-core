@@ -18,6 +18,8 @@
 
 #include <QtCore>
 
+class dtkCoreObjectManager;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCorePluginFactoryPrivate declaration
 // ///////////////////////////////////////////////////////////////////
@@ -37,8 +39,8 @@ public:
     void touch(const QVariant&) const;
 
 public:
-    void    connect(class dtkCoreObjectManager *) const;
-    void disconnect(      dtkCoreObjectManager *) const;
+    void    connect(dtkCoreObjectManager *) const;
+    void disconnect(dtkCoreObjectManager *) const;
 };
 
 //
