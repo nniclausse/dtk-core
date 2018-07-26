@@ -43,11 +43,9 @@ signals:
 protected:
     static dtkCorePluginWidgetManager *s_instance;
 
-private:
      dtkCorePluginWidgetManager(void);
     ~dtkCorePluginWidgetManager(void);
 
-protected:
     class dtkCorePluginWidgetManagerPrivate *d;
 };
 
