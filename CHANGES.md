@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.2.2 - 2018-09-19
+
+- fix install rule of `dtkCoreRuntime`.
+
 ## version 2.2.1 - 2018-09-19
 
 - add `unload` method in `dtkCorePluginManager`.
