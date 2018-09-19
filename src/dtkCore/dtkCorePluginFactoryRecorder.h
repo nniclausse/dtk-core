@@ -17,6 +17,8 @@
 #include <dtkCoreExport>
 
 class QString;
+class dtkCoreLayerManager;
+class dtkCorePluginFactoryBase;
 
 // /////////////////////////////////////////////////////////////////
 // dtkCorePluginFactoryRecorder interface
@@ -25,7 +27,7 @@ class QString;
 class DTKCORE_EXPORT dtkCorePluginFactoryRecorder
 {
 public:
-    explicit dtkCorePluginFactoryRecorder(class dtkCoreLayerManager *, class dtkCorePluginFactoryBase *, const QString&);
+    explicit dtkCorePluginFactoryRecorder(dtkCoreLayerManager *, dtkCorePluginFactoryBase *, const QString&);
             ~dtkCorePluginFactoryRecorder(void) = default;
 };
 

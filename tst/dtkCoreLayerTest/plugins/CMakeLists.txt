@@ -12,15 +12,7 @@
 ##
 ### Code:
 
-set(dtkCore_INCLUDE_DIRS
-  "@CMAKE_CURRENT_SOURCE_DIR@/src"
-  "@CMAKE_CURRENT_SOURCE_DIR@/src/dtkCore"
-  "@CMAKE_CURRENT_SOURCE_DIR@/src/dtkCoreRuntime"
-  "@CMAKE_CURRENT_BINARY_DIR@"
-  "@CMAKE_CURRENT_BINARY_DIR@/src"
-  "@CMAKE_CURRENT_BINARY_DIR@/src/dtkCore")
-
-include("@CMAKE_BINARY_DIR@/dtkCoreDepends.cmake")
+add_subdirectory(dtkCoreConceptFooPlugin)
 
 ######################################################################
-### dtkCoreConfig.cmake.in ends here
+### CMakeLists.txt ends here

@@ -19,17 +19,17 @@
 class DTKCORE_EXPORT dtkCoreApplicationPrivate
 {
 public:
+    class QSettings *settings        = nullptr;
+    class QCommandLineParser *parser = nullptr;
+    class QCoreApplication *app      = nullptr;
+
+public:
              dtkCoreApplicationPrivate(void);
     virtual ~dtkCoreApplicationPrivate(void);
 
     virtual void initialize(void);
 
-    void setApplication(class QCoreApplication *app);
-
-public:
-    class QSettings *settings        = nullptr;
-    class QCommandLineParser *parser = nullptr;
-          QCoreApplication *app      = nullptr;
+    void setApplication(QCoreApplication *app);
 };
 
 //

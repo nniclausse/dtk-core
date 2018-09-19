@@ -13,6 +13,7 @@
 ### Code:
 
 add_subdirectory(dtkCore)
+add_subdirectory(dtkCoreRuntime)
 
 ## #################################################################
 ## Target definition
@@ -21,6 +22,7 @@ add_subdirectory(dtkCore)
 set(DTKCORE_TARGETS)
 
 set(DTKCORE_TARGETS ${DTKCORE_TARGETS} dtkCore)
+set(DTKCORE_TARGETS ${DTKCORE_TARGETS} dtkCoreRuntime)
 
 ## #################################################################
 ## Target export

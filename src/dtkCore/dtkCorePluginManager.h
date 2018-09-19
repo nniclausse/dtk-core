@@ -27,7 +27,6 @@ class DTKCORE_EXPORT dtkCorePluginManagerBase
 public:
     virtual ~dtkCorePluginManagerBase(void) = default;
 
-public:
     virtual void   initialize(const QString& path) = 0;
     virtual void uninitialize(void) = 0;
 
@@ -39,6 +38,12 @@ public:
 
     virtual void   load(const QString& path) = 0;
     virtual void unload(const QString& path) = 0;
+
+    virtual void loadFromName(const QString& plugin_name) = 0;
+    virtual void setLayerVersion(const QString& layer_version) = 0;
+
+    virtual QStringList plugins(void) const = 0;
+    virtual QStringList availablePlugins(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -55,7 +60,6 @@ public:
      dtkCorePluginManager(void);
     ~dtkCorePluginManager(void);
 
-public:
     void   initialize(const QString& path) override;
     void uninitialize(void) override;
 
@@ -68,12 +72,11 @@ public:
     void   load(const QString& path) override;
     void unload(const QString& path) override;
 
-public:
-    void loadFromName(const QString& plugin_name);
-    void setLayerVersion(const QString& layer_version);
+    void loadFromName(const QString& plugin_name) override;
+    void setLayerVersion(const QString& layer_version) override;
 
-    QStringList plugins(void) const ;
-    QStringList availablePlugins(void) const;
+    QStringList plugins(void) const override;
+    QStringList availablePlugins(void) const override;
 
 protected:
     dtkCorePluginManagerPrivate<T> *d;

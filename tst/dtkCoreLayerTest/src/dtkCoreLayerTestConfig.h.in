@@ -1,0 +1,26 @@
+// Version: $Id$
+//
+//
+
+// Commentary:
+//
+//
+
+// Change Log:
+//
+//
+
+// Code:
+
+#pragma once
+
+#define dtkCoreLayerTest_VERSION_MAJOR @dtkCoreLayerTest_VERSION_MAJOR@
+#define dtkCoreLayerTest_VERSION_MINOR @dtkCoreLayerTest_VERSION_MINOR@
+#define dtkCoreLayerTest_VERSION_PATCH @dtkCoreLayerTest_VERSION_PATCH@
+
+#include <QString>
+
+static const QString DTKCORELAYERTEST_INSTALL_PREFIX = "@CMAKE_INSTALL_PREFIX@";
+
+//
+// dtkCoreLayerTestConfig.h.in ends here

@@ -45,7 +45,7 @@ public:
 protected:
     static dtkCoreObjectManager *s_instance;
 
-private:
+protected:
      dtkCoreObjectManager(void);
     ~dtkCoreObjectManager(void);
 

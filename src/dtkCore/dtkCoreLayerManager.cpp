@@ -124,5 +124,15 @@ dtkCoreObjectManager *dtkCoreLayerManager::objectManager(void) const
     return d->object_manager;
 }
 
+auto dtkCoreLayerManager::pluginManagers(void) const -> PluginManagers
+{
+    return d->plugin_managers;
+}
+
+auto dtkCoreLayerManager::pluginFactories(void) const -> PluginFactories
+{
+    return d->plugin_factories;
+}
+
 //
 // dtkCoreLayerManager.cpp ends here

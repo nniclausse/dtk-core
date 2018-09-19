@@ -1,0 +1,6 @@
+{
+    "name" : "dtkCoreConceptFooPlugin",
+    "concept" : "dtkAbstractCoreConcept",
+    "version" : "0.0.0",
+    "dependencies" : []
+}

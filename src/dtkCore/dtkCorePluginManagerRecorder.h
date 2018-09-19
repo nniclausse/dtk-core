@@ -17,6 +17,8 @@
 #include <dtkCoreExport>
 
 class QString;
+class dtkCoreLayerManager;
+class dtkCorePluginManagerBase;
 
 // /////////////////////////////////////////////////////////////////
 // dtkCorePluginManagerRecorder interface
@@ -25,7 +27,7 @@ class QString;
 class DTKCORE_EXPORT dtkCorePluginManagerRecorder
 {
 public:
-    explicit dtkCorePluginManagerRecorder(class dtkCoreLayerManager *, class dtkCorePluginManagerBase *, const QString&);
+    explicit dtkCorePluginManagerRecorder(dtkCoreLayerManager *, dtkCorePluginManagerBase *, const QString&);
             ~dtkCorePluginManagerRecorder(void) = default;
 };
 

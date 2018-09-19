@@ -20,6 +20,9 @@
 
 #include <functional>
 
+class dtkCoreObjectManager;
+class QWidget;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCorePluginFactoryBase interface
 // ///////////////////////////////////////////////////////////////////
@@ -29,8 +32,8 @@ class DTKCORE_EXPORT dtkCorePluginFactoryBase
 public:
     virtual ~dtkCorePluginFactoryBase(void) = default;
 
-    virtual void    connect(class dtkCoreObjectManager *) const = 0;
-    virtual void disconnect(      dtkCoreObjectManager *) const = 0;
+    virtual void    connect(dtkCoreObjectManager *) const = 0;
+    virtual void disconnect(dtkCoreObjectManager *) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -45,7 +48,7 @@ public:
 
 public:
     typedef T *(*creator) ();
-    typedef std::function<class QWidget *()> widget_creator;
+    typedef std::function<QWidget *()> widget_creator;
 
 public:
     void record(const QString& key, creator func);
