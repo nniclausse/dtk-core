@@ -19,6 +19,7 @@ project(dtkCoreRuntime VERSION ${dtkCore_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  dtkCoreRuntime
   dtkCoreRuntimeApplication
   dtkCoreRuntimeApplication.h)
 
@@ -60,14 +61,6 @@ set(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_HEADERS}
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export"
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
-
-## ###################################################################
-## Config file
-## ###################################################################
-
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
 
 ## ###################################################################
 ## Install rules - files
