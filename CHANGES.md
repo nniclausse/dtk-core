@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.2.1 - 2018-09-19
+
+- add `unload` method in `dtkCorePluginManager`.
+
 ## version 2.2.0 - 2018-07-20
 
 - Retrieves `dtkCorePluginWidgetManager`. It is necessary for `dtk-composer`.
