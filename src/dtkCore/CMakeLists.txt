@@ -39,6 +39,9 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreMetaType.tpp
   dtkCoreObjectManager
   dtkCoreObjectManager.h
+  dtkCoreParameter
+  dtkCoreParameter.h
+  dtkCoreParameter.tpp
   dtkCorePlugin
   dtkCorePlugin.h
   dtkCorePluginBase
@@ -70,6 +73,7 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreMetaType.cpp
   dtkCoreObjectManager.cpp
   dtkCoreMetaContainerSequential.cpp
+  dtkCoreParameter.cpp
   dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
