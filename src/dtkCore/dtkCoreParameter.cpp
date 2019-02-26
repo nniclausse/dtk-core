@@ -44,5 +44,10 @@ QString dtkCoreAbstractParameter::documentation(void) const
     return this->m_doc;
 }
 
+void dtkCoreAbstractParameter::emitValueChanged(void)
+{
+    emit this->valueChanged(this->variant());
+}
+
 //
 // dtkCoreParameter.cpp ends here

@@ -66,13 +66,16 @@ void dtkCoreParameterTestCase::testValue(void)
         dtk::d_int pi;
         dtk::d_uint pu;
 
+        int signal_count = 0;
+
         // check the signal capture for the next setValue( sqrt(2) ) ;
         QMetaObject::Connection save_connect =
             connect(&pr,
                     &dtk::d_real::valueChanged,
-                    [=] (QVariant v) {
+                    [=, &signal_count] (QVariant v) {
                         //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
                         QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                        signal_count++;
                     }
                     );
 
@@ -82,6 +85,10 @@ void dtkCoreParameterTestCase::testValue(void)
 
         pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
         QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
+        QCOMPARE(signal_count, 1);  // check that signal has been sent
+
+        pr.emitValueChanged();  // resend the signal manually
+        QCOMPARE(signal_count, 2);  // check that signal has really been sent
 
         pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
         pr.setValue(0);            // this one is not catched by the previous signal anymore

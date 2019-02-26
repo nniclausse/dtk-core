@@ -44,8 +44,11 @@ public:
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
 
+    void emitValueChanged(void);
+
 signals:
     void valueChanged(QVariant);
+    void invalidValue();
 
 protected:
     QString m_doc;
