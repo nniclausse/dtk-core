@@ -111,14 +111,8 @@ public:
     T value(void) const;
     QVariant variant(void) const override;
 
-    void setMinimum(const T&);
-    void setMaximum(const T&);
-
     T min(void) const;
     T max(void) const;
-
-    void setBounds(const T&, const T&);
-    void setBounds(const std::array<T, 2>&);
 
     const std::array<T, 2>& bounds(void) const;
 

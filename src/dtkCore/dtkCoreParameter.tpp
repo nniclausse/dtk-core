@@ -373,18 +373,6 @@ inline QVariant dtkCoreParameter<T, Enable>::variant(void) const
 }
 
 template <typename T, typename Enable>
-inline void dtkCoreParameter<T, Enable>::setMinimum(const T& t)
-{
-    this->m_bounds[0] = t;
-}
-
-template <typename T, typename Enable>
-inline void dtkCoreParameter<T, Enable>::setMaximum(const T& t)
-{
-    this->m_bounds[1] = t;
-}
-
-template <typename T, typename Enable>
 inline T dtkCoreParameter<T, Enable>::min(void) const
 {
     return this->m_bounds[0];
@@ -394,19 +382,6 @@ template <typename T, typename Enable>
 inline T dtkCoreParameter<T, Enable>::max(void) const
 {
     return this->m_bounds[1];
-}
-
-template <typename T, typename Enable>
-inline void dtkCoreParameter<T, Enable>::setBounds(const T& min, const T& max)
-{
-    this->m_bounds[0] = min;
-    this->m_bounds[1] = max;
-}
-
-template <typename T, typename Enable>
-inline void dtkCoreParameter<T, Enable>::setBounds(const std::array<T, 2>& r)
-{
-    this->m_bounds = r;
 }
 
 template <typename T, typename Enable>
@@ -448,10 +423,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, Enable>& p)
     int dec; s >> dec;
     QString doc; s >> doc;
 
-    p.setValue(val);
-    p.setBounds(min, max);
-    p.setDecimals(dec);
-    p.setDocumentation(doc);
+    p = dtkCoreParameter<T, Enable>(val, min, max, dec, doc);
 
     return s;
 }
@@ -465,9 +437,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, Enable>& p)
     int dec; s >> dec;
     QString doc; s >> doc;
 
-    p.setValue(val);
-    p.setBounds(min, max);
-    p.setDocumentation(doc);
+    p = dtkCoreParameter<T, Enable>(val, min, max, doc);
 
     return s;
 }

@@ -112,20 +112,20 @@ void dtkCoreParameterTestCase::testBounds(void)
         auto&& bounds = r.bounds();
         QCOMPARE(bounds[0], -std::sqrt(2)/2);
         QCOMPARE(bounds[1], std::sqrt(2)/2);
+    }
+    {
+        // do stupid things with values and bounds
+        dtk::d_real r(0.25, -1.0, 1.0);
 
-        r.setMinimum(r.min() * 2);
-        r.setMaximum(r.max() * 2);
+        // do stupid things with the value
+        r = 0.25;
+        QCOMPARE( r.value(), 0.25 ); // back to normal
 
-        QCOMPARE(r.min(), -std::sqrt(2));
-        QCOMPARE(r.max(), std::sqrt(2));
+        //r = -3.0;    // r is outside the boundaries
+        //QCOMPARE( r.value(), r.min()); // in this case, we stick to the min()
 
-        r.setBounds(-std::sqrt(2)/2, std::sqrt(2)/2);
-        QCOMPARE(bounds[0], -std::sqrt(2)/2);
-        QCOMPARE(bounds[1], std::sqrt(2)/2);
-
-        r.setBounds(r.min() * 2, r.max() * 2);
-        QCOMPARE(r.min(), -std::sqrt(2));
-        QCOMPARE(r.max(), std::sqrt(2));
+        //r =  3.0;    // r is outside the boundaries
+        //QCOMPARE( r.value(), r.max()); // in this case, we stick to the max()
     }
 }
 
