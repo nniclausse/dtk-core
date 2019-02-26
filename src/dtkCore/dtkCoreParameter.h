@@ -45,7 +45,7 @@ public:
     virtual QVariant variant(void) const = 0;
 
 signals:
-    void valueChanged(void);
+    void valueChanged(QVariant);
 
 protected:
     QString m_doc;

@@ -27,7 +27,10 @@ public:
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
-
+    qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
+    qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
+    QMetaType::registerDebugStreamOperator<dtk::d_real>();
+    QMetaType::registerDebugStreamOperator<dtk::d_int>();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -63,12 +66,25 @@ void dtkCoreParameterTestCase::testValue(void)
         dtk::d_int pi;
         dtk::d_uint pu;
 
+        // check the signal capture for the next setValue( sqrt(2) ) ;
+        QMetaObject::Connection save_connect =
+            connect(&pr,
+                    &dtk::d_real::valueChanged,
+                    [=] (QVariant v) {
+                        //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
+                        QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                    }
+                    );
+
         QCOMPARE((double)pr, 0.);
         QCOMPARE((qlonglong)pi, (qlonglong)0);
         QCOMPARE((qulonglong)pu, (qulonglong)0);
 
-        pr.setValue(std::sqrt(2));
-        QCOMPARE(pr.value(), std::sqrt(2));
+        pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
+        QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
+
+        pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
+        pr.setValue(0);            // this one is not catched by the previous signal anymore
 
         pi = -7;
         QCOMPARE(pi.value(), (qlonglong)(-7));
@@ -335,8 +351,6 @@ void dtkCoreParameterTestCase::testDataStream(void)
     data.clear();
     QVariant vro = pro.variant();
     QVariant vio = pio.variant();
-    qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
-    qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
     {
         QDataStream out(&data, QIODevice::WriteOnly);
         out << vro;
