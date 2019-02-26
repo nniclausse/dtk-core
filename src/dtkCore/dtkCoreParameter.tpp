@@ -54,7 +54,7 @@ inline auto dtkCoreParameter<T, Enable>::operator = (const U& t) -> std::enable_
 {
     if (t != m_val) {
         m_val = t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
     return *this;
 }
@@ -64,13 +64,13 @@ inline auto dtkCoreParameter<T, Enable>::operator = (const QVariant& v) -> dtkCo
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
          *this = v.value<dtkCoreParameter<T>>();
-         emit valueChanged(this->variant());
+         //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         if (t != m_val) {
             m_val = t;
-            emit valueChanged(this->variant());
+            //emit valueChanged(this->variant());
         }
     }
     return *this;
@@ -83,7 +83,7 @@ inline auto dtkCoreParameter<T, Enable>::operator = (const dtkCoreParameter& o) 
         m_val = o.m_val;
         m_bounds = o.m_bounds;
         m_decimals = o.m_decimals;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
 
     return *this;
@@ -95,7 +95,7 @@ inline auto dtkCoreParameter<T, Enable>::operator = (const dtkCoreParameter<U>& 
     T t = o;
     if (t != m_val) {
         m_val = t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
 
     return *this;
@@ -105,7 +105,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator += (const U& t) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val += t;
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -116,12 +116,12 @@ inline auto dtkCoreParameter<T, Enable>::operator += (const QVariant& v) -> dtkC
     if (v.canConvert<dtkCoreParameter<T>>()) {
         T t = v.value<dtkCoreParameter<T>>();
         m_val += t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         m_val += t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
     return *this;
 }
@@ -130,7 +130,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator += (const dtkCoreParameter<U>& o) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val += (T)(o);
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -139,7 +139,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator -= (const U& t) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val -= t;
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -150,12 +150,12 @@ inline auto dtkCoreParameter<T, Enable>::operator -= (const QVariant& v) -> dtkC
     if (v.canConvert<dtkCoreParameter<T>>()) {
         T t = v.value<dtkCoreParameter<T>>();
         m_val -= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         m_val -= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
     return *this;
 }
@@ -164,7 +164,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator -= (const dtkCoreParameter<U>& o) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val -= (T)(o);
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -173,7 +173,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator *= (const U& t) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val *= t;
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -184,12 +184,12 @@ inline auto dtkCoreParameter<T, Enable>::operator *= (const QVariant& v) -> dtkC
     if (v.canConvert<dtkCoreParameter<T>>()) {
         T t = v.value<dtkCoreParameter<T>>();
         m_val *= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         m_val *= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
     return *this;
 }
@@ -198,7 +198,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator *= (const dtkCoreParameter<U>& o) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val *= (T)(o);
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -207,7 +207,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator /= (const U& t) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val /= t;
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -218,12 +218,12 @@ inline auto dtkCoreParameter<T, Enable>::operator /= (const QVariant& v) -> dtkC
     if (v.canConvert<dtkCoreParameter<T>>()) {
         T t = v.value<dtkCoreParameter<T>>();
         m_val /= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         m_val /= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
     return *this;
 }
@@ -232,7 +232,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator /= (const dtkCoreParameter<U>& o) -> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&>
 {
     m_val /= (T)(o);
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -241,7 +241,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator %= (const U& t) -> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameter&>
 {
     m_val %= t;
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
@@ -252,12 +252,12 @@ inline auto dtkCoreParameter<T, Enable>::operator %= (const QVariant& v) -> std:
     if (v.canConvert<dtkCoreParameter<T>>()) {
         T t = v.value<dtkCoreParameter<T>>();
         m_val %= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
         m_val %= t;
-        emit valueChanged(this->variant());
+        //emit valueChanged(this->variant());
     }
 
     return *this;
@@ -267,7 +267,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator %= (const dtkCoreParameter<U>& o) -> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameter&>
 {
     m_val %= (T)(o);
-    emit valueChanged(this->variant());
+    //emit valueChanged(this->variant());
 
     return *this;
 }
