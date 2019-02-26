@@ -362,6 +362,100 @@ void dtkCoreParameterTestCase::testDataStream(void)
     QCOMPARE(pio.decimals(), pii.decimals());
 }
 
+void dtkCoreParameterTestCase::testBoolean(void)
+{
+    // one boolean
+    dtk::d_bool b1;  // b1 <= false
+    QCOMPARE( b1 == false, true);
+
+    b1 = not(b1); // b1 <= true
+    QCOMPARE( b1 == true, true);
+
+    b1 = not(b1); // b1 <= false
+    QCOMPARE( b1 == false, true);
+
+    // one *bool
+    dtk::d_bool *pb;
+
+    pb = new dtk::d_bool();
+    QCOMPARE( *pb == false, true);
+    delete(pb);
+
+    pb = new dtk::d_bool(true);
+    QCOMPARE( *pb == true, true);
+    delete(pb);
+
+    QString doc("Stupid declaration");
+    pb = new dtk::d_bool(true, true, true, doc);
+    QCOMPARE( *pb == true, true);
+    QCOMPARE( pb->documentation(), doc);
+    delete(pb);
+
+    // two booleans
+    dtk::d_bool b2(true); // b2 <= true
+    QCOMPARE( b2 == true, true);
+    QCOMPARE( b1 == b2, false);
+
+    b1 = not(b1); // b1 <= true
+    QCOMPARE( b1 == b2, true);
+
+    // third variable
+    dtk::d_bool b3;
+
+    // OR
+    b1 = true;
+    b2 = true;
+    b3 = b1 + b2 ; // true OR true
+    QCOMPARE( b1 == true, true);
+    QCOMPARE( b2 == true, true);
+    QCOMPARE( b3 == true, true);
+
+    b1 = true;
+    b2 = false;
+    b3 = b1 + b2 ; // true OR false
+    QCOMPARE( b1 == true, true);
+    QCOMPARE( b2 == false, true);
+    QCOMPARE( b3 == true, true);
+
+    b1 = false;
+    b2 = false;
+    b3 = b1 + b2 ; // false OR false
+    QCOMPARE( b1 == false, true);
+    QCOMPARE( b2 == false, true);
+    QCOMPARE( b3 == false, true);
+
+    // AND
+    b1 = true;
+    b2 = true;
+    b3 = b1 * b2 ; // true AND true
+    QCOMPARE( b2 == true, true);
+    QCOMPARE( b3 == true, true);
+    QCOMPARE( b1 == true, true);
+
+    b1 = true;
+    b2 = false;
+    b3 = b1 * b2 ; // true AND false
+    QCOMPARE( b1 == true, true);
+    QCOMPARE( b2 == false, true);
+    QCOMPARE( b3 == false, true);
+
+    b1 = false;
+    b2 = false;
+    b3 = b1 * b2 ; // false AND false
+    QCOMPARE( b1 == false, true);
+    QCOMPARE( b2 == false, true);
+    QCOMPARE( b3 == false, true);
+
+    // NOT
+    b1 = true;
+    b2 = !b1;
+    QCOMPARE( b1 == b2, false);
+
+    b1 = false;
+    b2 = !b1;
+    QCOMPARE( b1 == b2, false);
+}
+
 void dtkCoreParameterTestCase::cleanupTestCase(void)
 {
 

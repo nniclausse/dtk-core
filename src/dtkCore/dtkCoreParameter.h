@@ -150,6 +150,7 @@ namespace dtk {
     using d_uint = dtkCoreParameter<qulonglong>;
     using d_int = dtkCoreParameter<qlonglong>;
     using d_real = dtkCoreParameter<double>;
+    using d_bool = dtkCoreParameter<bool>;
 }
 
 Q_DECLARE_METATYPE(dtk::d_uchar);
@@ -157,12 +158,14 @@ Q_DECLARE_METATYPE(dtk::d_char);
 Q_DECLARE_METATYPE(dtk::d_uint);
 Q_DECLARE_METATYPE(dtk::d_int);
 Q_DECLARE_METATYPE(dtk::d_real);
+Q_DECLARE_METATYPE(dtk::d_bool);
 
 Q_DECLARE_METATYPE(dtk::d_uchar*);
 Q_DECLARE_METATYPE(dtk::d_char*);
 Q_DECLARE_METATYPE(dtk::d_uint*);
 Q_DECLARE_METATYPE(dtk::d_int*);
 Q_DECLARE_METATYPE(dtk::d_real*);
+Q_DECLARE_METATYPE(dtk::d_bool*);
 
 // ///////////////////////////////////////////////////////////////////
 
