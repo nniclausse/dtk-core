@@ -334,6 +334,11 @@ inline dtkCoreParameter<T, Enable>::operator T() const
 template <typename T, typename Enable>
 inline void dtkCoreParameter<T, Enable>::setValue(const T& t)
 {
+    if ( ( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
+        dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        emit invalidValue();
+        return;
+    }
     if (t != m_val) {
         m_val = t;
         emit valueChanged(this->variant());
@@ -344,11 +349,19 @@ template <typename T, typename Enable>
 inline void dtkCoreParameter<T, Enable>::setValue(const QVariant& v)
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
+        // cannot reach this line ?????
         *this = v.value<dtkCoreParameter<T>>();
         emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
+
+        if ( ( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
+            dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+            emit invalidValue();
+            return;
+        }
+
         if (t != m_val) {
             m_val = t;
             emit valueChanged(this->variant());

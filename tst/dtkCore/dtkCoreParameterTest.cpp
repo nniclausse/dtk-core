@@ -66,32 +66,15 @@ void dtkCoreParameterTestCase::testValue(void)
         dtk::d_int pi;
         dtk::d_uint pu;
 
-        int signal_count = 0;
-
-        // check the signal capture for the next setValue( sqrt(2) ) ;
-        QMetaObject::Connection save_connect =
-            connect(&pr,
-                    &dtk::d_real::valueChanged,
-                    [=, &signal_count] (QVariant v) {
-                        //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
-                        QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
-                        signal_count++;
-                    }
-                    );
-
         QCOMPARE((double)pr, 0.);
         QCOMPARE((qlonglong)pi, (qlonglong)0);
         QCOMPARE((qulonglong)pu, (qulonglong)0);
 
-        pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
-        QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
-        QCOMPARE(signal_count, 1);  // check that signal has been sent
+        pr.setValue(std::sqrt(2));
+        QCOMPARE(pr.value(), std::sqrt(2));
 
-        pr.emitValueChanged();  // resend the signal manually
-        QCOMPARE(signal_count, 2);  // check that signal has really been sent
-
-        pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
-        pr.setValue(0);            // this one is not catched by the previous signal anymore
+        pr.setValue(0.0);
+        QCOMPARE(double(pr), 0.0);
 
         pi = -7;
         QCOMPARE(pi.value(), (qlonglong)(-7));
@@ -127,7 +110,7 @@ void dtkCoreParameterTestCase::testBounds(void)
     {
         dtk::d_real r;
         auto&& bounds = r.bounds();
-        QCOMPARE(bounds[0], std::numeric_limits<double>::min());
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
         QCOMPARE(bounds[1], std::numeric_limits<double>::max());
     }
     {
@@ -475,6 +458,70 @@ void dtkCoreParameterTestCase::testBoolean(void)
     b1 = false;
     b2 = !b1;
     QCOMPARE( b1 == b2, false);
+}
+
+void dtkCoreParameterTestCase::testSignals(void)
+{
+    dtk::d_real pr(0.0, -10.0, 10.0);
+    dtk::d_real default_value(0.0, -10.0, 10.0);
+    dtk::d_real bad_value(12345.6789);
+    QVariant    variant_good = QVariant(3.14);
+    QVariant    variant_bad  = QVariant(31415.957);
+
+    int signal_count = 0;
+    int error_count = 0;
+
+    // check the signal capture for the next setValue( sqrt(2) ) ;
+    connect(&pr,
+            &dtk::d_real::valueChanged,
+            [=, &signal_count] (QVariant v) {
+                //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
+                QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                signal_count++;
+            }
+            );
+
+    // catch invalid values setting
+    connect(&pr,
+            &dtk::d_real::invalidValue,
+            [=, &error_count] () {
+                error_count++;
+            }
+            );
+
+    pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
+    QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
+    QCOMPARE(signal_count, 1);  // check that signal has been sent
+
+    pr.emitValueChanged();  // resend the signal manually
+    QCOMPARE(signal_count, 2);  // check that signal has really been sent
+
+    pr.setValue(12345.6789);  // requested value out of range -> should emit a invalidValue signal
+    QCOMPARE(pr.value(), std::sqrt(2)); // value unchanged
+    QCOMPARE(error_count, 1);   // error count incremented
+    QCOMPARE(signal_count, 2);  // valid_signal not catched
+
+    pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
+
+    pr.setValue(1.0);            // this one is not catched by the previous signal anymore
+    QCOMPARE(pr.value(), 1.0); // value has been changed
+    QCOMPARE(error_count, 1);   // error count not changed
+
+    pr.setValue(default_value);
+    QCOMPARE(pr.value(), 0.0); // value has been changed
+    QCOMPARE(error_count, 1);   // error count not changed
+
+    pr.setValue(bad_value);
+    QCOMPARE(pr.value(), 0.0); // value has not been changed
+    QCOMPARE(error_count, 2);   // error count incremented
+
+    pr.setValue(variant_good);
+    QCOMPARE(pr.value(), variant_good.toDouble());  // value has been changed
+    QCOMPARE(error_count, 2);   // error count unchanged
+
+    pr.setValue(variant_bad);
+    QCOMPARE(pr.value(), variant_good.toDouble());  // value has not been changed
+    QCOMPARE(error_count, 3);   // error count incremented
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

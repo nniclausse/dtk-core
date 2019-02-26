@@ -125,7 +125,7 @@ public:
 
 protected:
     T m_val = T(0);
-    std::array<T, 2> m_bounds = {std::numeric_limits<T>::min(), std::numeric_limits<T>::max()};
+    std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
 };
 
