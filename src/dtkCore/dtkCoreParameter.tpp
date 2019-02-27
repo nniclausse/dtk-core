@@ -23,7 +23,8 @@ template <typename T, typename Enable>
 inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QVariant& v) : dtkCoreAbstractParameter()
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
-         *this = v.value<dtkCoreParameter<T>>();
+        *this = v.value<dtkCoreParameter<T>>();
+
     } else if (v.canConvert<T>()) {
         m_val = v.value<T>();
     }
@@ -60,7 +61,7 @@ template <typename T, typename Enable>
 inline auto dtkCoreParameter<T, Enable>::operator = (const QVariant& v) -> dtkCoreParameter&
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
-         *this = v.value<dtkCoreParameter<T>>();
+        *this = v.value<dtkCoreParameter<T>>();
 
     } else if (v.canConvert<T>()) {
         m_val = v.value<T>();
