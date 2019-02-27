@@ -64,7 +64,9 @@ template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::
 class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreAbstractParameter
 {
 public:
-    dtkCoreParameter(void) = default;
+     dtkCoreParameter(void) = default;
+    ~dtkCoreParameter(void) = default;
+
     dtkCoreParameter(const T&);
     dtkCoreParameter(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
     dtkCoreParameter(const dtkCoreParameter&);
@@ -140,26 +142,33 @@ template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::
 DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, Enable>);
 
 // ///////////////////////////////////////////////////////////////////
-// strings
-//
+// dtkCoreParameterString
+// ///////////////////////////////////////////////////////////////////
 
 class DTKCORE_EXPORT dtkCoreParameterString : public dtkCoreAbstractParameter
 {
- public:
-    dtkCoreParameterString(void);
-    dtkCoreParameterString(QString v, QString doc=QString()) ;
-    ~dtkCoreParameterString(void);
+public:
+     dtkCoreParameterString(void) = default;
+    ~dtkCoreParameterString(void) = default;
 
- public:
-    QString value(void);
+    dtkCoreParameterString(const QString&);
+    dtkCoreParameterString(const QVariant&);
+    dtkCoreParameterString(const QString&, const QString&);
+    dtkCoreParameterString(const dtkCoreParameterString&);
 
- public:
-    void setValue(const QVariant&) override ;
-    void setValue(QString v);
+    dtkCoreParameterString& operator = (const QString&);
+    dtkCoreParameterString& operator = (const QVariant&);
+    dtkCoreParameterString& operator = (const dtkCoreParameterString&);
 
-    QVariant variant(void) const override ;
+    operator QString() const;
 
- private:
+    void setValue(const QString&);
+    void setValue(const QVariant&) override;
+
+    QString value(void) const;
+    QVariant variant(void) const override;
+
+private:
     QString m_value;
 };
 

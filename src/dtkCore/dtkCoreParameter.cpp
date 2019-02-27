@@ -49,43 +49,100 @@ void dtkCoreAbstractParameter::emitValueChanged(void)
     emit this->valueChanged(this->variant());
 }
 
-// strings
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameterString implementation
+// ///////////////////////////////////////////////////////////////////
 
-dtkCoreParameterString::dtkCoreParameterString(void)
+dtkCoreParameterString::dtkCoreParameterString(const QString& s) : dtkCoreAbstractParameter(), m_value(s)
 {
-    m_value = QString();
+
 }
 
-dtkCoreParameterString::dtkCoreParameterString(QString v, QString doc) : dtkCoreAbstractParameter(doc)
+dtkCoreParameterString::dtkCoreParameterString(const QVariant& v) : dtkCoreAbstractParameter()
 {
-    m_value = v;
+    if (v.canConvert<dtkCoreParameterString>()) {
+        *this = v.value<dtkCoreParameterString>();
+
+    } else {
+        m_value = v.toString();
+    }
 }
 
-dtkCoreParameterString::~dtkCoreParameterString(void)
+dtkCoreParameterString::dtkCoreParameterString(const QString& s, const QString& doc) : dtkCoreAbstractParameter(doc), m_value(s)
 {
+
 }
 
-QString dtkCoreParameterString::value(void)
+dtkCoreParameterString::dtkCoreParameterString(const dtkCoreParameterString& o) : dtkCoreAbstractParameter(o), m_value(o.m_value)
+{
+
+}
+
+dtkCoreParameterString& dtkCoreParameterString::operator = (const QString& s)
+{
+    m_value = s;
+    return *this;
+}
+
+dtkCoreParameterString& dtkCoreParameterString::operator = (const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterString>()) {
+        *this = v.value<dtkCoreParameterString>();
+
+    } else if (v.canConvert<QString>()) {
+        m_value = v.toString();
+    }
+    return *this;
+}
+
+dtkCoreParameterString& dtkCoreParameterString::operator = (const dtkCoreParameterString& o)
+{
+    if (this != &o) {
+        m_value = o.m_value;
+    }
+    return *this;
+}
+
+dtkCoreParameterString::operator QString() const
 {
     return m_value;
 }
 
-void dtkCoreParameterString::setValue(const QVariant &v)
+void dtkCoreParameterString::setValue(const QString& s)
 {
-    m_value = v.toString();
-}
-
-void dtkCoreParameterString::setValue(QString v)
-{
-    if ( m_value != v) {
-        m_value = v;
+    if (m_value != s) {
+        m_value = s;
         emit valueChanged(this->variant());
     }
 }
 
+void dtkCoreParameterString::setValue(const QVariant &v)
+{
+    if (v.canConvert<dtkCoreParameterString>()) {
+        *this = v.value<dtkCoreParameterString>();
+        emit valueChanged(this->variant());
+
+    } else if (v.canConvert<QString>()) {
+        m_value = v.toString();
+        emit valueChanged(this->variant());
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterString>())
+                  << ". Nothing is done.";
+        emit invalidValue();
+    }
+}
+
+QString dtkCoreParameterString::value(void) const
+{
+    return m_value;
+}
+
 QVariant dtkCoreParameterString::variant(void) const
 {
-    return QVariant(m_value);
+    return dtk::variantFromValue(*this);
 }
 
 //
