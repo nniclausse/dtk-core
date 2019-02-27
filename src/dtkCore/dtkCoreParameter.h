@@ -33,9 +33,7 @@ class DTKCORE_EXPORT dtkCoreAbstractParameter : public QObject
 public:
      dtkCoreAbstractParameter(void) = default;
      dtkCoreAbstractParameter(const QString&);
-     dtkCoreAbstractParameter(const dtkCoreAbstractParameter&);
-     dtkCoreAbstractParameter(dtkCoreAbstractParameter&&);
-    ~dtkCoreAbstractParameter(void);
+    ~dtkCoreAbstractParameter(void) = default;
 
     void setDocumentation(const QString&);
 
@@ -153,8 +151,9 @@ public:
 
     dtkCoreParameterString(const QString&);
     dtkCoreParameterString(const QVariant&);
-    dtkCoreParameterString(const QString&, const QString&);
     dtkCoreParameterString(const dtkCoreParameterString&);
+
+    dtkCoreParameterString(const QString&, const QString&);
 
     dtkCoreParameterString& operator = (const QString&);
     dtkCoreParameterString& operator = (const QVariant&);

@@ -31,12 +31,12 @@ inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QVariant& v) : dtkCor
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_doc), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
 {
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(dtkCoreParameter&& o) : dtkCoreAbstractParameter(o), m_val(std::move(o.m_val)), m_bounds(std::move(o.m_bounds)), m_decimals(std::move(o.m_decimals))
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(dtkCoreParameter&& o) : dtkCoreAbstractParameter(o.m_doc), m_val(std::move(o.m_val)), m_bounds(std::move(o.m_bounds)), m_decimals(std::move(o.m_decimals))
 {
 }
 

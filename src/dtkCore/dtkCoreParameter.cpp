@@ -19,21 +19,6 @@ dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& doc) : m_doc(d
 
 }
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const dtkCoreAbstractParameter& o) : m_doc(o.m_doc)
-{
-
-}
-
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(dtkCoreAbstractParameter&& o) : m_doc(std::move(o.m_doc))
-{
-
-}
-
-dtkCoreAbstractParameter::~dtkCoreAbstractParameter(void)
-{
-
-}
-
 void dtkCoreAbstractParameter::setDocumentation(const QString& doc)
 {
     this->m_doc = doc;
@@ -73,7 +58,7 @@ dtkCoreParameterString::dtkCoreParameterString(const QString& s, const QString& 
 
 }
 
-dtkCoreParameterString::dtkCoreParameterString(const dtkCoreParameterString& o) : dtkCoreAbstractParameter(o), m_value(o.m_value)
+dtkCoreParameterString::dtkCoreParameterString(const dtkCoreParameterString& o) : dtkCoreAbstractParameter(o.m_doc), m_value(o.m_value)
 {
 
 }
