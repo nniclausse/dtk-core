@@ -303,7 +303,7 @@ template <typename T, typename Enable> template <typename U>
 inline auto dtkCoreParameter<T, Enable>::operator != (const U& t) -> std::enable_if_t<std::is_arithmetic<U>::value, bool>
 {
     return (m_val != t);
-                   }
+}
 
 template <typename T, typename Enable>
 inline bool dtkCoreParameter<T, Enable>::operator != (const QVariant& v)
@@ -349,8 +349,8 @@ template <typename T, typename Enable>
 inline void dtkCoreParameter<T, Enable>::setValue(const QVariant& v)
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
-        // cannot reach this line ?????
         *this = v.value<dtkCoreParameter<T>>();
+        // value is copied, do not check bounds
         emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
@@ -433,7 +433,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, Enable>& p)
     QString doc; s >> doc;
 
     p = dtkCoreParameter<T, Enable>(val, min, max, dec, doc);
-
+    emit p.valueChanged(p.variant());
     return s;
 }
 
@@ -447,6 +447,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, Enable>& p)
     QString doc; s >> doc;
 
     p = dtkCoreParameter<T, Enable>(val, min, max, doc);
+    emit p.valueChanged(p.variant());
 
     return s;
 }

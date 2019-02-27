@@ -29,8 +29,11 @@ dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParamete
 {
     qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
     qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
+    qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
+
     QMetaType::registerDebugStreamOperator<dtk::d_real>();
     QMetaType::registerDebugStreamOperator<dtk::d_int>();
+    QMetaType::registerDebugStreamOperator<dtk::d_bool>();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -175,6 +178,13 @@ void dtkCoreParameterTestCase::testVariant(void)
     QCOMPARE(pr.min(), -1.);
     QCOMPARE(pr.max(), 1.);
     QCOMPARE(pr.decimals(), 11);
+
+    // variant out of range
+    dtk::d_real por(10.0, 9.0, 11.0); // 10 in [9,11] interval
+    r = dtk::d_real(0., -1, 1, 11);
+    v = r.variant();                  // r is out of range
+    por.setValue(v);
+
 }
 
 void dtkCoreParameterTestCase::testOperations(void)
@@ -312,49 +322,61 @@ void dtkCoreParameterTestCase::testComparisons(void)
 void dtkCoreParameterTestCase::testDataStream(void)
 {
     dtk::d_real pro(1., 1-std::sqrt(2)/2, 1+std::sqrt(2)/2);
-    dtk::d_int pio(1, 0, 2);
+    dtk::d_int  pio(1, 0, 2);
+    dtk::d_bool pbo(true);
 
     QByteArray data;
     {
         QDataStream out(&data, QIODevice::WriteOnly);
         out << pro;
         out << pio;
+        out << pbo;
     }
 
     dtk::d_real pri;
-    dtk::d_int pii;
+    dtk::d_int  pii;
+    dtk::d_int  pbi;
     {
         QDataStream in(data);
         in >> pri;
         in >> pii;
+        in >> pbi;
     }
 
     QCOMPARE(pro, pri);
     QCOMPARE(pro.min(), pri.min());
     QCOMPARE(pro.max(), pri.max());
     QCOMPARE(pro.decimals(), pri.decimals());
+
     QCOMPARE(pio, pii);
     QCOMPARE(pio.min(), pii.min());
     QCOMPARE(pio.max(), pii.max());
     QCOMPARE(pio.decimals(), pii.decimals());
+
+    QCOMPARE(pbo == pbi, true);
 
     data.clear();
     QVariant vro = pro.variant();
     QVariant vio = pio.variant();
+    QVariant vbo = pbo.variant();
     {
         QDataStream out(&data, QIODevice::WriteOnly);
         out << vro;
         out << vio;
+        out << vbo;
     }
     QVariant vri;
     QVariant vii;
+    QVariant vbi;
     {
         QDataStream in(data);
         in >> vri;
         in >> vii;
+        in >> vbi;
     }
     pri.setValue(vri);
     pii.setValue(vii);
+    pii.setValue(vbi);
 
     QCOMPARE(pro, pri);
     QCOMPARE(pro.min(), pri.min());
@@ -364,6 +386,7 @@ void dtkCoreParameterTestCase::testDataStream(void)
     QCOMPARE(pio.min(), pii.min());
     QCOMPARE(pio.max(), pii.max());
     QCOMPARE(pio.decimals(), pii.decimals());
+    QCOMPARE(pbo == pbi, true);
 }
 
 void dtkCoreParameterTestCase::testBoolean(void)
