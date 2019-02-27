@@ -38,11 +38,6 @@ void dtkCoreAbstractParameter::emitValueChanged(void)
 // dtkCoreParameterString implementation
 // ///////////////////////////////////////////////////////////////////
 
-dtkCoreParameterString::dtkCoreParameterString(const QString& s) : dtkCoreAbstractParameter(), m_value(s)
-{
-
-}
-
 dtkCoreParameterString::dtkCoreParameterString(const QVariant& v) : dtkCoreAbstractParameter()
 {
     if (v.canConvert<dtkCoreParameterString>()) {
@@ -53,12 +48,12 @@ dtkCoreParameterString::dtkCoreParameterString(const QVariant& v) : dtkCoreAbstr
     }
 }
 
-dtkCoreParameterString::dtkCoreParameterString(const QString& s, const QString& doc) : dtkCoreAbstractParameter(doc), m_value(s)
+dtkCoreParameterString::dtkCoreParameterString(const dtkCoreParameterString& o) : dtkCoreAbstractParameter(o.m_doc), m_value(o.m_value)
 {
 
 }
 
-dtkCoreParameterString::dtkCoreParameterString(const dtkCoreParameterString& o) : dtkCoreAbstractParameter(o.m_doc), m_value(o.m_value)
+dtkCoreParameterString::dtkCoreParameterString(const QString& s, const QString& doc) : dtkCoreAbstractParameter(doc), m_value(s)
 {
 
 }
@@ -83,6 +78,7 @@ dtkCoreParameterString& dtkCoreParameterString::operator = (const QVariant& v)
 dtkCoreParameterString& dtkCoreParameterString::operator = (const dtkCoreParameterString& o)
 {
     if (this != &o) {
+        m_doc = o.m_doc;
         m_value = o.m_value;
     }
     return *this;

@@ -140,7 +140,7 @@ template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::
 DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, Enable>);
 
 // ///////////////////////////////////////////////////////////////////
-// dtkCoreParameterString
+// dtkCoreParameter for QString
 // ///////////////////////////////////////////////////////////////////
 
 class DTKCORE_EXPORT dtkCoreParameterString : public dtkCoreAbstractParameter
@@ -149,11 +149,10 @@ public:
      dtkCoreParameterString(void) = default;
     ~dtkCoreParameterString(void) = default;
 
-    dtkCoreParameterString(const QString&);
     dtkCoreParameterString(const QVariant&);
     dtkCoreParameterString(const dtkCoreParameterString&);
 
-    dtkCoreParameterString(const QString&, const QString&);
+    dtkCoreParameterString(const QString&, const QString& = QString());
 
     dtkCoreParameterString& operator = (const QString&);
     dtkCoreParameterString& operator = (const QVariant&);
@@ -171,6 +170,47 @@ private:
     QString m_value;
 };
 
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameter contained in a given list
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T>
+class DTKCORE_EXPORT dtkCoreParameterInList : public dtkCoreAbstractParameter
+{
+public:
+     dtkCoreParameterInList(void) = default;
+    ~dtkCoreParameterInList(void) = default;
+
+    dtkCoreParameterInList(const T&);
+    dtkCoreParameterInList(const QVariant&);
+    dtkCoreParameterInList(const dtkCoreParameterInList&);
+
+    dtkCoreParameterInList(const T&, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(int, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QList<T>&, const QString& = QString());
+
+    dtkCoreParameterInList& operator = (const dtkCoreParameterInList&);
+
+    operator T() const;
+
+    void setValueIndex(int);
+    void setValue(const T&);
+    void setValue(const QVariant&) override;
+
+    int valueIndex(void) const;
+    T value(void) const;
+    QList<T> values(void) const;
+    QVariant variant(void) const override;
+
+private:
+    QList<T> m_values;
+    int m_value_index = -1;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// Typedef
+// ///////////////////////////////////////////////////////////////////
+
 namespace dtk {
     using d_uchar  = dtkCoreParameter<unsigned char>;
     using d_char   = dtkCoreParameter<char>;
@@ -181,6 +221,10 @@ namespace dtk {
 
     using d_string = dtkCoreParameterString;
 }
+
+// ///////////////////////////////////////////////////////////////////
+// Registration to QMetaType system
+// ///////////////////////////////////////////////////////////////////
 
 Q_DECLARE_METATYPE(dtk::d_uchar);
 Q_DECLARE_METATYPE(dtk::d_char);
