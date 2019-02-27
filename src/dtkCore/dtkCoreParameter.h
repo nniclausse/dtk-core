@@ -66,7 +66,7 @@ class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreAbstractParameter
 public:
     dtkCoreParameter(void) = default;
     dtkCoreParameter(const T&);
-    dtkCoreParameter(const QVariant&);
+    dtkCoreParameter(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
     dtkCoreParameter(const dtkCoreParameter&);
     dtkCoreParameter(dtkCoreParameter&&);
 
@@ -140,14 +140,38 @@ template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::
 DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, Enable>);
 
 // ///////////////////////////////////////////////////////////////////
+// strings
+//
+
+class DTKCORE_EXPORT dtkCoreParameterString : public dtkCoreAbstractParameter
+{
+ public:
+    dtkCoreParameterString(void);
+    dtkCoreParameterString(QString v, QString doc=QString()) ;
+    ~dtkCoreParameterString(void);
+
+ public:
+    QString value(void);
+
+ public:
+    void setValue(const QVariant&) override ;
+    void setValue(QString v);
+
+    QVariant variant(void) const override ;
+
+ private:
+    QString m_value;
+};
 
 namespace dtk {
-    using d_uchar = dtkCoreParameter<unsigned char>;
-    using d_char = dtkCoreParameter<char>;
-    using d_uint = dtkCoreParameter<qulonglong>;
-    using d_int = dtkCoreParameter<qlonglong>;
-    using d_real = dtkCoreParameter<double>;
-    using d_bool = dtkCoreParameter<bool>;
+    using d_uchar  = dtkCoreParameter<unsigned char>;
+    using d_char   = dtkCoreParameter<char>;
+    using d_uint   = dtkCoreParameter<qulonglong>;
+    using d_int    = dtkCoreParameter<qlonglong>;
+    using d_real   = dtkCoreParameter<double>;
+    using d_bool   = dtkCoreParameter<bool>;
+
+    using d_string = dtkCoreParameterString;
 }
 
 Q_DECLARE_METATYPE(dtk::d_uchar);
@@ -156,6 +180,7 @@ Q_DECLARE_METATYPE(dtk::d_uint);
 Q_DECLARE_METATYPE(dtk::d_int);
 Q_DECLARE_METATYPE(dtk::d_real);
 Q_DECLARE_METATYPE(dtk::d_bool);
+Q_DECLARE_METATYPE(dtk::d_string);
 
 Q_DECLARE_METATYPE(dtk::d_uchar*);
 Q_DECLARE_METATYPE(dtk::d_char*);
@@ -163,10 +188,12 @@ Q_DECLARE_METATYPE(dtk::d_uint*);
 Q_DECLARE_METATYPE(dtk::d_int*);
 Q_DECLARE_METATYPE(dtk::d_real*);
 Q_DECLARE_METATYPE(dtk::d_bool*);
+Q_DECLARE_METATYPE(dtk::d_string*);
 
 // ///////////////////////////////////////////////////////////////////
 
 #include "dtkCoreParameter.tpp"
+
 
 //
 // dtkCoreParameter.h ends here

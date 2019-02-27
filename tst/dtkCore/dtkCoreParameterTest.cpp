@@ -584,6 +584,53 @@ void dtkCoreParameterTestCase::testSignals(void)
     QCOMPARE(error_count, 3);   // error count incremented
 }
 
+void dtkCoreParameterTestCase::testText(void)
+{
+    {
+        dtk::d_uchar uc;
+
+        QVERIFY( uc.value() == 0);
+        QVERIFY( uc.min()   == 0);
+        QVERIFY( uc.max()   == 255);
+    }
+
+    {
+        dtk::d_char c;
+
+        QVERIFY( c.value() == 0);
+        QVERIFY( c.min()   == -128);
+        QVERIFY( c.max()   == +127);
+    }
+
+    {
+        dtk::d_string ds;
+
+        QVERIFY( ds.value() == QString());
+        QCOMPARE( ds.documentation(), QString());
+    }
+
+    {
+        QString doc = QString("Description of the parameter....");
+        dtk::d_string ds("blabla", doc);
+
+        QVERIFY( ds.value() == "blabla" );
+        QCOMPARE( ds.documentation(), doc);
+    }
+
+    {
+        QString doc = QString("Cast float to string ?");
+        dtk::d_string ds("", doc);
+
+        dtk::d_real r = 3.14;
+        ds.setValue(r.variant());
+
+        //QVERIFY( ds.value() == "3.14" ); /// really ????
+        QVERIFY( ds.value() == "" );
+    }
+
+
+}
+
 void dtkCoreParameterTestCase::cleanupTestCase(void)
 {
 
