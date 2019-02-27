@@ -55,11 +55,52 @@ protected:
 Q_DECLARE_METATYPE(dtkCoreAbstractParameter *);
 
 // ///////////////////////////////////////////////////////////////////
+// dtkCoreParameter simple version
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T, typename Enable = void>
+class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreAbstractParameter
+{
+public:
+     dtkCoreParameter(void) = default;
+    ~dtkCoreParameter(void) = default;
+
+    dtkCoreParameter(const QVariant&);
+    dtkCoreParameter(const dtkCoreParameter&);
+
+    dtkCoreParameter(const T&, const QString& = QString());
+
+    dtkCoreParameter& operator = (const T&);
+    dtkCoreParameter& operator = (const QVariant&);
+    dtkCoreParameter& operator = (const dtkCoreParameter&);
+
+    operator T() const;
+
+    void setValue(const T&);
+    void setValue(const QVariant&) override;
+
+    T value(void) const;
+    QVariant variant(void) const override;
+
+private:
+    T m_value;
+};
+
+// ==============================================
+// MISSING STREAM AND DEBUG OPERATORS
+// ==============================================
+
+// ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter for arithmetic types
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
-class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreAbstractParameter
+namespace dtk {
+    template <typename T>
+    using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<T>::value>;
+}
+
+template <typename T>
+class DTKCORE_EXPORT dtkCoreParameter<T, dtk::parameter_arithmetic<T>> : public dtkCoreAbstractParameter
 {
 public:
      dtkCoreParameter(void) = default;
@@ -129,46 +170,15 @@ protected:
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
 };
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
-DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameter<T, Enable>&);
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>, typename B = std::enable_if_t<std::is_floating_point<T>::value>>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, Enable>&);
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>, typename B = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, Enable>&);
+template <typename T>
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
+template <typename T, typename Enable = std::enable_if_t<std::is_floating_point<T>::value>>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
+template <typename T, typename Enable = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
 
-template <typename T, typename Enable = std::enable_if_t<std::is_arithmetic<T>::value>>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, Enable>);
-
-// ///////////////////////////////////////////////////////////////////
-// dtkCoreParameter for QString
-// ///////////////////////////////////////////////////////////////////
-
-class DTKCORE_EXPORT dtkCoreParameterString : public dtkCoreAbstractParameter
-{
-public:
-     dtkCoreParameterString(void) = default;
-    ~dtkCoreParameterString(void) = default;
-
-    dtkCoreParameterString(const QVariant&);
-    dtkCoreParameterString(const dtkCoreParameterString&);
-
-    dtkCoreParameterString(const QString&, const QString& = QString());
-
-    dtkCoreParameterString& operator = (const QString&);
-    dtkCoreParameterString& operator = (const QVariant&);
-    dtkCoreParameterString& operator = (const dtkCoreParameterString&);
-
-    operator QString() const;
-
-    void setValue(const QString&);
-    void setValue(const QVariant&) override;
-
-    QString value(void) const;
-    QVariant variant(void) const override;
-
-private:
-    QString m_value;
-};
+template <typename T>
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
@@ -207,6 +217,10 @@ private:
     int m_value_index = -1;
 };
 
+// =======================================
+// MISSING STREAM AND DEBUG OPERATORS TOO
+// =======================================
+
 // ///////////////////////////////////////////////////////////////////
 // Typedef
 // ///////////////////////////////////////////////////////////////////
@@ -219,7 +233,7 @@ namespace dtk {
     using d_real   = dtkCoreParameter<double>;
     using d_bool   = dtkCoreParameter<bool>;
 
-    using d_string = dtkCoreParameterString;
+    using d_string = dtkCoreParameter<QString>;
 }
 
 // ///////////////////////////////////////////////////////////////////
