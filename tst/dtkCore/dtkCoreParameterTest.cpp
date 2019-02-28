@@ -18,15 +18,30 @@
 
 #include <dtkCore/dtkCoreParameter>
 
-Q_DECLARE_METATYPE(std::string)
-Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
-
 class dtkCoreParameterTestCasePrivate
 {
 public:
 };
 
 // ///////////////////////////////////////////////////////////////////
+// use std::string as dtkCoreParameter
+//
+Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
+
+QDebug& operator << (QDebug &dbg, const dtkCoreParameter<std::string> &p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "value : \"" << p.value().c_str() << "\", "
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
+}
+// ///////////////////////////////////////////////////////////////////
+
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
@@ -637,7 +652,9 @@ void dtkCoreParameterTestCase::testText(void)
     }
 
     {
-        // see also the necessary Q_DECLARE_METATYPE at line 21-22
+        // see also the necessary declaration at the beginning of the file
+        // Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
+        // qDebug implementation
         dtkCoreParameter<std::string> my_string_1;
 
         QVERIFY( my_string_1.value() == "" );
@@ -649,6 +666,7 @@ void dtkCoreParameterTestCase::testText(void)
         QVERIFY( my_string_2.value() == value);
         QVERIFY( my_string_2.documentation() == info);
 
+        qDebug() << "String:" << my_string_2;
     }
 
 }
