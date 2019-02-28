@@ -117,7 +117,38 @@ inline QVariant dtkCoreParameter<T, Enable>::variant(void) const
     return dtk::variantFromValue(*this);
 }
 
+template <typename T>
+inline dtk::parameter_not_arithmetic<T, QDataStream>& operator << (QDataStream& s, const dtkCoreParameter<T>& p)
+{
+    s << p.value();
+    s << p.documentation();
 
+    return s;
+}
+
+template <typename T>
+inline dtk::parameter_not_arithmetic<T, QDataStream>& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
+{
+    T t; s >> t;
+    QString doc; s >> doc;
+
+    p = dtkCoreParameter<T>(t, doc);
+    emit p.valueChanged(p.variant());
+    return s;
+}
+
+template <typename T>
+inline dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug& dbg, dtkCoreParameter<T> p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "value : " << p.value() << ", "
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
+}
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter for numerical types implementation
@@ -466,7 +497,7 @@ inline int dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::decimals(void) con
 }
 
 template <typename T>
-inline QDataStream& operator << (QDataStream& s, const dtkCoreParameter<T, dtk::parameter_arithmetic<T>>& p)
+inline dtk::parameter_arithmetic<T, QDataStream>& operator << (QDataStream& s, const dtkCoreParameter<T>& p)
 {
     s << p.value();
     s << p.min();
@@ -477,8 +508,8 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameter<T, dtk::
     return s;
 }
 
-template <typename T, typename Enable>
-inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>& p)
+template <typename T, typename E, typename F>
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 {
     T val; s >> val;
     T min; s >> min;
@@ -491,8 +522,8 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, dtk::parame
     return s;
 }
 
-template <typename T, typename Enable, typename U>
-inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>& p)
+template <typename T, typename E, typename F, typename U>
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 {
     T val; s >> val;
     T min; s >> min;
@@ -506,11 +537,11 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T, dtk::parame
     return s;
 }
 
-template <typename T>
-inline QDebug& operator << (QDebug& dbg, dtkCoreParameter<T, dtk::parameter_arithmetic<T>> p)
+template <typename T, typename E>
+inline QDebug& operator << (QDebug& dbg, dtkCoreParameter<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
-    dbg.nospace() << p.variant().typeName() << " { ";
+    dbg.nospace() << p.variant().typeName() << " : { ";
     dbg.nospace() << "value : " << p.value() << ", "
                   << "bounds : [" << p.bounds()[0] << ", " << p.bounds()[1] << "], "
                   << "decimals : " << p.decimals() << ", "
@@ -663,6 +694,56 @@ template <typename T>
 inline QVariant dtkCoreParameterInList<T>::variant(void) const
 {
     return dtk::variantFromValue(*this);
+}
+
+template <typename T>
+inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterInList<T>& p)
+{
+    s << p.valueIndex();
+    s << p.values().size();
+    for (auto&& val : p.values()) {
+        s << val;
+    }
+    s << p.documentation();
+
+    return s;
+}
+
+template <typename T>
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterInList<T>& p)
+{
+    int index; s >> index;
+    int size; s >> size;
+    QList<T> values(size);
+    for (int i = 0; i < size; ++i) {
+        T t; s >> t;
+        values[i] = t;
+    }
+    QString doc; s >> doc;
+
+    p = dtkCoreParameter<T>(index, values, doc);
+    emit p.valueChanged(p.variant());
+    return s;
+}
+
+template <typename T>
+inline QDebug& operator << (QDebug& dbg, dtkCoreParameterInList<T> p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "value_index" << p.valueIndex() << ", "
+                  << "values [";
+    for (int i = 0; i < p.values.size(); ++i) {
+        if (i)
+            dbg.nospace() << ", ";
+        dbg.nospace() << p.values.at(i);
+    }
+    dbg.nospace() << "], "
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
 }
 
 //

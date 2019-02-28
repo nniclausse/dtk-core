@@ -32,9 +32,10 @@ dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParamete
 {
     qRegisterMetaType<std::string>();
 
+    qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
+
     qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
     qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
-    qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
     //qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
 
     QMetaType::registerDebugStreamOperator<dtk::d_real>();

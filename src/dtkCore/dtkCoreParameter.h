@@ -22,6 +22,13 @@
 
 #include <array>
 
+namespace dtk {
+    template <typename T, typename E = void>
+    using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<T>::value, E>;
+    template <typename T, typename E = void>
+    using parameter_not_arithmetic = std::enable_if_t<!std::is_arithmetic<T>::value, E>;
+}
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreAbstractParameter interface
 // ///////////////////////////////////////////////////////////////////
@@ -86,18 +93,17 @@ private:
     T m_value;
 };
 
-// ==============================================
-// MISSING STREAM AND DEBUG OPERATORS
-// ==============================================
+template <typename T>
+DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDataStream>& operator << (QDataStream&, const dtkCoreParameter<T>&);
+template <typename T>
+DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDataStream>& operator >> (QDataStream&, dtkCoreParameter<T>&);
+
+template <typename T>
+DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug&, dtkCoreParameter<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter for arithmetic types
 // ///////////////////////////////////////////////////////////////////
-
-namespace dtk {
-    template <typename T>
-    using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<T>::value>;
-}
 
 template <typename T>
 class DTKCORE_EXPORT dtkCoreParameter<T, dtk::parameter_arithmetic<T>> : public dtkCoreAbstractParameter
@@ -171,14 +177,14 @@ protected:
 };
 
 template <typename T>
-DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
-template <typename T, typename Enable = std::enable_if_t<std::is_floating_point<T>::value>>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
-template <typename T, typename Enable = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>&);
+DTKCORE_EXPORT dtk::parameter_arithmetic<T, QDataStream>& operator << (QDataStream&, const dtkCoreParameter<T>&);
+template <typename T, typename E = dtk::parameter_arithmetic<T>, typename F = std::enable_if_t<std::is_floating_point<T>::value>>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T>&);
+template <typename T, typename E = dtk::parameter_arithmetic<T>, typename F = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T>&);
 
-template <typename T>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T, dtk::parameter_arithmetic<T>>);
+template <typename T, typename E = dtk::parameter_arithmetic<T>>
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
@@ -217,9 +223,13 @@ private:
     int m_value_index = -1;
 };
 
-// =======================================
-// MISSING STREAM AND DEBUG OPERATORS TOO
-// =======================================
+template <typename T>
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterInList<T>&);
+template <typename T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterInList<T>&);
+
+template <typename T>
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterInList<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // Typedef
