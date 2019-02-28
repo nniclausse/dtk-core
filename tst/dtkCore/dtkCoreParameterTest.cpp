@@ -51,12 +51,12 @@ dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParamete
 
     qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
     qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
-    //qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
+    qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
 
     QMetaType::registerDebugStreamOperator<dtk::d_real>();
     QMetaType::registerDebugStreamOperator<dtk::d_int>();
     QMetaType::registerDebugStreamOperator<dtk::d_bool>();
-    //QMetaType::registerDebugStreamOperator<dtk::d_string>();
+    QMetaType::registerDebugStreamOperator<dtk::d_string>();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -381,9 +381,11 @@ void dtkCoreParameterTestCase::testComparisons(void)
 
 void dtkCoreParameterTestCase::testDataStream(void)
 {
-    dtk::d_real pro(1., 1-std::sqrt(2)/2, 1+std::sqrt(2)/2);
-    dtk::d_int  pio(1, 0, 2);
-    dtk::d_bool pbo(true);
+    QString t_string = QString("string to test against");
+    dtk::d_real   pro(1., 1-std::sqrt(2)/2, 1+std::sqrt(2)/2);
+    dtk::d_int    pio(1, 0, 2);
+    dtk::d_bool   pbo(true);
+    dtk::d_string pso(t_string);
 
     QByteArray data;
     {
@@ -391,16 +393,19 @@ void dtkCoreParameterTestCase::testDataStream(void)
         out << pro;
         out << pio;
         out << pbo;
+        out << pso;
     }
 
-    dtk::d_real pri;
-    dtk::d_int  pii;
-    dtk::d_int  pbi;
+    dtk::d_real   pri;
+    dtk::d_int    pii;
+    dtk::d_bool   pbi;
+    dtk::d_string psi;
     {
         QDataStream in(data);
         in >> pri;
         in >> pii;
         in >> pbi;
+        in >> psi;
     }
 
     QCOMPARE(pro, pri);
@@ -414,39 +419,53 @@ void dtkCoreParameterTestCase::testDataStream(void)
     QCOMPARE(pio.decimals(), pii.decimals());
 
     QCOMPARE(pbo == pbi, true);
+
+    QCOMPARE(pso == psi, true);
 
     data.clear();
     QVariant vro = pro.variant();
     QVariant vio = pio.variant();
     QVariant vbo = pbo.variant();
+    QVariant vso = pso.variant();
     {
         QDataStream out(&data, QIODevice::WriteOnly);
         out << vro;
         out << vio;
         out << vbo;
+        out << vso;
     }
     QVariant vri;
     QVariant vii;
     QVariant vbi;
+    QVariant vsi;
     {
         QDataStream in(data);
         in >> vri;
         in >> vii;
         in >> vbi;
+        in >> vsi;
     }
     pri.setValue(vri);
     pii.setValue(vii);
-    pii.setValue(vbi);
+    pbi.setValue(vbi);
+    psi.setValue(vsi);
 
     QCOMPARE(pro, pri);
     QCOMPARE(pro.min(), pri.min());
     QCOMPARE(pro.max(), pri.max());
     QCOMPARE(pro.decimals(), pri.decimals());
+
     QCOMPARE(pio, pii);
     QCOMPARE(pio.min(), pii.min());
     QCOMPARE(pio.max(), pii.max());
     QCOMPARE(pio.decimals(), pii.decimals());
+
     QCOMPARE(pbo == pbi, true);
+
+    QCOMPARE(pso == psi, true);
+    QCOMPARE(psi , pso);
+    QVERIFY(pso.value() == psi.value());
+    QVERIFY(pso.value() != psi.value()+"toto");
 }
 
 void dtkCoreParameterTestCase::testBoolean(void)
