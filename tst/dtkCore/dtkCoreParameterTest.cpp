@@ -18,6 +18,9 @@
 
 #include <dtkCore/dtkCoreParameter>
 
+Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
+
 class dtkCoreParameterTestCasePrivate
 {
 public:
@@ -27,13 +30,17 @@ public:
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
+    qRegisterMetaType<std::string>();
+
     qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
     qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
     qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
+    //qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
 
     QMetaType::registerDebugStreamOperator<dtk::d_real>();
     QMetaType::registerDebugStreamOperator<dtk::d_int>();
     QMetaType::registerDebugStreamOperator<dtk::d_bool>();
+    //QMetaType::registerDebugStreamOperator<dtk::d_string>();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -628,6 +635,20 @@ void dtkCoreParameterTestCase::testText(void)
         QVERIFY( ds.value() == "" );
     }
 
+    {
+        // see also the necessary Q_DECLARE_METATYPE at line 21-22
+        dtkCoreParameter<std::string> my_string_1;
+
+        QVERIFY( my_string_1.value() == "" );
+
+        QString      info  = QString("what's up doc ?");
+        std::string  value = "toto le heros";
+        dtkCoreParameter<std::string> my_string_2(value, info);
+
+        QVERIFY( my_string_2.value() == value);
+        QVERIFY( my_string_2.documentation() == info);
+
+    }
 
 }
 
