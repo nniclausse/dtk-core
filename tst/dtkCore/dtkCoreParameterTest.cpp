@@ -29,17 +29,14 @@ public:
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
 
-QDebug& operator << (QDebug &dbg, const dtkCoreParameter<std::string> &p)
+QDebug& operator << (QDebug &dbg, const std::string &p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
-    dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "value : \"" << p.value().c_str() << "\", "
-                  << "documentation : " << p.documentation()
-                  << " }";
-
+    dbg.nospace() << p.c_str();
     dbg.setAutoInsertSpaces(old_setting);
     return dbg.maybeSpace();
 }
+
 // ///////////////////////////////////////////////////////////////////
 
 
