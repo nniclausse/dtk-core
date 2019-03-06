@@ -39,11 +39,13 @@ class DTKCORE_EXPORT dtkCoreAbstractParameter : public QObject
 
 public:
      dtkCoreAbstractParameter(void) = default;
-     dtkCoreAbstractParameter(const QString&);
+     dtkCoreAbstractParameter(const QString&, const QString& = QString());
     ~dtkCoreAbstractParameter(void) = default;
 
-    void setDocumentation(const QString&);
+    void setName(const QString&);
+    QString name(void) const;
 
+    void setDocumentation(const QString&);
     QString documentation(void) const;
 
     virtual void setValue(const QVariant&) = 0;
@@ -56,6 +58,7 @@ signals:
     void invalidValue();
 
 protected:
+    QString m_name;
     QString m_doc;
 };
 
@@ -75,7 +78,7 @@ public:
     dtkCoreParameter(const QVariant&);
     dtkCoreParameter(const dtkCoreParameter&);
 
-    dtkCoreParameter(const T&, const QString& = QString());
+    dtkCoreParameter(const QString&, const T&, const QString& = QString());
 
     dtkCoreParameter& operator = (const T&);
     dtkCoreParameter& operator = (const QVariant&);
@@ -117,8 +120,8 @@ public:
     dtkCoreParameter(const dtkCoreParameter&);
     dtkCoreParameter(dtkCoreParameter&&);
 
-    dtkCoreParameter(const T&, const T&, const T&, const QString& doc = QString());
-    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameter(const T&, const T&, const T&, const int&, const QString& doc = QString());
+    dtkCoreParameter(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameter(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
 
     template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator = (const U&);
     dtkCoreParameter& operator = (const QVariant&);

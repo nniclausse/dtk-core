@@ -70,11 +70,23 @@ void dtkCoreParameterTestCase::init(void)
 {
 }
 
+void dtkCoreParameterTestCase::testName(void)
+{
+    QString name("Parameter name");
+
+    dtk::d_real pr(name, 1., -1, 1);
+    QCOMPARE(pr.name(), name);
+
+    dtk::d_int pi;
+    pi.setName(name);
+    QCOMPARE(pi.name(), name);
+}
+
 void dtkCoreParameterTestCase::testDocumentation(void)
 {
     QString doc("Documentation very documented");
 
-    dtk::d_real pr(1., -1, 1, doc);
+    dtk::d_real pr("name", 1., -1, 1, doc);
     QCOMPARE(pr.documentation(), doc);
 
     dtk::d_int pi;
@@ -174,14 +186,14 @@ void dtkCoreParameterTestCase::testBounds(void)
 
     }
     {
-        dtk::d_real r(0., -std::sqrt(2)/2, std::sqrt(2)/2);
+        dtk::d_real r("name", 0., -std::sqrt(2)/2, std::sqrt(2)/2);
         auto&& bounds = r.bounds();
         QCOMPARE(bounds[0], -std::sqrt(2)/2);
         QCOMPARE(bounds[1], std::sqrt(2)/2);
     }
     {
         // do stupid things with values and bounds
-        dtk::d_real r(0.25, -1.0, 1.0);
+        dtk::d_real r("name", 0.25, -1.0, 1.0);
 
         // do stupid things with the value
         r = 0.25;
@@ -208,7 +220,7 @@ void dtkCoreParameterTestCase::testDecimals(void)
         QCOMPARE(pr.decimals(), 11);
     }
 
-    dtk::d_real pr(0., -1, 1, 11);
+    dtk::d_real pr("name", 0., -1, 1, 11);
     QCOMPARE(pr.decimals(), 11);
 }
 
@@ -229,7 +241,7 @@ void dtkCoreParameterTestCase::testVariant(void)
     QCOMPARE((double)pr, std::sqrt(2));
 
     // Bounds and decimals
-    r = dtk::d_real(0., -1, 1, 11);
+    r = dtk::d_real("name", 0., -1, 1, 11);
     v = r.variant();
     pr.setValue(v);
     QCOMPARE(pr.min(), -1.);
@@ -237,8 +249,8 @@ void dtkCoreParameterTestCase::testVariant(void)
     QCOMPARE(pr.decimals(), 11);
 
     // variant out of range
-    dtk::d_real por(10.0, 9.0, 11.0); // 10 in [9,11] interval
-    r = dtk::d_real(0., -1, 1, 11);
+    dtk::d_real por("name", 10.0, 9.0, 11.0); // 10 in [9,11] interval
+    r = dtk::d_real("name", 0., -1, 1, 11);
     v = r.variant();                  // r is out of range
     por.setValue(v);
 
@@ -379,8 +391,8 @@ void dtkCoreParameterTestCase::testComparisons(void)
 void dtkCoreParameterTestCase::testDataStream(void)
 {
     QString t_string = QString("string to test against");
-    dtk::d_real   pro(1., 1-std::sqrt(2)/2, 1+std::sqrt(2)/2);
-    dtk::d_int    pio(1, 0, 2);
+    dtk::d_real   pro("pro", 1., 1-std::sqrt(2)/2, 1+std::sqrt(2)/2);
+    dtk::d_int    pio("pio", 1, 0, 2);
     dtk::d_bool   pbo(true);
     dtk::d_string pso(t_string);
 
@@ -392,7 +404,7 @@ void dtkCoreParameterTestCase::testDataStream(void)
         out << pbo;
         out << pso;
     }
-
+    qDebug() << pro;
     dtk::d_real   pri;
     dtk::d_int    pii;
     dtk::d_bool   pbi;
@@ -489,7 +501,7 @@ void dtkCoreParameterTestCase::testBoolean(void)
     delete(pb);
 
     QString doc("Stupid declaration");
-    pb = new dtk::d_bool(true, true, true, doc);
+    pb = new dtk::d_bool("pb", true, true, true, doc);
     QCOMPARE( *pb == true, true);
     QCOMPARE( pb->documentation(), doc);
     delete(pb);
@@ -561,8 +573,8 @@ void dtkCoreParameterTestCase::testBoolean(void)
 
 void dtkCoreParameterTestCase::testSignals(void)
 {
-    dtk::d_real pr(0.0, -10.0, 10.0);
-    dtk::d_real default_value(0.0, -10.0, 10.0);
+    dtk::d_real pr("pr", 0.0, -10.0, 10.0);
+    dtk::d_real default_value("default_value", 0.0, -10.0, 10.0);
     dtk::d_real bad_value(12345.6789);
     QVariant    variant_good = QVariant(3.14);
     QVariant    variant_bad  = QVariant(31415.957);
@@ -650,15 +662,14 @@ void dtkCoreParameterTestCase::testText(void)
 
     {
         QString doc = QString("Description of the parameter....");
-        dtk::d_string ds("blabla", doc);
+        dtk::d_string ds("string_ds", "blabla", doc);
 
-        QVERIFY( ds.value() == "blabla" );
         QCOMPARE( ds.documentation(), doc);
     }
 
     {
         QString doc = QString("Cast float to string ?");
-        dtk::d_string ds("", doc);
+        dtk::d_string ds("string_ds", "", doc);
 
         dtk::d_real r = 3.14;
         ds.setValue(r.variant());
@@ -677,7 +688,7 @@ void dtkCoreParameterTestCase::testText(void)
 
         QString      info  = QString("what's up doc ?");
         std::string  value = "toto le heros";
-        dtkCoreParameter<std::string> my_string_2(value, info);
+        dtkCoreParameter<std::string> my_string_2("my_string_2", value, info);
 
         QVERIFY( my_string_2.value() == value);
         QVERIFY( my_string_2.documentation() == info);

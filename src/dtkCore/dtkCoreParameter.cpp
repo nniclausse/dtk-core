@@ -14,9 +14,19 @@
 
 #include "dtkCoreParameter.h"
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& doc) : m_doc(doc)
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& name, const QString& doc) : m_name(name), m_doc(doc)
 {
 
+}
+
+void dtkCoreAbstractParameter::setName(const QString& name)
+{
+    this->m_name = name;
+}
+
+QString dtkCoreAbstractParameter::name(void) const
+{
+    return this->m_name;
 }
 
 void dtkCoreAbstractParameter::setDocumentation(const QString& doc)
