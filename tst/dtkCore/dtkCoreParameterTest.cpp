@@ -210,6 +210,7 @@ void dtkCoreParameterTestCase::testBounds(void)
 void dtkCoreParameterTestCase::testDecimals(void)
 {
     dtk::d_int pi;
+
     QCOMPARE(pi.decimals(), 0);
 
     {
@@ -404,7 +405,7 @@ void dtkCoreParameterTestCase::testDataStream(void)
         out << pbo;
         out << pso;
     }
-    qDebug() << pro;
+
     dtk::d_real   pri;
     dtk::d_int    pii;
     dtk::d_bool   pbi;
