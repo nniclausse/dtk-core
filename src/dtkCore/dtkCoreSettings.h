@@ -29,7 +29,7 @@ public:
             ~dtkCoreSettings(void) = default;
 
     template<typename T>
-        void track(dtkCoreParameter<T> *parameter) {
+    void track(dtkCoreParameter<T> *parameter) {
 
         this->setValue(parameter->name(), parameter->variant());
 

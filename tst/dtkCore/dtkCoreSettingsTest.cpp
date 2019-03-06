@@ -90,6 +90,20 @@ void dtkCoreSettingsTestCase::testTrack(void)
 
         QVERIFY(p == 6.);
         QVERIFY(p.name() == "p");
+
+        p.setValue(7.);
+
+        dtk::d_real p_s = settings.value("p");
+
+        QVERIFY(p_s == 6.); // p is not yet tracked
+
+        settings.track(&p);
+
+        p.setValue(8.);
+
+        dtk::d_real p_s_s = settings.value("p");
+
+        QVERIFY(p_s_s == 8.); // p is tracked
     }
 
     file.close();
