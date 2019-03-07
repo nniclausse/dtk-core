@@ -438,6 +438,14 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
         // value is copied, do not check bounds
         emit valueChanged(this->variant());
 
+    } else if (v.canConvert<QVariantHash>()) {
+
+        auto map = v.toHash();
+        QString label = map["label"].toString();
+
+        // TODO: FINISH IT
+
+
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
 

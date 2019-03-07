@@ -699,6 +699,19 @@ void dtkCoreParameterTestCase::testText(void)
 
 }
 
+void dtkCoreParameterTestCase::testCreation(void)
+{
+    qRegisterMetaType<dtk::d_real *>();
+
+    QVariantHash map;
+    map["type"] = QString("dtk::d_real");
+    map["label"] = QString("toto");
+
+    auto p = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
+
+    qDebug() << p->variant();
+}
+
 void dtkCoreParameterTestCase::cleanupTestCase(void)
 {
 

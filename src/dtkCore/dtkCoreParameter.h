@@ -57,6 +57,9 @@ signals:
     void valueChanged(QVariant);
     void invalidValue();
 
+public:
+    static dtkCoreAbstractParameter *create(const QVariant&);
+
 protected:
     QString m_label;
     QString m_doc;

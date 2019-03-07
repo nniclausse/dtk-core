@@ -39,6 +39,7 @@ private slots:
     void testBoolean(void);
     void testSignals();
     void testText();
+    void testCreation(void);
 
 private slots:
     void cleanupTestCase(void);
