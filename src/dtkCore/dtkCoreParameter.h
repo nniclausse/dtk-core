@@ -204,9 +204,9 @@ public:
     dtkCoreParameterInList(const QVariant&);
     dtkCoreParameterInList(const dtkCoreParameterInList&);
 
-    dtkCoreParameterInList(const T&, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(int, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QString&, const T&, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QString&, int, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QString&, const QList<T>&, const QString& = QString());
 
     dtkCoreParameterInList& operator = (const dtkCoreParameterInList&);
 

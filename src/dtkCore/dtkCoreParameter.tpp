@@ -591,21 +591,21 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterI
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     m_value_index = m_values.indexOf(t);
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(int index, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values), m_value_index(index)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(index)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     Q_ASSERT_X(((index > -1) && (index < values.size())), Q_FUNC_INFO, "Input index is out of range");
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values), m_value_index(0)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(0)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
 }
