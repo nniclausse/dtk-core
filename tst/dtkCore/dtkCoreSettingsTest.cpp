@@ -22,14 +22,6 @@
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
 
-QDebug& operator << (QDebug &dbg, const std::string &p)
-{
-    const bool old_setting = dbg.autoInsertSpaces();
-    dbg.nospace() << p.c_str();
-    dbg.setAutoInsertSpaces(old_setting);
-    return dbg.maybeSpace();
-}
-
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreSettingsTestCase implementation
 // ///////////////////////////////////////////////////////////////////
@@ -71,7 +63,7 @@ void dtkCoreSettingsTestCase::testTrack(void)
         dtk::d_real p_s = settings.value("p");
 
         QVERIFY(p_s == p);
-        QVERIFY(p_s.name() == p.name());
+        QVERIFY(p_s.label() == p.label());
 
         p.setValue(4.);
 
@@ -89,7 +81,7 @@ void dtkCoreSettingsTestCase::testTrack(void)
         dtk::d_real p = settings.restore("p");
 
         QVERIFY(p == 6.);
-        QVERIFY(p.name() == "p");
+        QVERIFY(p.label() == "p");
 
         p.setValue(7.);
 

@@ -30,13 +30,13 @@ inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QVariant& v) : dtkCor
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_name, o.m_doc), m_value(o.m_value)
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_value(o.m_value)
 {
 
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QString& name, const T& t, const QString& doc) : dtkCoreAbstractParameter(name, doc), m_value(t)
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QString& label, const T& t, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_value(t)
 {
 
 }
@@ -64,7 +64,7 @@ template <typename T, typename Enable>
 inline auto dtkCoreParameter<T, Enable>::operator = (const dtkCoreParameter& o) -> dtkCoreParameter&
 {
     if (this != &o) {
-        m_name = o.m_name;
+        m_label = o.m_label;
         m_doc = o.m_doc;
         m_value = o.m_value;
     }
@@ -121,7 +121,7 @@ inline QVariant dtkCoreParameter<T, Enable>::variant(void) const
 template <typename T>
 inline dtk::parameter_not_arithmetic<T, QDataStream>& operator << (QDataStream& s, const dtkCoreParameter<T>& p)
 {
-    s << p.name();
+    s << p.label();
     s << p.value();
     s << p.documentation();
 
@@ -131,11 +131,11 @@ inline dtk::parameter_not_arithmetic<T, QDataStream>& operator << (QDataStream& 
 template <typename T>
 inline dtk::parameter_not_arithmetic<T, QDataStream>& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 {
-    QString name; s >> name;
+    QString label; s >> label;
     T t; s >> t;
     QString doc; s >> doc;
 
-    p = dtkCoreParameter<T>(name, t, doc);
+    p = dtkCoreParameter<T>(label, t, doc);
     emit p.valueChanged(p.variant());
     return s;
 }
@@ -145,7 +145,7 @@ inline dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug& dbg, dtkCo
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "name : " << p.name() << ", "
+    dbg.nospace() << "label : " << p.label() << ", "
                   << "value : " << p.value() << ", "
                   << "documentation : " << p.documentation()
                   << " }";
@@ -175,22 +175,22 @@ inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_name, o.m_doc), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
 {
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(dtkCoreParameter&& o) : dtkCoreAbstractParameter(o.m_name, o.m_doc), m_val(std::move(o.m_val)), m_bounds(std::move(o.m_bounds)), m_decimals(std::move(o.m_decimals))
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(dtkCoreParameter&& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_val(std::move(o.m_val)), m_bounds(std::move(o.m_bounds)), m_decimals(std::move(o.m_decimals))
 {
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& name, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreAbstractParameter(name, doc), m_val(t), m_bounds({min, max})
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_val(t), m_bounds({min, max})
 {
 }
 
 template <typename T> template <typename U, typename>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& name, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreAbstractParameter(name, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
 {
 }
 
@@ -217,7 +217,7 @@ template <typename T>
 inline auto dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::operator = (const dtkCoreParameter& o) -> dtkCoreParameter&
 {
     if (this != &o) {
-        m_name = o.m_name;
+        m_label = o.m_label;
         m_doc = o.m_doc;
         m_val = o.m_val;
         m_bounds = o.m_bounds;
@@ -504,7 +504,7 @@ inline int dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::decimals(void) con
 template <typename T>
 inline dtk::parameter_arithmetic<T, QDataStream>& operator << (QDataStream& s, const dtkCoreParameter<T>& p)
 {
-    s << p.name();
+    s << p.label();
     s << p.value();
     s << p.min();
     s << p.max();
@@ -517,14 +517,14 @@ inline dtk::parameter_arithmetic<T, QDataStream>& operator << (QDataStream& s, c
 template <typename T, typename E, typename F>
 inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 {
-    QString name; s >> name;
+    QString label; s >> label;
     T val; s >> val;
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
     QString doc; s >> doc;
 
-    p = dtkCoreParameter<T, dtk::parameter_arithmetic<T>>(name, val, min, max, dec, doc);
+    p = dtkCoreParameter<T, dtk::parameter_arithmetic<T>>(label, val, min, max, dec, doc);
     emit p.valueChanged(p.variant());
     return s;
 }
@@ -532,14 +532,14 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 template <typename T, typename E, typename F, typename U>
 inline QDataStream& operator >> (QDataStream& s, dtkCoreParameter<T>& p)
 {
-    QString name; s >> name;
+    QString label; s >> label;
     T val; s >> val;
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
     QString doc; s >> doc;
 
-    p = dtkCoreParameter<T, dtk::parameter_arithmetic<T>>(name, val, min, max, doc);
+    p = dtkCoreParameter<T, dtk::parameter_arithmetic<T>>(label, val, min, max, doc);
     emit p.valueChanged(p.variant());
 
     return s;
@@ -550,7 +550,7 @@ inline QDebug& operator << (QDebug& dbg, dtkCoreParameter<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "name : " << p.name() << ", "
+    dbg.nospace() << "label : " << p.label() << ", "
                   << "value : " << p.value() << ", "
                   << "bounds : [" << p.bounds()[0] << ", " << p.bounds()[1] << "], "
                   << "decimals : " << p.decimals() << ", "
@@ -614,7 +614,7 @@ template <typename T>
 inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const dtkCoreParameterInList& o)
 {
     if (this != &o) {
-        m_name = o.m_name;
+        m_label = o.m_label;
         m_doc = o.m_doc;
         m_values = o.m_values;
         m_value_index = o.m_value_index;
@@ -709,7 +709,7 @@ inline QVariant dtkCoreParameterInList<T>::variant(void) const
 template <typename T>
 inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterInList<T>& p)
 {
-    s << p.name();
+    s << p.label();
     s << p.valueIndex();
     s << p.values().size();
     for (auto&& val : p.values()) {
@@ -723,7 +723,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterInList<T>
 template <typename T>
 inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterInList<T>& p)
 {
-    QString name; s >> name;
+    QString label; s >> label;
     int index; s >> index;
     int size; s >> size;
     QList<T> values(size);
@@ -733,7 +733,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterInList<T>& p)
     }
     QString doc; s >> doc;
 
-    p = dtkCoreParameter<T>(name, index, values, doc);
+    p = dtkCoreParameter<T>(label, index, values, doc);
     emit p.valueChanged(p.variant());
     return s;
 }
@@ -743,7 +743,7 @@ inline QDebug& operator << (QDebug& dbg, dtkCoreParameterInList<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "name" << p.name() << ", "
+    dbg.nospace() << "label" << p.label() << ", "
                   << "value_index" << p.valueIndex() << ", "
                   << "values [";
     for (int i = 0; i < p.values.size(); ++i) {

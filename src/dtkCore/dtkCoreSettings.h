@@ -31,17 +31,17 @@ public:
     template<typename T>
     void track(dtkCoreParameter<T> *parameter) {
 
-        this->setValue(parameter->name(), parameter->variant());
+        this->setValue(parameter->label(), parameter->variant());
 
         connect(parameter, &dtkCoreParameter<T>::valueChanged, [=] (QVariant v) {
-                this->setValue(parameter->name(), parameter->variant());
+                this->setValue(parameter->label(), parameter->variant());
             });
 
     }
 
-    QVariant restore(const QString& parameter_name) {
+    QVariant restore(const QString& parameter_label) {
 
-        return this->value(parameter_name);
+        return this->value(parameter_label);
 
     }
 };

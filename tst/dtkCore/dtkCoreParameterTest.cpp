@@ -70,23 +70,23 @@ void dtkCoreParameterTestCase::init(void)
 {
 }
 
-void dtkCoreParameterTestCase::testName(void)
+void dtkCoreParameterTestCase::testLabel(void)
 {
-    QString name("Parameter name");
+    QString label("Parameter label");
 
-    dtk::d_real pr(name, 1., -1, 1);
-    QCOMPARE(pr.name(), name);
+    dtk::d_real pr(label, 1., -1, 1);
+    QCOMPARE(pr.label(), label);
 
     dtk::d_int pi;
-    pi.setName(name);
-    QCOMPARE(pi.name(), name);
+    pi.setLabel(label);
+    QCOMPARE(pi.label(), label);
 }
 
 void dtkCoreParameterTestCase::testDocumentation(void)
 {
     QString doc("Documentation very documented");
 
-    dtk::d_real pr("name", 1., -1, 1, doc);
+    dtk::d_real pr("pr", 1., -1, 1, doc);
     QCOMPARE(pr.documentation(), doc);
 
     dtk::d_int pi;
@@ -186,14 +186,14 @@ void dtkCoreParameterTestCase::testBounds(void)
 
     }
     {
-        dtk::d_real r("name", 0., -std::sqrt(2)/2, std::sqrt(2)/2);
+        dtk::d_real r("r", 0., -std::sqrt(2)/2, std::sqrt(2)/2);
         auto&& bounds = r.bounds();
         QCOMPARE(bounds[0], -std::sqrt(2)/2);
         QCOMPARE(bounds[1], std::sqrt(2)/2);
     }
     {
         // do stupid things with values and bounds
-        dtk::d_real r("name", 0.25, -1.0, 1.0);
+        dtk::d_real r("r", 0.25, -1.0, 1.0);
 
         // do stupid things with the value
         r = 0.25;
@@ -221,7 +221,7 @@ void dtkCoreParameterTestCase::testDecimals(void)
         QCOMPARE(pr.decimals(), 11);
     }
 
-    dtk::d_real pr("name", 0., -1, 1, 11);
+    dtk::d_real pr("pr", 0., -1, 1, 11);
     QCOMPARE(pr.decimals(), 11);
 }
 
@@ -242,7 +242,7 @@ void dtkCoreParameterTestCase::testVariant(void)
     QCOMPARE((double)pr, std::sqrt(2));
 
     // Bounds and decimals
-    r = dtk::d_real("name", 0., -1, 1, 11);
+    r = dtk::d_real("label", 0., -1, 1, 11);
     v = r.variant();
     pr.setValue(v);
     QCOMPARE(pr.min(), -1.);
@@ -250,8 +250,8 @@ void dtkCoreParameterTestCase::testVariant(void)
     QCOMPARE(pr.decimals(), 11);
 
     // variant out of range
-    dtk::d_real por("name", 10.0, 9.0, 11.0); // 10 in [9,11] interval
-    r = dtk::d_real("name", 0., -1, 1, 11);
+    dtk::d_real por("por", 10.0, 9.0, 11.0); // 10 in [9,11] interval
+    r = dtk::d_real("label", 0., -1, 1, 11);
     v = r.variant();                  // r is out of range
     por.setValue(v);
 

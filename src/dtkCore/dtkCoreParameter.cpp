@@ -14,19 +14,19 @@
 
 #include "dtkCoreParameter.h"
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& name, const QString& doc) : m_name(name), m_doc(doc)
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
 {
 
 }
 
-void dtkCoreAbstractParameter::setName(const QString& name)
+void dtkCoreAbstractParameter::setLabel(const QString& label)
 {
-    this->m_name = name;
+    this->m_label = label;
 }
 
-QString dtkCoreAbstractParameter::name(void) const
+QString dtkCoreAbstractParameter::label(void) const
 {
-    return this->m_name;
+    return this->m_label;
 }
 
 void dtkCoreAbstractParameter::setDocumentation(const QString& doc)

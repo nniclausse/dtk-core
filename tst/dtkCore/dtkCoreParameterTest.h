@@ -27,7 +27,7 @@ private slots:
     void init(void);
 
 private slots:
-    void testName(void);
+    void testLabel(void);
     void testDocumentation(void);
     void testValue(void);
     void testBounds(void);

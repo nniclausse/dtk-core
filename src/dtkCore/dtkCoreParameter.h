@@ -42,8 +42,8 @@ public:
      dtkCoreAbstractParameter(const QString&, const QString& = QString());
     ~dtkCoreAbstractParameter(void) = default;
 
-    void setName(const QString&);
-    QString name(void) const;
+    void setLabel(const QString&);
+    QString label(void) const;
 
     void setDocumentation(const QString&);
     QString documentation(void) const;
@@ -58,7 +58,7 @@ signals:
     void invalidValue();
 
 protected:
-    QString m_name;
+    QString m_label;
     QString m_doc;
 };
 
