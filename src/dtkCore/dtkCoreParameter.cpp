@@ -39,7 +39,12 @@ QString dtkCoreAbstractParameter::documentation(void) const
     return this->m_doc;
 }
 
-void dtkCoreAbstractParameter::emitValueChanged(void)
+void dtkCoreAbstractParameter::block(bool b)
+{
+    this->blockSignals(b);
+}
+
+void dtkCoreAbstractParameter::sync(void)
 {
     emit this->valueChanged(this->variant());
 }

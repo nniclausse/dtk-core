@@ -51,7 +51,8 @@ public:
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
 
-    void emitValueChanged(void);
+    void block(bool);
+    void sync(void);
 
 signals:
     void valueChanged(QVariant);

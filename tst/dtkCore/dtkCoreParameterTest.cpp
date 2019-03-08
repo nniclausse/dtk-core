@@ -577,8 +577,8 @@ void dtkCoreParameterTestCase::testSignals(void)
     dtk::d_real pr("pr", 0.0, -10.0, 10.0);
     dtk::d_real default_value("default_value", 0.0, -10.0, 10.0);
     dtk::d_real bad_value(12345.6789);
-    QVariant    variant_good = QVariant(3.14);
-    QVariant    variant_bad  = QVariant(31415.957);
+    QVariant variant_good = QVariant(3.14);
+    QVariant variant_bad  = QVariant(31415.957);
 
     int signal_count = 0;
     int error_count = 0;
@@ -605,7 +605,7 @@ void dtkCoreParameterTestCase::testSignals(void)
     QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
     QCOMPARE(signal_count, 1);  // check that signal has been sent
 
-    pr.emitValueChanged();  // resend the signal manually
+    pr.sync();                  // resend the signal manually
     QCOMPARE(signal_count, 2);  // check that signal has really been sent
 
     pr.setValue(12345.6789);  // requested value out of range -> should emit a invalidValue signal
@@ -703,17 +703,29 @@ void dtkCoreParameterTestCase::testCreation(void)
 {
     qRegisterMetaType<dtk::d_real *>();
 
+    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+
     QVariantHash map;
-    map["type"] = QString("dtk::d_real");
-    map["label"] = QString("intensity");
-    map["doc"] = QString("Intensity of the light.");
-    map["value"] = 3.14159;
-    map["min"] = -1;
-    map["max"] = 4;
+    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_real>());
+    map["label"] = source.label();
+    map["doc"] = source.documentation();
+    map["value"] = source.value();
+    map["min"] = source.min();
+    map["max"] = source.max();
 
-    auto p = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
+    auto *target = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
 
-    qDebug() << p->variant();
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+
+    QVERIFY(&target_real);
+    QCOMPARE((double)source, (double)(target_real));
+    QCOMPARE(source.min(), target_real.min());
+    QCOMPARE(source.max(), target_real.max());
+    QCOMPARE(source.decimals(), target_real.decimals());
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)
