@@ -93,6 +93,15 @@ inline void dtkCoreParameter<T, Enable>::setValue(const QVariant &v)
         *this = v.value<dtkCoreParameter>();
         emit valueChanged(this->variant());
 
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+        m_value = map["value"].value<T>();
+
+        emit valueChanged(this->variant());
+
     } else if (v.canConvert<T>()) {
         m_value = v.value<T>();
         emit valueChanged(this->variant());
@@ -438,6 +447,21 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
         // value is copied, do not check bounds
         emit valueChanged(this->variant());
 
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+        m_val = map["value"].value<T>();
+        m_bounds[0] = map["min"].value<T>();
+        m_bounds[1] = map["max"].value<T>();
+
+        if (map.contains("decimals")) {
+            m_decimals = map["decimals"].value<int>();
+        }
+
+        emit valueChanged(this->variant());
+
     } else if (v.canConvert<T>()) {
         T t = v.value<T>();
 
@@ -591,21 +615,21 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterI
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     m_value_index = m_values.indexOf(t);
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(int index, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values), m_value_index(index)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(index)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     Q_ASSERT_X(((index > -1) && (index < values.size())), Q_FUNC_INFO, "Input index is out of range");
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(doc), m_values(values), m_value_index(0)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(0)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
 }
@@ -660,6 +684,16 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 {
     if (v.canConvert<dtkCoreParameterInList<T>>()) {
         *this = v.value<dtkCoreParameterInList<T>>();
+        emit valueChanged(this->variant());
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+        m_values = map["values"].value<QList<T>>();
+        m_value_index = map["index"].value<int>();
+
         emit valueChanged(this->variant());
 
     } else if (v.canConvert<T>()) {
