@@ -1,0 +1,5 @@
+name:         dtk-core
+channels:
+  - dtk
+dependencies:
+    - qt >=5.9.0
