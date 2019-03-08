@@ -22,7 +22,7 @@ template <typename F>
 inline QMetaObject::Connection dtkCoreAbstractParameter::connect(F slot)
 {
     if (!m_connection) {
-        m_connection = dtkCoreAbstractParameterConnectionPtr(new dtkCoreAbstractParameterConnection());
+        m_connection = connection(new dtkCoreAbstractParameterConnection());
     }
 
     return QObject::connect(m_connection.data(), &dtkCoreAbstractParameterConnection::valueChanged, slot);
@@ -32,7 +32,7 @@ template <typename F>
 inline QMetaObject::Connection dtkCoreAbstractParameter::connectError(F slot)
 {
     if (!m_connection) {
-        m_connection = dtkCoreAbstractParameterConnectionPtr(new dtkCoreAbstractParameterConnection());
+        m_connection = connection(new dtkCoreAbstractParameterConnection());
     }
 
     return QObject::connect(m_connection.data(), &dtkCoreAbstractParameterConnection::invalidValue, slot);

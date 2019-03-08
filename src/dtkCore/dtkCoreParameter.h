@@ -85,7 +85,8 @@ protected:
     QString m_label;
     QString m_doc;
 
-    dtkCoreAbstractParameterConnectionPtr m_connection;
+    using connection = dtkCoreAbstractParameterConnectionPtr;
+    connection m_connection;
 };
 
 Q_DECLARE_METATYPE(dtkCoreAbstractParameter *);
