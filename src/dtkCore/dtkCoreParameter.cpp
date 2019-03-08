@@ -41,12 +41,46 @@ QString dtkCoreAbstractParameter::documentation(void) const
 
 void dtkCoreAbstractParameter::block(bool b)
 {
-    this->blockSignals(b);
+    if (m_connection)
+        m_connection->blockSignals(b);
 }
 
 void dtkCoreAbstractParameter::sync(void)
 {
-    emit this->valueChanged(this->variant());
+    if (m_connection)
+        emit m_connection->valueChanged(this->variant());
+}
+
+void dtkCoreAbstractParameter::fail(void)
+{
+    if (m_connection)
+        emit m_connection->invalidValue();
+}
+
+bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *source)
+{
+    if (!source->m_connection) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Nothing is done.";
+        return false;
+
+    } else {
+        m_connection = source->m_connection;
+        return true;
+    }
+}
+
+void dtkCoreAbstractParameter::disconnect(void) const
+{
+    if (m_connection) {
+        m_connection->disconnect(SIGNAL(valueChanged(QVariant)));
+    }
+}
+
+void dtkCoreAbstractParameter::disconnectError(void) const
+{
+    if (m_connection) {
+        m_connection->disconnect(SIGNAL(invalidValue()));
+    }
 }
 
 dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariant& v)

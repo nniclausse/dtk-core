@@ -584,22 +584,19 @@ void dtkCoreParameterTestCase::testSignals(void)
     int error_count = 0;
 
     // check the signal capture for the next setValue( sqrt(2) ) ;
-    connect(&pr,
-            &dtk::d_real::valueChanged,
-            [=, &signal_count] (QVariant v) {
-                //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
-                QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
-                signal_count++;
-            }
-            );
+    pr.connect(
+        [=, &signal_count] (QVariant v) {
+            //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
+            QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+            signal_count++;
+        });
 
     // catch invalid values setting
-    connect(&pr,
-            &dtk::d_real::invalidValue,
-            [=, &error_count] () {
-                error_count++;
-            }
-            );
+    pr.connectError(
+        [=, &error_count] () {
+            error_count++;
+        }
+        );
 
     pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
     QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
@@ -613,7 +610,8 @@ void dtkCoreParameterTestCase::testSignals(void)
     QCOMPARE(error_count, 1);   // error count incremented
     QCOMPARE(signal_count, 2);  // valid_signal not catched
 
-    pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
+    pr.disconnect();
+    //pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
 
     pr.setValue(1.0);            // this one is not catched by the previous signal anymore
     QCOMPARE(pr.value(), 1.0); // value has been changed

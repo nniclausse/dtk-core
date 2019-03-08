@@ -15,6 +15,30 @@
 #include "dtkCoreMetaType.h"
 
 // ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+template <typename F>
+inline QMetaObject::Connection dtkCoreAbstractParameter::connect(F slot)
+{
+    if (!m_connection) {
+        m_connection = dtkCoreAbstractParameterConnectionPtr(new dtkCoreAbstractParameterConnection());
+    }
+
+    return QObject::connect(m_connection.data(), &dtkCoreAbstractParameterConnection::valueChanged, slot);
+}
+
+template <typename F>
+inline QMetaObject::Connection dtkCoreAbstractParameter::connectError(F slot)
+{
+    if (!m_connection) {
+        m_connection = dtkCoreAbstractParameterConnectionPtr(new dtkCoreAbstractParameterConnection());
+    }
+
+    return QObject::connect(m_connection.data(), &dtkCoreAbstractParameterConnection::invalidValue, slot);
+}
+
+// ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version implementation
 // ///////////////////////////////////////////////////////////////////
 
@@ -120,7 +144,7 @@ inline void dtkCoreParameter<T, Enable>::setValue(const QVariant &v)
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameter<T, Enable>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->fail();
         return;
     }
     this->sync();
@@ -478,7 +502,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const T&
 {
     if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
         dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-        emit invalidValue();
+        this->fail();
 
     } else if (t != m_val) {
         m_val = t;
@@ -511,7 +535,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
 
         if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
             dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-            emit invalidValue();
+            this->fail();
             return;
 
         } else if (t != m_val) {
@@ -523,7 +547,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameter<T, dtk::parameter_arithmetic<T>>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->fail();
         return;
     }
     this->sync();
@@ -701,7 +725,7 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 {
     if (index < 0 || index > m_values.size()-1) {
         dtkWarn() << Q_FUNC_INFO << "Value index (" << index << ") is out of range [" << 0 << "," << m_values.size()-1 << "]";
-        emit invalidValue();
+        this->fail();
 
     } else {
         m_value_index = index;
@@ -715,7 +739,7 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
     int index = m_values.indexOf(t);
     if (index < 0) {
         dtkWarn() << Q_FUNC_INFO << "Value index (" << index << ") is out of range [" << 0 << "," << m_values.size()-1 << "]";
-        emit invalidValue();
+        this->fail();
 
     } else {
         m_value_index = index;
@@ -741,7 +765,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
         int index = m_values.indexOf(v.value<T>());
         if (index < 0) {
             dtkWarn() << Q_FUNC_INFO << "Value is not part of the admissible ones.";
-            emit invalidValue();
+            this->fail();
             return;
 
         } else {
@@ -753,7 +777,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameterInList<T>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->fail();
         return;
     }
     this->sync();

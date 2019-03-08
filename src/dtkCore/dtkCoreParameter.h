@@ -30,6 +30,21 @@ namespace dtk {
 }
 
 // ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+class DTKCORE_EXPORT dtkCoreAbstractParameterConnection : public QObject
+{
+    Q_OBJECT
+
+signals:
+    void valueChanged(QVariant);
+    void invalidValue(void);
+};
+
+using dtkCoreAbstractParameterConnectionPtr = QSharedPointer<dtkCoreAbstractParameterConnection>;
+
+// ///////////////////////////////////////////////////////////////////
 // dtkCoreAbstractParameter interface
 // ///////////////////////////////////////////////////////////////////
 
@@ -53,10 +68,15 @@ public:
 
     void block(bool);
     void sync(void);
+    void fail(void);
 
-signals:
-    void valueChanged(QVariant);
-    void invalidValue();
+    template <typename F> QMetaObject::Connection connect(F);
+    template <typename F> QMetaObject::Connection connectError(F);
+
+    void disconnect(void) const;
+    void disconnectError(void) const;
+
+    bool shareConnectionWith(dtkCoreAbstractParameter *);
 
 public:
     static dtkCoreAbstractParameter *create(const QVariant&);
@@ -64,6 +84,8 @@ public:
 protected:
     QString m_label;
     QString m_doc;
+
+    dtkCoreAbstractParameterConnectionPtr m_connection;
 };
 
 Q_DECLARE_METATYPE(dtkCoreAbstractParameter *);
