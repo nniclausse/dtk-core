@@ -98,7 +98,7 @@ inline void dtkCoreParameter<T, Enable>::setValue(const QVariant &v)
 
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
-        m_val = map["value"].value<T>();
+        m_value = map["value"].value<T>();
 
         emit valueChanged(this->variant());
 

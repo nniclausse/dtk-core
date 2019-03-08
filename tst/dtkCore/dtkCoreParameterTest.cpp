@@ -710,7 +710,6 @@ void dtkCoreParameterTestCase::testCreation(void)
     map["value"] = 3.14159;
     map["min"] = -1;
     map["max"] = 4;
-    map["decimals"] = ;
 
     auto p = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
 
