@@ -30,18 +30,16 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreMetaContainerSequentialTest.tpp
   dtkCoreMetaTypeTest.h
   dtkCoreParameterTest.h
-  dtkCorePluginFactoryTest.h
-  dtkCoreSettingsTest.h)
+  dtkCorePluginFactoryTest.h)
 
 set(${PROJECT_NAME}_SOURCES
   dtkCoreIOCompressorTest.cpp
   dtkCoreMetaContainerSequentialTest.cpp
   dtkCoreMetaTypeTest.cpp
   dtkCoreParameterTest.cpp
-  dtkCorePluginFactoryTest.cpp
-  dtkCoreSettingsTest.cpp)
+  dtkCorePluginFactoryTest.cpp)
 
-## #########################n##########################################
+## ###################################################################
 ## Input - introspected
 ## ###################################################################
 
@@ -79,7 +77,6 @@ add_test(dtkCoreMetaTypeTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${
 add_test(dtkCoreMetaContainerSequentialTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaContainerSequentialTest)
 add_test(dtkCoreParameterTest               ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreParameterTest)
 add_test(dtkCorePluginFactoryTest           ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCorePluginFactoryTest)
-add_test(dtkCoreSettingsTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreSettingsTest)
 
 ######################################################################
 ### CMakeLists.txt ends here
