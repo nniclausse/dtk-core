@@ -247,6 +247,8 @@ namespace dtk {
     using d_bool   = dtkCoreParameter<bool>;
 
     using d_string = dtkCoreParameter<QString>;
+
+    using d_inliststring = dtkCoreParameterInList<QString>;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -260,6 +262,7 @@ Q_DECLARE_METATYPE(dtk::d_int);
 Q_DECLARE_METATYPE(dtk::d_real);
 Q_DECLARE_METATYPE(dtk::d_bool);
 Q_DECLARE_METATYPE(dtk::d_string);
+Q_DECLARE_METATYPE(dtk::d_inliststring);
 
 Q_DECLARE_METATYPE(dtk::d_uchar*);
 Q_DECLARE_METATYPE(dtk::d_char*);
@@ -268,6 +271,7 @@ Q_DECLARE_METATYPE(dtk::d_int*);
 Q_DECLARE_METATYPE(dtk::d_real*);
 Q_DECLARE_METATYPE(dtk::d_bool*);
 Q_DECLARE_METATYPE(dtk::d_string*);
+Q_DECLARE_METATYPE(dtk::d_inliststring*);
 
 // ///////////////////////////////////////////////////////////////////
 
