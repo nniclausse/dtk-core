@@ -705,7 +705,12 @@ void dtkCoreParameterTestCase::testCreation(void)
 
     QVariantHash map;
     map["type"] = QString("dtk::d_real");
-    map["label"] = QString("toto");
+    map["label"] = QString("intensity");
+    map["doc"] = QString("Intensity of the light.");
+    map["value"] = 3.14159;
+    map["min"] = -1;
+    map["max"] = 4;
+    map["decimals"] = ;
 
     auto p = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
 
