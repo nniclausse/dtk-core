@@ -27,6 +27,7 @@ private slots:
     void init(void);
 
 private slots:
+    void testLabel(void);
     void testDocumentation(void);
     void testValue(void);
     void testBounds(void);
@@ -38,6 +39,7 @@ private slots:
     void testBoolean(void);
     void testSignals();
     void testText();
+    void testCreation(void);
 
 private slots:
     void cleanupTestCase(void);
