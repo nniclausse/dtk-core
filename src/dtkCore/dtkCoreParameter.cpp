@@ -14,7 +14,7 @@
 
 #include "dtkCoreParameter.h"
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(connection c, const QString& label, const QString& doc) : m_connection(c), m_label(label), m_doc(doc)
 {
 
 }
@@ -47,14 +47,29 @@ void dtkCoreAbstractParameter::block(bool b)
 
 void dtkCoreAbstractParameter::sync(void)
 {
-    if (m_connection)
+    if (m_connection) {
         emit m_connection->valueChanged(this->variant());
+    }
 }
 
-void dtkCoreAbstractParameter::fail(void)
+void dtkCoreAbstractParameter::disconnect(void) const
+{
+    if (m_connection) {
+        m_connection->disconnect(SIGNAL(valueChanged(QVariant)));
+    }
+}
+
+void dtkCoreAbstractParameter::syncFail(void)
 {
     if (m_connection)
         emit m_connection->invalidValue();
+}
+
+void dtkCoreAbstractParameter::disconnectFail(void) const
+{
+    if (m_connection) {
+        m_connection->disconnect(SIGNAL(invalidValue()));
+    }
 }
 
 bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *source)
@@ -66,20 +81,6 @@ bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *sou
     } else {
         m_connection = source->m_connection;
         return true;
-    }
-}
-
-void dtkCoreAbstractParameter::disconnect(void) const
-{
-    if (m_connection) {
-        m_connection->disconnect(SIGNAL(valueChanged(QVariant)));
-    }
-}
-
-void dtkCoreAbstractParameter::disconnectError(void) const
-{
-    if (m_connection) {
-        m_connection->disconnect(SIGNAL(invalidValue()));
     }
 }
 

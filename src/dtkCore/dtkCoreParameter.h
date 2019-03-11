@@ -30,7 +30,7 @@ namespace dtk {
 }
 
 // ///////////////////////////////////////////////////////////////////
-//
+// Helper class managing connection
 // ///////////////////////////////////////////////////////////////////
 
 class DTKCORE_EXPORT dtkCoreAbstractParameterConnection : public QObject
@@ -40,9 +40,13 @@ class DTKCORE_EXPORT dtkCoreAbstractParameterConnection : public QObject
 signals:
     void valueChanged(QVariant);
     void invalidValue(void);
+
+public:
+    QMetaObject::Connection value;
+    QMetaObject::Connection invalid;
 };
 
-using dtkCoreAbstractParameterConnectionPtr = QSharedPointer<dtkCoreAbstractParameterConnection>;
+Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreAbstractParameterConnection>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreAbstractParameter interface
@@ -53,8 +57,11 @@ class DTKCORE_EXPORT dtkCoreAbstractParameter : public QObject
     Q_OBJECT
 
 public:
+    using connection = std::shared_ptr<dtkCoreAbstractParameterConnection>;
+
+public:
      dtkCoreAbstractParameter(void) = default;
-     dtkCoreAbstractParameter(const QString&, const QString& = QString());
+     dtkCoreAbstractParameter(connection, const QString&, const QString& = QString());
     ~dtkCoreAbstractParameter(void) = default;
 
     void setLabel(const QString&);
@@ -66,26 +73,26 @@ public:
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
 
+#pragma mark - Connection management
+
     void block(bool);
     void sync(void);
-    void fail(void);
-
     template <typename F> QMetaObject::Connection connect(F);
-    template <typename F> QMetaObject::Connection connectError(F);
-
     void disconnect(void) const;
-    void disconnectError(void) const;
+
+    void syncFail(void);
+    template <typename F> QMetaObject::Connection connectFail(F);
+    void disconnectFail(void) const;
 
     bool shareConnectionWith(dtkCoreAbstractParameter *);
 
-public:
+#pragma mark - Factory method
+
     static dtkCoreAbstractParameter *create(const QVariant&);
 
 protected:
     QString m_label;
     QString m_doc;
-
-    using connection = dtkCoreAbstractParameterConnectionPtr;
     connection m_connection;
 };
 
