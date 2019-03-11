@@ -78,11 +78,11 @@ public:
     void block(bool);
     void sync(void);
     template <typename F> QMetaObject::Connection connect(F);
-    void disconnect(void) const;
+    void disconnect(void);
 
     void syncFail(void);
     template <typename F> QMetaObject::Connection connectFail(F);
-    void disconnectFail(void) const;
+    void disconnectFail(void);
 
     bool shareConnectionWith(dtkCoreAbstractParameter *);
 

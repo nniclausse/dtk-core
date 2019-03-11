@@ -52,10 +52,14 @@ void dtkCoreAbstractParameter::sync(void)
     }
 }
 
-void dtkCoreAbstractParameter::disconnect(void) const
+void dtkCoreAbstractParameter::disconnect(void)
 {
     if (m_connection) {
-        m_connection->disconnect(SIGNAL(valueChanged(QVariant)));
+        if (m_connection.use_count() > 1) {
+            m_connection = connection(nullptr);
+        } else if (m_connection->value) {
+            m_connection->disconnect(m_connection->value);
+        }
     }
 }
 
@@ -65,10 +69,14 @@ void dtkCoreAbstractParameter::syncFail(void)
         emit m_connection->invalidValue();
 }
 
-void dtkCoreAbstractParameter::disconnectFail(void) const
+void dtkCoreAbstractParameter::disconnectFail(void)
 {
     if (m_connection) {
-        m_connection->disconnect(SIGNAL(invalidValue()));
+        if (m_connection.use_count() > 1) {
+            m_connection = connection(nullptr);
+        } else if (m_connection->value) {
+            m_connection->disconnect(m_connection->invalid);
+        }
     }
 }
 

@@ -649,6 +649,30 @@ void dtkCoreParameterTestCase::testConnection(void)
 
     ppp.sync();
     QCOMPARE(signal_count, 5);
+
+    ppp.disconnect();
+    ppp.sync();
+    QCOMPARE(signal_count, 5);
+    pp.sync();
+    QCOMPARE(signal_count, 6);
+
+    int signal_bis_count = 0;
+    auto fbis = [=, &signal_bis_count] (QVariant v) {
+                    signal_bis_count++;
+                };
+
+    pp.connect(fbis);
+    pp.sync();
+    QCOMPARE(signal_count, 6);
+    QCOMPARE(signal_bis_count, 1);
+    pr.sync();
+    QCOMPARE(signal_count, 7);
+    QCOMPARE(signal_bis_count, 1);
+
+    ppp.shareConnectionWith(pp);
+    pr.sync();
+    QCOMPARE(signal_count, 7);
+    QCOMPARE(signal_bis_count, 2);
 }
 
 void dtkCoreParameterTestCase::testText(void)
