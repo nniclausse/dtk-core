@@ -87,7 +87,12 @@ bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *sou
         return false;
 
     } else {
-        m_connection = source->m_connection;
+        if (this != source) {
+            if (m_connection != source->m_connection) {
+                m_connection = source->m_connection;
+            }
+            return true;
+        }
         return true;
     }
 }
