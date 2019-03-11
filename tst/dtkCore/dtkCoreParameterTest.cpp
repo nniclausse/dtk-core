@@ -661,7 +661,7 @@ void dtkCoreParameterTestCase::testConnection(void)
                     signal_bis_count++;
                 };
 
-    pp.connect(fbis);
+    auto connection = pp.connect(fbis);
     pp.sync();
     QCOMPARE(signal_count, 6);
     QCOMPARE(signal_bis_count, 1);
@@ -669,8 +669,8 @@ void dtkCoreParameterTestCase::testConnection(void)
     QCOMPARE(signal_count, 7);
     QCOMPARE(signal_bis_count, 1);
 
-    ppp.shareConnectionWith(pp);
-    pr.sync();
+    ppp.shareConnectionWith(&pp);
+    ppp.sync();
     QCOMPARE(signal_count, 7);
     QCOMPARE(signal_bis_count, 2);
 }
