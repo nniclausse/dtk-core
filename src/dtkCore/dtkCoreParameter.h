@@ -92,7 +92,8 @@ public:
 
 #pragma mark - Factory method
 
-    static dtkCoreAbstractParameter *create(const QVariant&);
+public:
+    static dtkCoreAbstractParameter *create(const QVariantHash&);
 
 protected:
     QString m_label;

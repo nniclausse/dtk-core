@@ -105,13 +105,13 @@ bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *sou
     }
 }
 
-dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariant& v)
+dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariantHash& map)
 {
-    auto map = v.toHash();
     if (map.empty()) {
-        qDebug() << Q_FUNC_INFO << "Input variant does not contain a VraiantHash. Nullptr is returned.";
+        qDebug() << Q_FUNC_INFO << "Input variant does not contain a VariantHash. Nullptr is returned.";
         return nullptr;
     }
+
     QString p_type_name = map["type"].toString();
     int p_type_id = QMetaType::type(qPrintable(p_type_name));
 
@@ -140,7 +140,7 @@ dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariant& v)
         return nullptr;
     }
 
-    p->setValue(v);
+    p->setValue(QVariant(map));
     return p;
 }
 

@@ -763,7 +763,7 @@ void dtkCoreParameterTestCase::testCreation(void)
     map["min"] = source.min();
     map["max"] = source.max();
 
-    auto *target = dtkCoreAbstractParameter::create(dtk::variantFromValue(map));
+    auto *target = dtkCoreAbstractParameter::create(map);
 
     QVERIFY(target);
     QCOMPARE(target->label(), source.label());
