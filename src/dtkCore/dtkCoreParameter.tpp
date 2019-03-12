@@ -114,7 +114,6 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
             self.m_connection = i.m_connection;
         } else {
             dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
-            qDebug() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
         }
     }
 }

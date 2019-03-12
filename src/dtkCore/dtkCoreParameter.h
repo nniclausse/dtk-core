@@ -131,7 +131,7 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable = void>
-class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreParameterBase<dtkCoreParameter<T, Enable>>
+class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreParameterBase<dtkCoreParameter<T>>
 {
 public:
      dtkCoreParameter(void) = default;
