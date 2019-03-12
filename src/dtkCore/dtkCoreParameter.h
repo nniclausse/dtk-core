@@ -59,7 +59,7 @@ signals:
     void invalidValue();
 
 public:
-    static dtkCoreAbstractParameter *create(const QVariant&);
+    static dtkCoreAbstractParameter *create(const QVariantHash&);
 
 protected:
     QString m_label;
