@@ -633,21 +633,32 @@ void dtkCoreParameterTestCase::testConnection(void)
     // Test shared connection
 
     pr.setValue(std::sqrt(2));
+
+    // No implicit connection
     dtk::d_real p_shared = pr;
+    p_shared.sync();            // This call must not call lambda f
+    QCOMPARE(signal_count, 2);  // valid_signal must be thus the same
 
     pr.connect(f);
     p_shared.shareConnectionWith(&pr);
 
-    p_shared.sync();           // THis call must call lambda f
+    p_shared.sync();            // This call must call lambda f
     QCOMPARE(signal_count, 3);  // valid_signal must be thus incremented
 
+    // No implicit sharing of connection
     dtk::d_real pp = p_shared;
-    dtk::d_real ppp(pr.variant());
-
     pp.sync();
+    QCOMPARE(signal_count, 3);
+
+    dtk::d_real ppp;
+    ppp.copyAndShare(&pr);
+    ppp.sync();
     QCOMPARE(signal_count, 4);
 
-    ppp.sync();
+    auto vv = pr.variant();
+    qDebug();
+    pp.copyAndShare(vv);
+    pp.sync();
     QCOMPARE(signal_count, 5);
 
     ppp.disconnect();
@@ -661,7 +672,7 @@ void dtkCoreParameterTestCase::testConnection(void)
                     signal_bis_count++;
                 };
 
-    auto connection = pp.connect(fbis);
+    pp.connect(fbis);
     pp.sync();
     QCOMPARE(signal_count, 6);
     QCOMPARE(signal_bis_count, 1);

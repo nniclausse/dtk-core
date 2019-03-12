@@ -61,7 +61,8 @@ public:
 
 public:
      dtkCoreAbstractParameter(void) = default;
-     dtkCoreAbstractParameter(connection, const QString&, const QString& = QString());
+     dtkCoreAbstractParameter(const QString&, const QString& = QString());
+     dtkCoreAbstractParameter(const dtkCoreAbstractParameter&);
     ~dtkCoreAbstractParameter(void) = default;
 
     void setLabel(const QString&);
@@ -86,6 +87,9 @@ public:
 
     bool shareConnectionWith(dtkCoreAbstractParameter *);
 
+    virtual void copyAndShare(dtkCoreAbstractParameter *) = 0;
+    virtual void copyAndShare(const QVariant&) = 0;
+
 #pragma mark - Factory method
 
     static dtkCoreAbstractParameter *create(const QVariant&);
@@ -94,16 +98,39 @@ protected:
     QString m_label;
     QString m_doc;
     connection m_connection;
+
+protected:
+    mutable bool m_enable_share_connection = true;
 };
 
 Q_DECLARE_METATYPE(dtkCoreAbstractParameter *);
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameterBase CRTP class
+// ///////////////////////////////////////////////////////////////////
+
+template <typename Derive>
+class DTKCORE_EXPORT dtkCoreParameterBase : public dtkCoreAbstractParameter
+{
+public:
+     dtkCoreParameterBase(void) = default;
+     dtkCoreParameterBase(const QString&, const QString& = QString());
+     dtkCoreParameterBase(const dtkCoreParameterBase&);
+     dtkCoreParameterBase(const QVariant&);
+    ~dtkCoreParameterBase(void) = default;
+
+public:
+    QVariant variant(void) const final;
+    void copyAndShare(dtkCoreAbstractParameter *) final;
+    void copyAndShare(const QVariant&) final;
+};
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable = void>
-class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreAbstractParameter
+class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreParameterBase<dtkCoreParameter<T, Enable>>
 {
 public:
      dtkCoreParameter(void) = default;
@@ -124,9 +151,11 @@ public:
     void setValue(const QVariant&) override;
 
     T value(void) const;
-    QVariant variant(void) const override;
 
 private:
+    using dtkCoreAbstractParameter::m_label;
+    using dtkCoreAbstractParameter::m_doc;
+
     T m_value;
 };
 
@@ -143,7 +172,7 @@ DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug&, d
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
-class DTKCORE_EXPORT dtkCoreParameter<T, dtk::parameter_arithmetic<T>> : public dtkCoreAbstractParameter
+class DTKCORE_EXPORT dtkCoreParameter<T, dtk::parameter_arithmetic<T>> : public dtkCoreParameterBase<dtkCoreParameter<T>>
 {
 public:
      dtkCoreParameter(void) = default;
@@ -152,7 +181,6 @@ public:
     dtkCoreParameter(const T&);
     dtkCoreParameter(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
     dtkCoreParameter(const dtkCoreParameter&);
-    dtkCoreParameter(dtkCoreParameter&&);
 
     dtkCoreParameter(const QString&, const T&, const T&, const T&, const QString& doc = QString());
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameter(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
@@ -196,7 +224,6 @@ public:
     void setValue(const QVariant&) override;
 
     T value(void) const;
-    QVariant variant(void) const override;
 
     T min(void) const;
     T max(void) const;
@@ -208,6 +235,9 @@ public:
     int decimals(void) const;
 
 protected:
+    using dtkCoreAbstractParameter::m_label;
+    using dtkCoreAbstractParameter::m_doc;
+
     T m_val = T(0);
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
@@ -228,7 +258,7 @@ DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T>);
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
-class DTKCORE_EXPORT dtkCoreParameterInList : public dtkCoreAbstractParameter
+class DTKCORE_EXPORT dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
 public:
      dtkCoreParameterInList(void) = default;
@@ -253,9 +283,11 @@ public:
     int valueIndex(void) const;
     T value(void) const;
     QList<T> values(void) const;
-    QVariant variant(void) const override;
 
 private:
+    using dtkCoreAbstractParameter::m_label;
+    using dtkCoreAbstractParameter::m_doc;
+
     QList<T> m_values;
     int m_value_index = -1;
 };

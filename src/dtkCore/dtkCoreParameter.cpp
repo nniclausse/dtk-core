@@ -14,9 +14,16 @@
 
 #include "dtkCoreParameter.h"
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(connection c, const QString& label, const QString& doc) : m_connection(c), m_label(label), m_doc(doc)
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
 {
 
+}
+
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(const dtkCoreAbstractParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
+{
+    if (o.m_enable_share_connection) {
+        m_connection = o.m_connection;
+    }
 }
 
 void dtkCoreAbstractParameter::setLabel(const QString& label)
@@ -82,7 +89,8 @@ void dtkCoreAbstractParameter::disconnectFail(void)
 
 bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *source)
 {
-    if (!source->m_connection) {
+    m_enable_share_connection = false;
+    if (!source || !source->m_connection) {
         dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Nothing is done.";
         return false;
 
