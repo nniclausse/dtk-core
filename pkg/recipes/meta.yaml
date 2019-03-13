@@ -12,7 +12,6 @@ requirements:
   build:
     - cmake >=3.2.0
     - binutils_impl_linux-64<2.31.0 # [linux]
-    - dtk-log
     - {{ compiler('cxx') }}
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
@@ -42,9 +41,11 @@ requirements:
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
   host:
+    - dtk-log
     - qt >=5.9.0
 
   run:
+    - dtk-log
     - qt >=5.9.0
 
 about:
