@@ -734,8 +734,13 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
-        m_values = map["values"].value<QList<T>>();
         m_value_index = map["index"].value<int>();
+
+        m_values.clear();
+        auto list = map["values"].toList();
+        for(auto item : list) {
+            m_values << item.value<T>();
+        }
 
     } else if (v.canConvert<T>()) {
         int index = m_values.indexOf(v.value<T>());
@@ -803,14 +808,14 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterInList<T>& p)
     QString label; s >> label;
     int index; s >> index;
     int size; s >> size;
-    QList<T> values(size);
+    QList<T> values;
     for (int i = 0; i < size; ++i) {
         T t; s >> t;
-        values[i] = t;
+        values << t;
     }
     QString doc; s >> doc;
 
-    p = dtkCoreParameter<T>(label, index, values, doc);
+    p = dtkCoreParameterInList<T>(label, index, values, doc);
     return s;
 }
 
