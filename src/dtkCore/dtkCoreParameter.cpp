@@ -19,6 +19,13 @@ dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& label, const Q
 
 }
 
+dtkCoreAbstractParameter::dtkCoreAbstractParameter(const dtkCoreAbstractParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
+{
+    if (o.m_enable_share_connection) {
+        m_connection = o.m_connection;
+    }
+}
+
 void dtkCoreAbstractParameter::setLabel(const QString& label)
 {
     this->m_label = label;
@@ -41,12 +48,61 @@ QString dtkCoreAbstractParameter::documentation(void) const
 
 void dtkCoreAbstractParameter::block(bool b)
 {
-    this->blockSignals(b);
+    if (m_connection)
+        m_connection->blockSignals(b);
 }
 
 void dtkCoreAbstractParameter::sync(void)
 {
-    emit this->valueChanged(this->variant());
+    if (m_connection) {
+        emit m_connection->valueChanged(this->variant());
+    }
+}
+
+void dtkCoreAbstractParameter::disconnect(void)
+{
+    if (m_connection) {
+        if (m_connection.use_count() > 1) {
+            m_connection = connection(nullptr);
+        } else if (m_connection->value) {
+            m_connection->disconnect(m_connection->value);
+        }
+    }
+}
+
+void dtkCoreAbstractParameter::syncFail(void)
+{
+    if (m_connection)
+        emit m_connection->invalidValue();
+}
+
+void dtkCoreAbstractParameter::disconnectFail(void)
+{
+    if (m_connection) {
+        if (m_connection.use_count() > 1) {
+            m_connection = connection(nullptr);
+        } else if (m_connection->value) {
+            m_connection->disconnect(m_connection->invalid);
+        }
+    }
+}
+
+bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *source)
+{
+    m_enable_share_connection = false;
+    if (!source || !source->m_connection) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Nothing is done.";
+        return false;
+
+    } else {
+        if (this != source) {
+            if (m_connection != source->m_connection) {
+                m_connection = source->m_connection;
+            }
+            return true;
+        }
+        return true;
+    }
 }
 
 dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariantHash& map)

@@ -15,28 +15,133 @@
 #include "dtkCoreMetaType.h"
 
 // ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+template <typename F>
+inline QMetaObject::Connection dtkCoreAbstractParameter::connect(F slot)
+{
+    m_enable_share_connection = false;
+    if (!m_connection || m_connection.use_count() > 1) {
+        m_connection = connection(new dtkCoreAbstractParameterConnection());
+    }
+    if (m_connection->value) {
+        m_connection->disconnect(m_connection->value);
+    }
+
+    m_connection->value = QObject::connect(m_connection.get(), &dtkCoreAbstractParameterConnection::valueChanged, slot);
+    return m_connection->value;
+}
+
+template <typename F>
+inline QMetaObject::Connection dtkCoreAbstractParameter::connectFail(F slot)
+{
+    m_enable_share_connection = false;
+    if (!m_connection || m_connection.use_count() > 1) {
+        m_connection = connection(new dtkCoreAbstractParameterConnection());
+    }
+    if (m_connection->invalid) {
+        m_connection->disconnect(m_connection->invalid);
+    }
+
+    m_connection->invalid = QObject::connect(m_connection.get(), &dtkCoreAbstractParameterConnection::invalidValue, slot);
+    return m_connection->invalid;
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+template <typename Derive>
+inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label, const QString& doc) : dtkCoreAbstractParameter(label, doc)
+{
+
+}
+
+template <typename Derive>
+inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const dtkCoreParameterBase& o) : dtkCoreAbstractParameter(o)
+{
+
+}
+
+template <typename Derive>
+inline QVariant dtkCoreParameterBase<Derive>::variant(void) const
+{
+    bool old = this->m_enable_share_connection;
+    if (!old)
+        this->m_enable_share_connection = true;
+    QVariant res = dtk::variantFromValue(static_cast<const Derive&>(*this));
+    this->m_enable_share_connection = old;
+    return res;
+}
+
+template <typename Derive>
+inline void dtkCoreParameterBase<Derive>::copyAndShare(dtkCoreAbstractParameter *source)
+{
+    if (!source) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done";
+
+    } else {
+        if (this != source) {
+            Derive *s = dynamic_cast<Derive *>(source);
+            if (s) {
+                Derive *self = static_cast<Derive *>(this);
+                *self = *s;
+                if (s->m_connection) {
+                    self->m_connection = s->m_connection;
+                } else {
+                    dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
+                }
+
+            } else {
+                dtkWarn() << Q_FUNC_INFO << "Input parameter is not of same type than target one. Nothing is done";
+            }
+        }
+    }
+}
+
+template <typename Derive>
+inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
+{
+    if (!v.canConvert<Derive>()) {
+        dtkWarn() << Q_FUNC_INFO << "Input variant is not of type" << QMetaType::typeName(qMetaTypeId<Derive>()) << ". Nothing is done.";
+
+    } else {
+        Derive i = v.value<Derive>();
+        Derive& self = static_cast<Derive&>(*this);
+        self = i;
+        if (i.m_connection) {
+            self.m_connection = i.m_connection;
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
+        }
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version implementation
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QVariant& v) : dtkCoreAbstractParameter()
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameter>()
 {
     if (v.canConvert<dtkCoreParameter>()) {
-        *this = v.value<dtkCoreParameter>();
+        auto o(v.value<dtkCoreParameter>());
+        *this = o;
 
-    } else {
-        m_value = v.toString();
+    } else if (v.canConvert<T>()) {
+        m_value = v.value<T>();
     }
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_value(o.m_value)
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreParameterBase<dtkCoreParameter>(o), m_value(o.m_value)
 {
 
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QString& label, const T& t, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_value(t)
+inline dtkCoreParameter<T, Enable>::dtkCoreParameter(const QString& label, const T& t, const QString& doc) : dtkCoreParameterBase<dtkCoreParameter>(label, doc), m_value(t)
 {
 
 }
@@ -120,7 +225,7 @@ inline void dtkCoreParameter<T, Enable>::setValue(const QVariant &v)
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameter<T, Enable>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->syncFail();
         return;
     }
     this->sync();
@@ -130,12 +235,6 @@ template <typename T, typename Enable>
 inline T dtkCoreParameter<T, Enable>::value(void) const
 {
     return m_value;
-}
-
-template <typename T, typename Enable>
-inline QVariant dtkCoreParameter<T, Enable>::variant(void) const
-{
-    return dtk::variantFromValue(*this);
 }
 
 template <typename T>
@@ -178,15 +277,16 @@ inline dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug& dbg, dtkCo
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const T& t) : dtkCoreAbstractParameter(), m_val(t)
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const T& t) : dtkCoreParameterBase<dtkCoreParameter>(), m_val(t)
 {
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QVariant& v) : dtkCoreAbstractParameter()
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameter>()
 {
     if (v.canConvert<dtkCoreParameter<T>>()) {
-        *this = v.value<dtkCoreParameter<T>>();
+        auto o(v.value<dtkCoreParameter<T>>());
+        *this = o;
 
     } else if (v.canConvert<T>()) {
         m_val = v.value<T>();
@@ -194,22 +294,18 @@ inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const dtkCoreParameter& o) : dtkCoreParameterBase<dtkCoreParameter>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
 {
+
 }
 
 template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(dtkCoreParameter&& o) : dtkCoreAbstractParameter(o.m_label, o.m_doc), m_val(std::move(o.m_val)), m_bounds(std::move(o.m_bounds)), m_decimals(std::move(o.m_decimals))
-{
-}
-
-template <typename T>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_val(t), m_bounds({min, max})
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameter>(label, doc), m_val(t), m_bounds({min, max})
 {
 }
 
 template <typename T> template <typename U, typename>
-inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
+inline dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::dtkCoreParameter(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreParameterBase<dtkCoreParameter>(label, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
 {
 }
 
@@ -478,7 +574,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const T&
 {
     if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
         dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-        emit invalidValue();
+        this->syncFail();
 
     } else if (t != m_val) {
         m_val = t;
@@ -511,7 +607,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
 
         if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
             dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-            emit invalidValue();
+            this->syncFail();
             return;
 
         } else if (t != m_val) {
@@ -523,7 +619,7 @@ inline void dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::setValue(const QV
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameter<T, dtk::parameter_arithmetic<T>>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->syncFail();
         return;
     }
     this->sync();
@@ -533,12 +629,6 @@ template <typename T>
 inline T dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::value(void) const
 {
     return m_val;
-}
-
-template <typename T>
-inline QVariant dtkCoreParameter<T, dtk::parameter_arithmetic<T>>::variant(void) const
-{
-    return dtk::variantFromValue(*this);
 }
 
 template <typename T>
@@ -633,17 +723,18 @@ inline QDebug& operator << (QDebug& dbg, dtkCoreParameter<T> p)
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCoreAbstractParameter()
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
     m_values << t;
     m_value_index = 0;
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dtkCoreAbstractParameter()
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
     if (v.canConvert<dtkCoreParameterInList<T>>()) {
-        *this = v.value<dtkCoreParameterInList<T>>();
+        auto o(v.value<dtkCoreParameterInList<T>>());
+        *this = o;
 
     } else if (v.canConvert<T>()) {
         m_values << v.value<T>();
@@ -652,27 +743,27 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dt
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterInList& o) : dtkCoreAbstractParameter(o.m_doc), m_values(o.m_values), m_value_index(o.m_value_index)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterInList& o) : dtkCoreParameterBase<dtkCoreParameterInList>(o), m_values(o.m_values), m_value_index(o.m_value_index)
 {
 
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     m_value_index = m_values.indexOf(t);
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(index)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(index)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     Q_ASSERT_X(((index > -1) && (index < values.size())), Q_FUNC_INFO, "Input index is out of range");
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const QList<T>& values, const QString& doc) : dtkCoreAbstractParameter(label, doc), m_values(values), m_value_index(0)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(0)
 {
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
 }
@@ -701,7 +792,7 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 {
     if (index < 0 || index > m_values.size()-1) {
         dtkWarn() << Q_FUNC_INFO << "Value index (" << index << ") is out of range [" << 0 << "," << m_values.size()-1 << "]";
-        emit invalidValue();
+        this->syncFail();
 
     } else {
         m_value_index = index;
@@ -715,7 +806,7 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
     int index = m_values.indexOf(t);
     if (index < 0) {
         dtkWarn() << Q_FUNC_INFO << "Value index (" << index << ") is out of range [" << 0 << "," << m_values.size()-1 << "]";
-        emit invalidValue();
+        this->syncFail();
 
     } else {
         m_value_index = index;
@@ -746,7 +837,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
         int index = m_values.indexOf(v.value<T>());
         if (index < 0) {
             dtkWarn() << Q_FUNC_INFO << "Value is not part of the admissible ones.";
-            emit invalidValue();
+            this->syncFail();
             return;
 
         } else {
@@ -758,7 +849,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameterInList<T>>())
                   << ". Nothing is done.";
-        emit invalidValue();
+        this->syncFail();
         return;
     }
     this->sync();
@@ -780,12 +871,6 @@ template <typename T>
 inline QList<T> dtkCoreParameterInList<T>::values(void) const
 {
     return m_values;
-}
-
-template <typename T>
-inline QVariant dtkCoreParameterInList<T>::variant(void) const
-{
-    return dtk::variantFromValue(*this);
 }
 
 template <typename T>

@@ -572,7 +572,7 @@ void dtkCoreParameterTestCase::testBoolean(void)
     QCOMPARE( b1 == b2, false);
 }
 
-void dtkCoreParameterTestCase::testSignals(void)
+void dtkCoreParameterTestCase::testConnection(void)
 {
     dtk::d_real pr("pr", 0.0, -10.0, 10.0);
     dtk::d_real default_value("default_value", 0.0, -10.0, 10.0);
@@ -584,22 +584,16 @@ void dtkCoreParameterTestCase::testSignals(void)
     int error_count = 0;
 
     // check the signal capture for the next setValue( sqrt(2) ) ;
-    connect(&pr,
-            &dtk::d_real::valueChanged,
-            [=, &signal_count] (QVariant v) {
-                //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
-                QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
-                signal_count++;
-            }
-            );
+
+    auto f = [=, &signal_count] (QVariant v) {
+                 //qDebug() << Q_FUNC_INFO << "Value changed catched for *pr* :" << v;  // keeped as a comment for purpose
+                 QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                 signal_count++;
+             };
+    pr.connect(f);
 
     // catch invalid values setting
-    connect(&pr,
-            &dtk::d_real::invalidValue,
-            [=, &error_count] () {
-                error_count++;
-            }
-            );
+    pr.connectFail( [=, &error_count] () { ++error_count; } );
 
     pr.setValue(std::sqrt(2));  // this one is catched by the previous signal
     QCOMPARE(pr.value(), std::sqrt(2)); // same test out of the signal routine
@@ -613,7 +607,8 @@ void dtkCoreParameterTestCase::testSignals(void)
     QCOMPARE(error_count, 1);   // error count incremented
     QCOMPARE(signal_count, 2);  // valid_signal not catched
 
-    pr.disconnect(SIGNAL(valueChanged(QVariant)));  // disconnect the signal to avoid a false QCOMPARE
+    pr.disconnect();  // disconnect the signal to avoid a false QCOMPARE
+
 
     pr.setValue(1.0);            // this one is not catched by the previous signal anymore
     QCOMPARE(pr.value(), 1.0); // value has been changed
@@ -634,6 +629,61 @@ void dtkCoreParameterTestCase::testSignals(void)
     pr.setValue(variant_bad);
     QCOMPARE(pr.value(), variant_good.toDouble());  // value has not been changed
     QCOMPARE(error_count, 3);   // error count incremented
+
+    // Test shared connection
+
+    pr.setValue(std::sqrt(2));
+
+    // No implicit connection
+    dtk::d_real p_shared = pr;
+    p_shared.sync();            // This call must not call lambda f
+    QCOMPARE(signal_count, 2);  // valid_signal must be thus the same
+
+    pr.connect(f);
+    p_shared.shareConnectionWith(&pr);
+
+    p_shared.sync();            // This call must call lambda f
+    QCOMPARE(signal_count, 3);  // valid_signal must be thus incremented
+
+    // No implicit sharing of connection
+    dtk::d_real pp = p_shared;
+    pp.sync();
+    QCOMPARE(signal_count, 3);
+
+    dtk::d_real ppp;
+    ppp.copyAndShare(&pr);
+    ppp.sync();
+    QCOMPARE(signal_count, 4);
+
+    auto vv = pr.variant();
+    qDebug();
+    pp.copyAndShare(vv);
+    pp.sync();
+    QCOMPARE(signal_count, 5);
+
+    ppp.disconnect();
+    ppp.sync();
+    QCOMPARE(signal_count, 5);
+    pp.sync();
+    QCOMPARE(signal_count, 6);
+
+    int signal_bis_count = 0;
+    auto fbis = [=, &signal_bis_count] (QVariant v) {
+                    signal_bis_count++;
+                };
+
+    pp.connect(fbis);
+    pp.sync();
+    QCOMPARE(signal_count, 6);
+    QCOMPARE(signal_bis_count, 1);
+    pr.sync();
+    QCOMPARE(signal_count, 7);
+    QCOMPARE(signal_bis_count, 1);
+
+    ppp.shareConnectionWith(&pp);
+    ppp.sync();
+    QCOMPARE(signal_count, 7);
+    QCOMPARE(signal_bis_count, 2);
 }
 
 void dtkCoreParameterTestCase::testText(void)
