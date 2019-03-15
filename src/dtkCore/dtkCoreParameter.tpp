@@ -285,8 +285,7 @@ template <typename T, typename E>
 inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
 {
     if (v.canConvert<dtkCoreParameterNumeric>()) {
-        auto o(v.value<dtkCoreParameterNumeric>());
-        *this = o;
+        *this = v.value<dtkCoreParameterNumeric>();
 
     } else if (v.canConvert<T>()) {
         m_val = v.value<T>();
@@ -323,10 +322,37 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const QVariant& v) -> dtk
     if (v.canConvert<dtkCoreParameterNumeric>()) {
         *this = v.value<dtkCoreParameterNumeric>();
 
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+        m_val = map["value"].value<T>();
+        m_bounds[0] = map["min"].value<T>();
+        m_bounds[1] = map["max"].value<T>();
+
+        if (map.contains("decimals")) {
+            m_decimals = map["decimals"].value<int>();
+        }
+
     } else if (v.canConvert<T>()) {
-        m_val = v.value<T>();
+        T t = v.value<T>();
+
+        if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
+            dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+            this->syncFail();
+            return;
+
+        } else if (t != m_val) {
+            m_val = t;
+        }
 
     } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterNumeric>())
+                  << ". Nothing is done.";
+        this->syncFail();
         return *this;
     }
     this->sync();
@@ -769,6 +795,63 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, c
 }
 
 template <typename T>
+inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const T& t)
+{
+    int index = m_values.indexOf(t);
+    if (index < 0) {
+        dtkWarn() << Q_FUNC_INFO << "Value index (" << index << ") is out of range [" << 0 << "," << m_values.size()-1 << "]";
+        this->syncFail();
+
+    } else {
+        m_value_index = index;
+        this->sync();
+    }
+    return *this;
+}
+
+template <typename T>
+inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterInList>()) {
+        *this = v.value<dtkCoreParameterInList>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+        m_value_index = map["index"].value<int>();
+
+        m_values.clear();
+        auto list = map["values"].toList();
+        for (auto item : list) {
+            m_values << item.value<T>();
+        }
+
+    } else if (v.canConvert<T>()) {
+        int index = m_values.indexOf(v.value<T>());
+        if (index < 0) {
+            dtkWarn() << Q_FUNC_INFO << "Value is not part of the admissible ones.";
+            this->syncFail();
+            return;
+
+        } else {
+            m_value_index = index;
+        }
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterInList>())
+                  << ". Nothing is done.";
+        this->syncFail();
+        return *this;
+    }
+    this->sync();
+    return *this;
+}
+
+template <typename T>
 inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const dtkCoreParameterInList& o)
 {
     if (this != &o) {
@@ -817,8 +900,8 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
 template <typename T>
 inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 {
-    if (v.canConvert<dtkCoreParameterInList<T>>()) {
-        *this = v.value<dtkCoreParameterInList<T>>();
+    if (v.canConvert<dtkCoreParameterInList>()) {
+        *this = v.value<dtkCoreParameterInList>();
 
     } else if (v.canConvert<QVariantHash>()) {
         auto map = v.toHash();
@@ -847,7 +930,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
-                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterInList<T>>())
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterInList>())
                   << ". Nothing is done.";
         this->syncFail();
         return;
@@ -923,6 +1006,281 @@ inline QDebug& operator << (QDebug& dbg, dtkCoreParameterInList<T> p)
 
     dbg.setAutoInsertSpaces(old_setting);
     return dbg.maybeSpace();
+}
+
+// ///////////////////////////////////////////////////////////////////
+//
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
+{
+    if (t[0] <= t[1]) {
+        m_val = t;
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+    }
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(std::initializer_list<T> args) : dtkCoreParameterBase<dtkCoreParameterRange>()
+{
+    if (args.size == 2 && args[0] <= args[1]) {
+        m_val = args;
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+    }
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterRange>()
+{
+    if (v.canConvert<dtkCoreParameterRange>()) {
+        auto o(v.value<dtkCoreParameterRange>());
+        *this = o;
+
+    } else if (v.canConvert<std::array<T, 2>>()) {
+        auto t = v.value<std::array<T, 2>>();
+        if (t[0] <= t[1]) {
+            m_val = t;
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+        }
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterRange>())
+                  << ". Nothing is done.";
+    }
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const dtkCoreParameterRange& o) : dtkCoreParameterBase<dtkCoreParameterRange>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+{
+
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
+{
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
+template <typename T, typename E> template <typename U, typename>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
+{
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+        m_decimals = decimals;
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (const std::array<T, 2>& t)
+{
+    if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
+        m_val = t;
+        this->sync();
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
+    return *this;
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (std::initializer_list<T> args)
+{
+    if (args.size() == 2 && m_bounds[0] <= args[0] && args[0] <= args[1] && args[1] <= m_bounds[1]) {
+        m_val = args;
+        this->sync();
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not the right number of values or they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
+    return *this;
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterRange>()) {
+        auto o(v.value<dtkCoreParameterRange>());
+        *this = o;
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+
+        auto min = map["min"].value<T>();
+        auto max = map["max"].value<T>();
+
+        auto list = map["values"].toList();
+        auto v_min = list[0].value<T>();
+        auto v_max = list[1].value<T>();
+
+        if (min <= v_min && v_min <= v_max && v_max <= max) {
+            m_bounds = {min, max};
+            m_val = {v_min, v_max};
+
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordred. Nothing is done";
+            this->syncFail();
+            return *this;
+        }
+
+    } else if (v.canConvert<std::array<T, 2>>()) {
+        auto t = v.value<std::array<T, 2>>();
+         if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
+            m_val = t;
+
+         } else {
+             dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordred or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+             this->syncFail();
+             return *this;
+         }
+    }
+    this->sync();
+    return *this;
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (const dtkCoreParameterRange& o)
+{
+    if (this != &o) {
+        m_label = o.m_label;
+        m_doc = o.m_doc;
+        m_val = o.m_val;
+        m_bounds = o.m_bounds;
+        m_decimals = o.m_decimals;
+        this->sync();
+    }
+    return *this;
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
+{
+    if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
+        m_val = t;
+        this->sync();
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
+{
+    if (args.size() == 2 && m_bounds[0] <= args[0] && args[0] <= args[1] && args[1] <= m_bounds[1]) {
+        m_val = args;
+        this->sync();
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are are not the right number of values or not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";"Input values not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterRange>()) {
+        *this = v.value<dtkCoreParameterRange>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+
+        auto min = map["min"].value<T>();
+        auto max = map["max"].value<T>();
+
+        auto list = map["values"].toList();
+        auto v_min = list[0].value<T>();
+        auto v_max = list[1].value<T>();
+
+        if (min <= v_min && v_min <= v_max && v_max <= max) {
+            m_bounds = {min, max};
+            m_val = {v_min, v_max};
+
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordred. Nothing is done";
+            this->syncFail();
+            return;
+        }
+
+    } else if (v.canConvert<std::array<T, 2>>()) {
+        auto t = v.value<std::array<T, 2>>();
+         if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
+            m_val = t;
+
+         } else {
+             dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordred or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+             this->syncFail();
+             return;
+         }
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
+inline const std::array<T, 2>& dtkCoreParameterRange<T, E>::value(void) const
+{
+    return m_val;
+}
+
+template <typename T, typename E>
+inline T dtkCoreParameterRange<T, E>::min(void) const
+{
+    return m_bounds[0];
+}
+
+template <typename T, typename E>
+inline T dtkCoreParameterRange<T, E>::max(void) const
+{
+    return m_bounds[1];
+}
+
+template <typename T, typename E>
+inline const std::array<T, 2>& dtkCoreParameterRange<T, E>::bounds(void) const
+{
+    return m_bounds;
+}
+
+template <typename T, typename E>
+template <typename U>
+inline std::enable_if_t<std::is_floating_point<U>::value> dtkCoreParameterRange<T, E>::setDecimals(const int& decimals)
+{
+    m_decimals = decimals;
+}
+
+template <typename T, typename E>
+inline int dtkCoreParameterRange<T, E>::decimals(void) const
+{
+    return m_decimals;
 }
 
 //

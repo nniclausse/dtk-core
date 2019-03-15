@@ -117,7 +117,6 @@ public:
      dtkCoreParameterBase(void) = default;
      dtkCoreParameterBase(const QString&, const QString& = QString());
      dtkCoreParameterBase(const dtkCoreParameterBase&);
-     dtkCoreParameterBase(const QVariant&);
     ~dtkCoreParameterBase(void) = default;
 
 public:
@@ -273,6 +272,8 @@ public:
     dtkCoreParameterInList(const QString&, int, const QList<T>&, const QString& = QString());
     dtkCoreParameterInList(const QString&, const QList<T>&, const QString& = QString());
 
+    dtkCoreParameterInList& operator = (const T&);
+    dtkCoreParameterInList& operator = (const QVariant&);
     dtkCoreParameterInList& operator = (const dtkCoreParameterInList&);
 
     operator T() const;
@@ -305,25 +306,28 @@ DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterInList<T>);
 // dtkCoreParameterRange declaration
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T, typename = dtk::parameter_arithmetic<T>>
+template <typename T, typename E = dtk::parameter_arithmetic<T>>
 class DTKCORE_EXPORT dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<T>>
 {
 public:
-     dtkCoreParameterRange(void);
-    ~dtkCoreParameterRange(void);
+     dtkCoreParameterRange(void) = default;
+    ~dtkCoreParameterRange(void) = default;
 
     dtkCoreParameterRange(const std::array<T, 2>&);
-    dtkCoreParameterRange(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
+    dtkCoreParameterRange(std::initializer_list<T>);
+    dtkCoreParameterRange(const QVariant&);
     dtkCoreParameterRange(const dtkCoreParameterRange&);
 
     dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const QString& doc = QString());
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
 
-    dtkCoreParameterRange& operator = (const T&);
+    dtkCoreParameterRange& operator = (const std::array<T, 2>&);
+    dtkCoreParameterRange& operator = (std::initializer_list<T>);
     dtkCoreParameterRange& operator = (const QVariant&);
     dtkCoreParameterRange& operator = (const dtkCoreParameterRange&);
 
     void setValue(const std::array<T, 2>&);
+    void setValue(std::initializer_list<T>);
     void setValue(const QVariant&) override;
 
     const std::array<T, 2>& value(void) const;
