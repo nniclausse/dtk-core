@@ -33,7 +33,7 @@ namespace dtk {
 // Helper class managing connection
 // ///////////////////////////////////////////////////////////////////
 
-class DTKCORE_EXPORT dtkCoreAbstractParameterConnection : public QObject
+class DTKCORE_EXPORT dtkCoreParameterConnection : public QObject
 {
     Q_OBJECT
 
@@ -46,24 +46,24 @@ public:
     QMetaObject::Connection invalid;
 };
 
-Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreAbstractParameterConnection>);
+Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreParameterConnection>);
 
 // ///////////////////////////////////////////////////////////////////
-// dtkCoreAbstractParameter interface
+// dtkCoreParameter interface
 // ///////////////////////////////////////////////////////////////////
 
-class DTKCORE_EXPORT dtkCoreAbstractParameter : public QObject
+class DTKCORE_EXPORT dtkCoreParameter : public QObject
 {
     Q_OBJECT
 
 public:
-    using connection = std::shared_ptr<dtkCoreAbstractParameterConnection>;
+    using connection = std::shared_ptr<dtkCoreParameterConnection>;
 
 public:
-     dtkCoreAbstractParameter(void) = default;
-     dtkCoreAbstractParameter(const QString&, const QString& = QString());
-     dtkCoreAbstractParameter(const dtkCoreAbstractParameter&);
-    ~dtkCoreAbstractParameter(void) = default;
+     dtkCoreParameter(void) = default;
+     dtkCoreParameter(const QString&, const QString& = QString());
+     dtkCoreParameter(const dtkCoreParameter&);
+    ~dtkCoreParameter(void) = default;
 
     void setLabel(const QString&);
     QString label(void) const;
@@ -85,15 +85,15 @@ public:
     template <typename F> QMetaObject::Connection connectFail(F);
     void disconnectFail(void);
 
-    bool shareConnectionWith(dtkCoreAbstractParameter *);
+    bool shareConnectionWith(dtkCoreParameter *);
 
-    virtual void copyAndShare(dtkCoreAbstractParameter *) = 0;
+    virtual void copyAndShare(dtkCoreParameter *) = 0;
     virtual void copyAndShare(const QVariant&) = 0;
 
 #pragma mark - Factory method
 
 public:
-    static dtkCoreAbstractParameter *create(const QVariantHash&);
+    static dtkCoreParameter *create(const QVariantHash&);
 
 protected:
     QString m_label;
@@ -104,14 +104,14 @@ protected:
     mutable bool m_enable_share_connection = true;
 };
 
-Q_DECLARE_METATYPE(dtkCoreAbstractParameter *);
+Q_DECLARE_METATYPE(dtkCoreParameter *);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterBase CRTP class
 // ///////////////////////////////////////////////////////////////////
 
 template <typename Derive>
-class DTKCORE_EXPORT dtkCoreParameterBase : public dtkCoreAbstractParameter
+class DTKCORE_EXPORT dtkCoreParameterBase : public dtkCoreParameter
 {
 public:
      dtkCoreParameterBase(void) = default;
@@ -122,7 +122,7 @@ public:
 
 public:
     QVariant variant(void) const final;
-    void copyAndShare(dtkCoreAbstractParameter *) final;
+    void copyAndShare(dtkCoreParameter *) final;
     void copyAndShare(const QVariant&) final;
 };
 
@@ -131,20 +131,20 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable = void>
-class DTKCORE_EXPORT dtkCoreParameter : public dtkCoreParameterBase<dtkCoreParameter<T>>
+class DTKCORE_EXPORT dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
 {
 public:
-     dtkCoreParameter(void) = default;
-    ~dtkCoreParameter(void) = default;
+     dtkCoreParameterSimple(void) = default;
+    ~dtkCoreParameterSimple(void) = default;
 
-    dtkCoreParameter(const QVariant&);
-    dtkCoreParameter(const dtkCoreParameter&);
+    dtkCoreParameterSimple(const QVariant&);
+    dtkCoreParameterSimple(const dtkCoreParameterSimple&);
 
-    dtkCoreParameter(const QString&, const T&, const QString& = QString());
+    dtkCoreParameterSimple(const QString&, const T&, const QString& = QString());
 
-    dtkCoreParameter& operator = (const T&);
-    dtkCoreParameter& operator = (const QVariant&);
-    dtkCoreParameter& operator = (const dtkCoreParameter&);
+    dtkCoreParameterSimple& operator = (const T&);
+    dtkCoreParameterSimple& operator = (const QVariant&);
+    dtkCoreParameterSimple& operator = (const dtkCoreParameterSimple&);
 
     operator T() const;
 
@@ -154,70 +154,70 @@ public:
     T value(void) const;
 
 private:
-    using dtkCoreAbstractParameter::m_label;
-    using dtkCoreAbstractParameter::m_doc;
+    using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_doc;
 
     T m_value;
 };
 
 template <typename T>
-DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDataStream>& operator << (QDataStream&, const dtkCoreParameter<T>&);
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterSimple<T>&);
 template <typename T>
-DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDataStream>& operator >> (QDataStream&, dtkCoreParameter<T>&);
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterSimple<T>&);
 
 template <typename T>
-DTKCORE_EXPORT dtk::parameter_not_arithmetic<T, QDebug>& operator << (QDebug&, dtkCoreParameter<T>);
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterSimple<T>);
 
 // ///////////////////////////////////////////////////////////////////
-// dtkCoreParameter for arithmetic types
+// dtkCoreParameterNumeric for arithmetic types
 // ///////////////////////////////////////////////////////////////////
 
-template <typename T>
-class DTKCORE_EXPORT dtkCoreParameter<T, dtk::parameter_arithmetic<T>> : public dtkCoreParameterBase<dtkCoreParameter<T>>
+template <typename T, typename E = dtk::parameter_arithmetic<T>>
+class DTKCORE_EXPORT dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
 {
 public:
-     dtkCoreParameter(void) = default;
-    ~dtkCoreParameter(void) = default;
+     dtkCoreParameterNumeric(void) = default;
+    ~dtkCoreParameterNumeric(void) = default;
 
-    dtkCoreParameter(const T&);
-    dtkCoreParameter(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
-    dtkCoreParameter(const dtkCoreParameter&);
+    dtkCoreParameterNumeric(const T&);
+    dtkCoreParameterNumeric(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
+    dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
 
-    dtkCoreParameter(const QString&, const T&, const T&, const T&, const QString& doc = QString());
-    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameter(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
+    dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator = (const U&);
-    dtkCoreParameter& operator = (const QVariant&);
-    dtkCoreParameter& operator = (const dtkCoreParameter&);
-    template <typename U> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator = (const dtkCoreParameter<U>&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
+    dtkCoreParameterNumeric& operator = (const QVariant&);
+    dtkCoreParameterNumeric& operator = (const dtkCoreParameterNumeric&);
+    template <typename U> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator += (const U&);
-    dtkCoreParameter& operator += (const QVariant&);
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator += (const dtkCoreParameter<U>&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator += (const U&);
+    dtkCoreParameterNumeric& operator += (const QVariant&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator += (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator -= (const U&);
-    dtkCoreParameter& operator -= (const QVariant&);
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator -= (const dtkCoreParameter<U>&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator -= (const U&);
+    dtkCoreParameterNumeric& operator -= (const QVariant&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator -= (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator *= (const U&);
-    dtkCoreParameter& operator *= (const QVariant&);
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator *= (const dtkCoreParameter<U>&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator *= (const U&);
+    dtkCoreParameterNumeric& operator *= (const QVariant&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator *= (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator /= (const U&);
-    dtkCoreParameter& operator /= (const QVariant&);
-    template <typename U> std::enable_if_t<std::is_arithmetic<U>::value, dtkCoreParameter&> operator /= (const dtkCoreParameter<U>&);
+    template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator /= (const U&);
+    dtkCoreParameterNumeric& operator /= (const QVariant&);
+    template <typename U> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator /= (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameter&> operator %= (const U&);
-    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo, dtkCoreParameter&> operator %= (const QVariant&);
-    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameter&> operator %= (const dtkCoreParameter<U>&);
+    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameterNumeric&> operator %= (const U&);
+    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo, dtkCoreParameterNumeric&> operator %= (const QVariant&);
+    template <typename U = T> std::enable_if_t<std::numeric_limits<U>::is_modulo && std::numeric_limits<T>::is_modulo, dtkCoreParameterNumeric&> operator %= (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, bool> operator == (const U&);
+    template <typename U = T> dtk::parameter_arithmetic<U, bool> operator == (const U&);
     bool operator == (const QVariant&);
-    template <typename U> std::enable_if_t<std::is_arithmetic<U>::value, bool> operator == (const dtkCoreParameter<U>&);
+    template <typename U> dtk::parameter_arithmetic<U, bool> operator == (const dtkCoreParameterNumeric<U>&);
 
-    template <typename U = T> std::enable_if_t<std::is_arithmetic<U>::value, bool> operator != (const U&);
+    template <typename U = T> dtk::parameter_arithmetic<U, bool> operator != (const U&);
     bool operator != (const QVariant&);
-    template <typename U> std::enable_if_t<std::is_arithmetic<U>::value, bool> operator != (const dtkCoreParameter<U>&);
+    template <typename U> dtk::parameter_arithmetic<U, bool> operator != (const dtkCoreParameterNumeric<U>&);
 
     operator T() const;
 
@@ -236,8 +236,8 @@ public:
     int decimals(void) const;
 
 protected:
-    using dtkCoreAbstractParameter::m_label;
-    using dtkCoreAbstractParameter::m_doc;
+    using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_doc;
 
     T m_val = T(0);
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
@@ -245,14 +245,14 @@ protected:
 };
 
 template <typename T>
-DTKCORE_EXPORT dtk::parameter_arithmetic<T, QDataStream>& operator << (QDataStream&, const dtkCoreParameter<T>&);
-template <typename T, typename E = dtk::parameter_arithmetic<T>, typename F = std::enable_if_t<std::is_floating_point<T>::value>>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T>&);
-template <typename T, typename E = dtk::parameter_arithmetic<T>, typename F = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
-DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameter<T>&);
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterNumeric<T>&);
+template <typename T, typename E = std::enable_if_t<std::is_floating_point<T>::value>>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<T>&);
+template <typename T, typename E = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<T>&);
 
-template <typename T, typename E = dtk::parameter_arithmetic<T>>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameter<T>);
+template <typename T>
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterNumeric<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
@@ -286,8 +286,8 @@ public:
     QList<T> values(void) const;
 
 private:
-    using dtkCoreAbstractParameter::m_label;
-    using dtkCoreAbstractParameter::m_doc;
+    using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_doc;
 
     QList<T> m_values;
     int m_value_index = -1;
@@ -302,18 +302,63 @@ template <typename T>
 DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterInList<T>);
 
 // ///////////////////////////////////////////////////////////////////
+// dtkCoreParameterRange declaration
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T, typename = dtk::parameter_arithmetic<T>>
+class DTKCORE_EXPORT dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<T>>
+{
+public:
+     dtkCoreParameterRange(void);
+    ~dtkCoreParameterRange(void);
+
+    dtkCoreParameterRange(const std::array<T, 2>&);
+    dtkCoreParameterRange(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
+    dtkCoreParameterRange(const dtkCoreParameterRange&);
+
+    dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
+
+    dtkCoreParameterRange& operator = (const T&);
+    dtkCoreParameterRange& operator = (const QVariant&);
+    dtkCoreParameterRange& operator = (const dtkCoreParameterRange&);
+
+    void setValue(const std::array<T, 2>&);
+    void setValue(const QVariant&) override;
+
+    const std::array<T, 2>& value(void) const;
+
+    T min(void) const;
+    T max(void) const;
+
+    const std::array<T, 2>& bounds(void) const;
+
+    template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
+
+    int decimals(void) const;
+
+private:
+    using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_doc;
+
+    std::array<T, 2> m_val = {T(0), T(0)};
+    std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
+    int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
+};
+
+// ///////////////////////////////////////////////////////////////////
 // Typedef
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
-    using d_uchar  = dtkCoreParameter<unsigned char>;
-    using d_char   = dtkCoreParameter<char>;
-    using d_uint   = dtkCoreParameter<qulonglong>;
-    using d_int    = dtkCoreParameter<qlonglong>;
-    using d_real   = dtkCoreParameter<double>;
-    using d_bool   = dtkCoreParameter<bool>;
+    using d_uchar  = dtkCoreParameterNumeric<unsigned char>;
+    using d_char   = dtkCoreParameterNumeric<char>;
+    using d_uint   = dtkCoreParameterNumeric<qulonglong>;
+    using d_int    = dtkCoreParameterNumeric<qlonglong>;
+    using d_real   = dtkCoreParameterNumeric<double>;
+    using d_bool   = dtkCoreParameterNumeric<bool>;
 
-    using d_string = dtkCoreParameter<QString>;
+    using d_string = dtkCoreParameterSimple<QString>;
 
     using d_inliststring = dtkCoreParameterInList<QString>;
 }

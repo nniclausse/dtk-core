@@ -14,52 +14,52 @@
 
 #include "dtkCoreParameter.h"
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
+dtkCoreParameter::dtkCoreParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
 {
 
 }
 
-dtkCoreAbstractParameter::dtkCoreAbstractParameter(const dtkCoreAbstractParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
+dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
 {
     if (o.m_enable_share_connection) {
         m_connection = o.m_connection;
     }
 }
 
-void dtkCoreAbstractParameter::setLabel(const QString& label)
+void dtkCoreParameter::setLabel(const QString& label)
 {
     this->m_label = label;
 }
 
-QString dtkCoreAbstractParameter::label(void) const
+QString dtkCoreParameter::label(void) const
 {
     return this->m_label;
 }
 
-void dtkCoreAbstractParameter::setDocumentation(const QString& doc)
+void dtkCoreParameter::setDocumentation(const QString& doc)
 {
     this->m_doc = doc;
 }
 
-QString dtkCoreAbstractParameter::documentation(void) const
+QString dtkCoreParameter::documentation(void) const
 {
     return this->m_doc;
 }
 
-void dtkCoreAbstractParameter::block(bool b)
+void dtkCoreParameter::block(bool b)
 {
     if (m_connection)
         m_connection->blockSignals(b);
 }
 
-void dtkCoreAbstractParameter::sync(void)
+void dtkCoreParameter::sync(void)
 {
     if (m_connection) {
         emit m_connection->valueChanged(this->variant());
     }
 }
 
-void dtkCoreAbstractParameter::disconnect(void)
+void dtkCoreParameter::disconnect(void)
 {
     if (m_connection) {
         if (m_connection.use_count() > 1) {
@@ -70,13 +70,13 @@ void dtkCoreAbstractParameter::disconnect(void)
     }
 }
 
-void dtkCoreAbstractParameter::syncFail(void)
+void dtkCoreParameter::syncFail(void)
 {
     if (m_connection)
         emit m_connection->invalidValue();
 }
 
-void dtkCoreAbstractParameter::disconnectFail(void)
+void dtkCoreParameter::disconnectFail(void)
 {
     if (m_connection) {
         if (m_connection.use_count() > 1) {
@@ -87,7 +87,7 @@ void dtkCoreAbstractParameter::disconnectFail(void)
     }
 }
 
-bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *source)
+bool dtkCoreParameter::shareConnectionWith(dtkCoreParameter *source)
 {
     m_enable_share_connection = false;
     if (!source || !source->m_connection) {
@@ -105,7 +105,7 @@ bool dtkCoreAbstractParameter::shareConnectionWith(dtkCoreAbstractParameter *sou
     }
 }
 
-dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariantHash& map)
+dtkCoreParameter *dtkCoreParameter::create(const QVariantHash& map)
 {
     if (map.empty()) {
         qDebug() << Q_FUNC_INFO << "Input variant does not contain a VariantHash. Nullptr is returned.";
@@ -133,10 +133,10 @@ dtkCoreAbstractParameter *dtkCoreAbstractParameter::create(const QVariantHash& m
         return nullptr;
     }
     QVariant pv = QVariant(p_type_id, &ptr, 1);
-    dtkCoreAbstractParameter *p = pv.value<dtkCoreAbstractParameter *>();
+    dtkCoreParameter *p = pv.value<dtkCoreParameter *>();
 
     if (!p) {
-        qDebug() << Q_FUNC_INFO << "Cannot convert QVariant into dtkCoreAbstractParameter. Nullptr is returned.";
+        qDebug() << Q_FUNC_INFO << "Cannot convert QVariant into dtkCoreParameter. Nullptr is returned.";
         return nullptr;
     }
 

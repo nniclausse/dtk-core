@@ -27,7 +27,7 @@ public:
 // use std::string as dtkCoreParameter
 //
 Q_DECLARE_METATYPE(std::string)
-Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
+Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
 
 QDebug& operator << (QDebug &dbg, const std::string &p)
 {
@@ -733,13 +733,13 @@ void dtkCoreParameterTestCase::testText(void)
         // see also the necessary declaration at the beginning of the file
         // Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
         // qDebug implementation
-        dtkCoreParameter<std::string> my_string_1;
+        dtkCoreParameterSimple<std::string> my_string_1;
 
         QVERIFY( my_string_1.value() == "" );
 
         QString      info  = QString("what's up doc ?");
         std::string  value = "toto le heros";
-        dtkCoreParameter<std::string> my_string_2("my_string_2", value, info);
+        dtkCoreParameterSimple<std::string> my_string_2("my_string_2", value, info);
 
         QVERIFY( my_string_2.value() == value);
         QVERIFY( my_string_2.documentation() == info);
@@ -763,7 +763,7 @@ void dtkCoreParameterTestCase::testCreation(void)
     map["min"] = source.min();
     map["max"] = source.max();
 
-    auto *target = dtkCoreAbstractParameter::create(map);
+    auto *target = dtkCoreParameter::create(map);
 
     QVERIFY(target);
     QCOMPARE(target->label(), source.label());
