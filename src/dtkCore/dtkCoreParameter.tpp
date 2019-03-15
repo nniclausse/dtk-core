@@ -341,7 +341,7 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const QVariant& v) -> dtk
         if (( t < m_bounds[0] ) || ( t > m_bounds[1] )) {
             dtkWarn() << Q_FUNC_INFO << "Value (" << t << ") not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
             this->syncFail();
-            return;
+            return *this;
 
         } else if (t != m_val) {
             m_val = t;
@@ -833,7 +833,7 @@ inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const Q
         if (index < 0) {
             dtkWarn() << Q_FUNC_INFO << "Value is not part of the admissible ones.";
             this->syncFail();
-            return;
+            return *this;
 
         } else {
             m_value_index = index;
