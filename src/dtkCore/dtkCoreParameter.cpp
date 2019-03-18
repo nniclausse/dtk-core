@@ -70,6 +70,7 @@ void dtkCoreParameter::disconnect(void)
                     m_connection->disconnect(c);
                 }
             }
+            m_connection->value_list.clear();
         }
     }
 }
@@ -91,6 +92,7 @@ void dtkCoreParameter::disconnectFail(void)
                     m_connection->disconnect(c);
                 }
             }
+            m_connection->invalid_list.clear();
         }
     }
 }
