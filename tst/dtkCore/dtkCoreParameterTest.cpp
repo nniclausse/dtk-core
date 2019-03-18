@@ -25,6 +25,7 @@ public:
 
 // ///////////////////////////////////////////////////////////////////
 // use std::string as dtkCoreParameter
+// (dtk::d_string is implemented on QString and not son std::string)
 //
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
@@ -54,6 +55,10 @@ dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParamete
     QMetaType::registerDebugStreamOperator<dtk::d_int>();
     QMetaType::registerDebugStreamOperator<dtk::d_bool>();
     QMetaType::registerDebugStreamOperator<dtk::d_string>();
+
+    qRegisterMetaType<dtk::d_range_int>();
+    qRegisterMetaType<dtk::d_range_int*>();
+    qRegisterMetaType<dtk::d_range_int::range>();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -730,8 +735,12 @@ void dtkCoreParameterTestCase::testText(void)
     }
 
     {
+        //
+        // example on how to use dtkCoreParameterSimple
+        //
+
         // see also the necessary declaration at the beginning of the file
-        // Q_DECLARE_METATYPE(dtkCoreParameter<std::string>)
+        // Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
         // qDebug implementation
         dtkCoreParameterSimple<std::string> my_string_1;
 
@@ -776,6 +785,39 @@ void dtkCoreParameterTestCase::testCreation(void)
     QCOMPARE(source.min(), target_real.min());
     QCOMPARE(source.max(), target_real.max());
     QCOMPARE(source.decimals(), target_real.decimals());
+}
+
+void dtkCoreParameterTestCase::testRange(void)
+{
+    dtk::d_range_uint::range values_ui = {0, 255};
+    dtk::d_range_uint range_ui = dtk::d_range_uint( values_ui );
+
+    dtk::d_range_int::range values_i = {-10, 10};
+    dtk::d_range_int range_i = dtk::d_range_int( values_i );
+
+    int minimum = range_i.min();
+    int maximum = range_i.max();
+    dtk::d_range_int::range bounds = range_i.bounds();
+
+    qDebug() << "min=" << minimum;
+    qDebug() << "max=" << maximum;
+    qDebug() << "bnd=" << bounds[0] << bounds[1];
+
+    //QVERIFY(minimum == -10);
+    //QVERIFY(maximum ==  10);
+
+    dtk::d_range_uchar::range values_uc = {0, 255};
+    dtk::d_range_uchar range_uc = dtk::d_range_uchar( values_uc );
+
+    dtk::d_range_char::range values_c = { 'a', 'z'};
+    dtk::d_range_char range_c = dtk::d_range_char( values_c );
+
+    dtk::d_range_real::range values_r1 = { -1.23456, 7.891011};
+    dtk::d_range_real range_r1 = dtk::d_range_real( values_r1 );
+
+    dtk::d_range_real::range values_r2 = { -1.23456, 7.891011};
+    dtk::d_range_real range_r = dtk::d_range_real( QString("double range"), values_r2, -10.0, 10.0, QString("double range doc") );
+
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

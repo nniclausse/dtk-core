@@ -37,9 +37,10 @@ private slots:
     void testComparisons(void);
     void testDataStream(void);
     void testBoolean(void);
-    void testConnection();
-    void testText();
+    void testConnection(void);
+    void testText(void);
     void testCreation(void);
+    void testRange(void);
 
 private slots:
     void cleanupTestCase(void);

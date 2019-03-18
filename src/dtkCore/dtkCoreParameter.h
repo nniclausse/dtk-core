@@ -310,6 +310,9 @@ template <typename T, typename E = dtk::parameter_arithmetic<T>>
 class DTKCORE_EXPORT dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<T>>
 {
 public:
+    using range = std::array<T, 2>;
+
+public:
      dtkCoreParameterRange(void) = default;
     ~dtkCoreParameterRange(void) = default;
 
@@ -365,6 +368,12 @@ namespace dtk {
     using d_string = dtkCoreParameterSimple<QString>;
 
     using d_inliststring = dtkCoreParameterInList<QString>;
+
+    using d_range_uchar = dtkCoreParameterRange<unsigned char>;
+    using d_range_char  = dtkCoreParameterRange<char>;
+    using d_range_uint  = dtkCoreParameterRange<qulonglong>;
+    using d_range_int   = dtkCoreParameterRange<qlonglong>;
+    using d_range_real  = dtkCoreParameterRange<double>;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -379,6 +388,22 @@ Q_DECLARE_METATYPE(dtk::d_real);
 Q_DECLARE_METATYPE(dtk::d_bool);
 Q_DECLARE_METATYPE(dtk::d_string);
 Q_DECLARE_METATYPE(dtk::d_inliststring);
+
+Q_DECLARE_METATYPE(dtk::d_range_uchar);
+Q_DECLARE_METATYPE(dtk::d_range_uchar*);
+Q_DECLARE_METATYPE(dtk::d_range_uchar::range);
+Q_DECLARE_METATYPE(dtk::d_range_char);
+Q_DECLARE_METATYPE(dtk::d_range_char*);
+Q_DECLARE_METATYPE(dtk::d_range_char::range);
+Q_DECLARE_METATYPE(dtk::d_range_uint);
+Q_DECLARE_METATYPE(dtk::d_range_uint*);
+Q_DECLARE_METATYPE(dtk::d_range_uint::range);
+Q_DECLARE_METATYPE(dtk::d_range_int);
+Q_DECLARE_METATYPE(dtk::d_range_int*);
+Q_DECLARE_METATYPE(dtk::d_range_int::range);
+Q_DECLARE_METATYPE(dtk::d_range_real);
+Q_DECLARE_METATYPE(dtk::d_range_real*);
+Q_DECLARE_METATYPE(dtk::d_range_real::range);
 
 Q_DECLARE_METATYPE(dtk::d_uchar*);
 Q_DECLARE_METATYPE(dtk::d_char*);
