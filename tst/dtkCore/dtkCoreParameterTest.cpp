@@ -661,7 +661,6 @@ void dtkCoreParameterTestCase::testConnection(void)
     QCOMPARE(signal_count, 4);
 
     auto vv = pr.variant();
-    qDebug();
     pp.copyAndShare(vv);
     pp.sync();
     QCOMPARE(signal_count, 5);
@@ -677,6 +676,13 @@ void dtkCoreParameterTestCase::testConnection(void)
                     signal_bis_count++;
                 };
 
+    pp.disconnect(); // Needs explicit disconnection to forget previous connections
+                     // without deleting them if they are shared.
+
+    pr.sync(); // Checks that previous call does not delete the connection
+    QCOMPARE(signal_count, 7);
+    --signal_count;
+
     pp.connect(fbis);
     pp.sync();
     QCOMPARE(signal_count, 6);
@@ -689,6 +695,12 @@ void dtkCoreParameterTestCase::testConnection(void)
     ppp.sync();
     QCOMPARE(signal_count, 7);
     QCOMPARE(signal_bis_count, 2);
+
+    // multi connection
+    pp.connect(f); // pp is already connected to fbis so sync must increase both counters.
+    pp.sync();
+    QCOMPARE(signal_count, 8);
+    QCOMPARE(signal_bis_count, 3);
 }
 
 void dtkCoreParameterTestCase::testText(void)
@@ -795,8 +807,8 @@ void dtkCoreParameterTestCase::testRange(void)
     dtk::d_range_int::range values_i = {-10, 10};
     dtk::d_range_int range_i = dtk::d_range_int( values_i );
 
-    int minimum = range_i.min();
-    int maximum = range_i.max();
+    auto minimum = range_i.min();
+    auto maximum = range_i.max();
     dtk::d_range_int::range bounds = range_i.bounds();
 
     qDebug() << "i_min=" << minimum;

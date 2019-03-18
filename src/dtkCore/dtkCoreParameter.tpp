@@ -22,30 +22,30 @@ template <typename F>
 inline QMetaObject::Connection dtkCoreParameter::connect(F slot)
 {
     m_enable_share_connection = false;
-    if (!m_connection || m_connection.use_count() > 1) {
+    if (!m_connection) {
         m_connection = connection(new dtkCoreParameterConnection());
     }
-    if (m_connection->value) {
-        m_connection->disconnect(m_connection->value);
-    }
 
-    m_connection->value = QObject::connect(m_connection.get(), &dtkCoreParameterConnection::valueChanged, slot);
-    return m_connection->value;
+    auto c = QObject::connect(m_connection.get(), &dtkCoreParameterConnection::valueChanged, slot);
+    if (c) {
+        m_connection->value_list << c;
+    }
+    return c;
 }
 
 template <typename F>
 inline QMetaObject::Connection dtkCoreParameter::connectFail(F slot)
 {
     m_enable_share_connection = false;
-    if (!m_connection || m_connection.use_count() > 1) {
+    if (!m_connection) {
         m_connection = connection(new dtkCoreParameterConnection());
     }
-    if (m_connection->invalid) {
-        m_connection->disconnect(m_connection->invalid);
-    }
 
-    m_connection->invalid = QObject::connect(m_connection.get(), &dtkCoreParameterConnection::invalidValue, slot);
-    return m_connection->invalid;
+    auto c = QObject::connect(m_connection.get(), &dtkCoreParameterConnection::invalidValue, slot);
+    if (c) {
+        m_connection->invalid_list << c;
+    }
+    return c;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -1016,6 +1016,7 @@ template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     if (t[0] <= t[1]) {
+        qDebug() << Q_FUNC_INFO << t[0] << t[1] << m_bounds[0] << m_bounds[1];
         m_val = t;
 
     } else {
@@ -1281,6 +1282,57 @@ template <typename T, typename E>
 inline int dtkCoreParameterRange<T, E>::decimals(void) const
 {
     return m_decimals;
+}
+
+template <typename T>
+inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterRange<T>& p)
+{
+    s << p.label();
+    s << p.value()[0];
+    s << p.value()[1];
+    s << p.min();
+    s << p.max();
+    s << p.decimals();
+    s << p.documentation();
+
+    return s;
+}
+
+template <typename T>
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
+{
+    QString label; s >> label;
+    T v_min; s >> v_min;
+    T v_max; s >> v_max;
+    T min; s >> min;
+    T max; s >> max;
+    int dec; s >> dec;
+    QString doc; s >> doc;
+
+    std::array<T, 2> val = {v_min, v_max};
+
+    p = dtkCoreParameterRange<T>(label, val, min, max, dec, doc);
+    return s;
+}
+
+template <typename T>
+inline QDebug& operator << (QDebug& dbg, dtkCoreParameterRange<T> p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "label " << p.label() << ", "
+                  << "values ["
+                  << p.value()[0] << ","
+                  << p.value()[1] << "], "
+                  << "bounds ["
+                  << p.min() << ","
+                  << p.max() << "], "
+                  << "decimals" << p.decimals() << ", "
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
 }
 
 //

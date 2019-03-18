@@ -42,8 +42,8 @@ signals:
     void invalidValue(void);
 
 public:
-    QMetaObject::Connection value;
-    QMetaObject::Connection invalid;
+    QVector<QMetaObject::Connection> value_list;
+    QVector<QMetaObject::Connection> invalid_list;
 };
 
 Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreParameterConnection>);
@@ -352,6 +352,14 @@ private:
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
 };
+
+template <typename T>
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterRange<T>&);
+template <typename T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterRange<T>&);
+
+template <typename T>
+DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterRange<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // Typedef

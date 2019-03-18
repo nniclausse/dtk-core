@@ -64,8 +64,12 @@ void dtkCoreParameter::disconnect(void)
     if (m_connection) {
         if (m_connection.use_count() > 1) {
             m_connection = connection(nullptr);
-        } else if (m_connection->value) {
-            m_connection->disconnect(m_connection->value);
+        } else {
+            for (auto c : m_connection->value_list) {
+                if (c) {
+                    m_connection->disconnect(c);
+                }
+            }
         }
     }
 }
@@ -81,8 +85,12 @@ void dtkCoreParameter::disconnectFail(void)
     if (m_connection) {
         if (m_connection.use_count() > 1) {
             m_connection = connection(nullptr);
-        } else if (m_connection->value) {
-            m_connection->disconnect(m_connection->invalid);
+        } else {
+            for (auto c : m_connection->invalid_list) {
+                if (c) {
+                    m_connection->disconnect(c);
+                }
+            }
         }
     }
 }
