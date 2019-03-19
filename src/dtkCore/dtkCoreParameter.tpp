@@ -624,8 +624,12 @@ inline void dtkCoreParameterNumeric<T, E>::setValue(const QVariant& v)
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
         m_val = map["value"].value<T>();
-        m_bounds[0] = map["min"].value<T>();
-        m_bounds[1] = map["max"].value<T>();
+
+        if(map.contains("min")) m_bounds[0] = map["min"].value<T>();
+        else                    m_bounds[0] = std::numeric_limits<T>::lowest();
+
+        if(map.contains("max")) m_bounds[1] = map["max"].value<T>();
+        else                    m_bounds[1] = std::numeric_limits<T>::max();
 
         if (map.contains("decimals")) {
             m_decimals = map["decimals"].value<int>();
