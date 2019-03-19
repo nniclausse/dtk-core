@@ -810,13 +810,12 @@ void dtkCoreParameterTestCase::testRange(void)
     auto minimum = range_i.min();
     auto maximum = range_i.max();
     dtk::d_range_int::range bounds = range_i.bounds();
+    dtk::d_range_int::range values = range_i.value();
 
-    qDebug() << "i_min=" << minimum;
-    qDebug() << "i_max=" << maximum;
-    qDebug() << "i_bnd=" << bounds[0] << bounds[1];
-
-    //QVERIFY(minimum == -10);
-    //QVERIFY(maximum ==  10);
+    QCOMPARE(values[0], -10);
+    QCOMPARE(values[1],  10);
+    QCOMPARE(bounds[0], std::numeric_limits<qlonglong>::lowest());
+    QCOMPARE(bounds[1], std::numeric_limits<qlonglong>::max());
 
     dtk::d_range_uchar::range values_uc = {0, 255};
     dtk::d_range_uchar range_uc = dtk::d_range_uchar( values_uc );
@@ -830,9 +829,6 @@ void dtkCoreParameterTestCase::testRange(void)
     dtk::d_range_real::range values_r2 = { -1.23456, 7.891011};
     dtk::d_range_real range_r = dtk::d_range_real( QString("double range"), values_r2, -10.0, 10.0, QString("double range doc") );
 
-    qDebug() << "r_min" << range_r.min();
-    qDebug() << "r_max" << range_r.max();
-    qDebug() << "r_bnd" << range_r.bounds()[0] << range_r.bounds()[1] ;
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)
