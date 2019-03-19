@@ -17,6 +17,7 @@
 #include <dtkCoreTest>
 
 #include <dtkCore/dtkCoreParameter>
+#include <dtkCore/dtkCoreParameterFile>
 
 class dtkCoreParameterTestCasePrivate
 {
@@ -829,6 +830,39 @@ void dtkCoreParameterTestCase::testRange(void)
     dtk::d_range_real::range values_r2 = { -1.23456, 7.891011};
     dtk::d_range_real range_r = dtk::d_range_real( QString("double range"), values_r2, -10.0, 10.0, QString("double range doc") );
 
+}
+
+void dtkCoreParameterTestCase::testFile(void)
+{
+    qRegisterMetaType<dtk::d_file>();
+    qRegisterMetaType<dtk::d_file*>();
+
+    QMetaType::registerDebugStreamOperator<dtk::d_file>();
+
+    dtk::d_file source("file", "toto.jpg", "/home/tkloczko/Development/dtk/dtk-core", {"*.jpg", "*.png"},  "File parameter example");
+
+    QVariantHash map;
+    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_file>());
+    map["label"] = source.label();
+    map["doc"] = source.documentation();
+    map["filename"] = source.fileName();
+    map["dir"] = source.dir();
+    map["filters"] = source.filters();
+
+    auto *target = dtkCoreParameter::create(map);
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_file& target_file = dynamic_cast<dtk::d_file&>(*target);
+
+    QVERIFY(&target_file);
+    QCOMPARE(source.fileName(), target_file.fileName());
+    QCOMPARE(source.dir(), target_file.dir());
+    QCOMPARE(source.filters(), target_file.filters());
+
+    qDebug() << target_file;
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

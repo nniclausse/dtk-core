@@ -41,6 +41,7 @@ private slots:
     void testText(void);
     void testCreation(void);
     void testRange(void);
+    void testFile(void);
 
 private slots:
     void cleanupTestCase(void);

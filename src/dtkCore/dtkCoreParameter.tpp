@@ -259,7 +259,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterSimple<T>& p)
 }
 
 template <typename T>
-inline QDebug& operator << (QDebug& dbg, dtkCoreParameterSimple<T> p)
+inline QDebug operator << (QDebug dbg, dtkCoreParameterSimple<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
@@ -729,7 +729,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<T>& p)
 }
 
 template <typename T>
-inline QDebug& operator << (QDebug& dbg, dtkCoreParameterNumeric<T> p)
+inline QDebug operator << (QDebug dbg, dtkCoreParameterNumeric<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
@@ -988,7 +988,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterInList<T>& p)
 }
 
 template <typename T>
-inline QDebug& operator << (QDebug& dbg, dtkCoreParameterInList<T> p)
+inline QDebug operator << (QDebug dbg, dtkCoreParameterInList<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
@@ -1316,7 +1316,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
 }
 
 template <typename T>
-inline QDebug& operator << (QDebug& dbg, dtkCoreParameterRange<T> p)
+inline QDebug operator << (QDebug dbg, dtkCoreParameterRange<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";

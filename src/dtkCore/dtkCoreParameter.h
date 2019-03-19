@@ -165,7 +165,7 @@ template <typename T>
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterSimple<T>&);
 
 template <typename T>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterSimple<T>);
+DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterSimple<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterNumeric for arithmetic types
@@ -251,7 +251,7 @@ template <typename T, typename E = std::enable_if_t<!std::is_floating_point<T>::
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<T>&);
 
 template <typename T>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterNumeric<T>);
+DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterNumeric<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
@@ -300,7 +300,7 @@ template <typename T>
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterInList<T>&);
 
 template <typename T>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterInList<T>);
+DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterInList<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterRange declaration
@@ -359,7 +359,7 @@ template <typename T>
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterRange<T>&);
 
 template <typename T>
-DTKCORE_EXPORT QDebug& operator << (QDebug&, dtkCoreParameterRange<T>);
+DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterRange<T>);
 
 // ///////////////////////////////////////////////////////////////////
 // Typedef
