@@ -92,6 +92,7 @@ dtkCoreParameterFile& dtkCoreParameterFile::operator = (const dtkCoreParameterFi
 void dtkCoreParameterFile::setValue(const QString& filename)
 {
     m_filename = filename;
+    this->sync();
 }
 
 void dtkCoreParameterFile::setValue(const QVariant& v)
@@ -121,7 +122,6 @@ void dtkCoreParameterFile::setValue(const QVariant& v)
         return;
     }
     this->sync();
-
 }
 
 QString dtkCoreParameterFile::fileName(void) const
