@@ -18,15 +18,177 @@
 // dtkCoreParameterFile implementation
 // ///////////////////////////////////////////////////////////////////
 
-dtkCoreParameterFile::dtkCoreParameterFile(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterFile>()
+dtkCoreParameterDir::dtkCoreParameterDir(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterDir>()
+{
+    if (v.canConvert<dtkCoreParameterDir>()) {
+        auto o(v.value<dtkCoreParameterDir>());
+        *this = o;
+
+    } else if (v.canConvert<QString>()) {
+        QFileInfo filename = QFileInfo(v.toString());
+        m_dir = filename.dir().path();
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterDir>())
+                  << ". Nothing is done.";
+    }
+}
+
+dtkCoreParameterDir::dtkCoreParameterDir(const dtkCoreParameterDir& o) : dtkCoreParameterBase<dtkCoreParameterDir>(o),
+                                                                            m_dir(o.m_dir),
+                                                                            m_filters(o.m_filters)
+{
+
+}
+
+dtkCoreParameterDir::dtkCoreParameterDir(const QString& label, const QString& dir, const QStringList& filters, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterDir>(label, doc),
+                                                                                                                                                                m_dir(dir),
+                                                                                                                                                                m_filters(filters)
+{
+
+}
+
+dtkCoreParameterDir& dtkCoreParameterDir::operator = (const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterDir>()) {
+        *this = v.value<dtkCoreParameterDir>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+
+        m_dir = map["dir"].toString();
+        m_filters = map["filters"].toStringList();
+
+    } else if (v.canConvert<QString>()) {
+        m_dir = v.toString();
+
+    } else {
+        return *this;
+    }
+    this->sync();
+    return *this;
+}
+
+dtkCoreParameterDir& dtkCoreParameterDir::operator = (const dtkCoreParameterDir& o)
+{
+    if (this != &o) {
+        m_label = o.m_label;
+        m_doc = o.m_doc;
+        m_dir = o.m_dir;
+        m_filters = o.m_filters;
+        this->sync();
+    }
+    return *this;
+}
+
+void dtkCoreParameterDir::setValue(const QString& dir)
+{
+    QFileInfo filename = QFileInfo(dir);
+    m_dir = filename.dir().path();
+    this->sync();
+}
+
+void dtkCoreParameterDir::setValue(const QVariant& v)
+{
+    if (v.canConvert<dtkCoreParameterDir>()) {
+        *this = v.value<dtkCoreParameterDir>();
+
+    } else if (v.canConvert<QVariantHash>()) {
+        auto map = v.toHash();
+
+        m_label = map["label"].toString();
+        m_doc = map["doc"].toString();
+
+        m_dir = map["dir"].toString();
+        m_filters = map["filters"].toStringList();
+
+    } else if (v.canConvert<QString>()) {
+        m_dir = v.toString();
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
+                  << "is not compatible with current type"
+                  << QMetaType::typeName(qMetaTypeId<dtkCoreParameterDir>())
+                  << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+    this->sync();
+}
+
+QString dtkCoreParameterDir::dir(void) const
+{
+    return m_dir;
+}
+
+QStringList dtkCoreParameterDir::filters(void) const
+{
+    return m_filters;
+}
+
+QDataStream& operator << (QDataStream& s, const dtkCoreParameterDir& p)
+{
+    s << p.label();
+    s << p.dir();
+    auto filters = p.filters();
+    s << filters.size();
+    for (int i = 0; i < filters.size(); ++i) {
+        s << filters[i];
+    }
+    s << p.documentation();
+
+    return s;
+}
+
+QDataStream& operator >> (QDataStream& s, dtkCoreParameterDir& p)
+{
+    QString label; s >> label;
+    QString dir; s >> dir;
+    int count; s >> count;
+    QStringList filters;
+    for (int i = 0; i < count; ++i) {
+        QString filter; s >> filter;
+        filters << filter;
+    }
+    QString doc; s >> doc;
+
+    p = dtkCoreParameterDir(label, dir, filters, doc);
+    return s;
+
+}
+
+QDebug operator << (QDebug dbg, dtkCoreParameterDir p)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << p.variant().typeName() << " : { ";
+    dbg.nospace() << "label " << p.label() << ", "
+                  << "dir " << p.dir() << ", "
+                  << "filters " << p.filters() << ", "
+                  << "documentation : " << p.documentation()
+                  << " }";
+
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
+}
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameterFile implementation
+// ///////////////////////////////////////////////////////////////////
+
+dtkCoreParameterFile::dtkCoreParameterFile(const QVariant& v) : dtkCoreParameterDir(v)
 {
     if (v.canConvert<dtkCoreParameterFile>()) {
         auto o(v.value<dtkCoreParameterFile>());
         *this = o;
 
     } else if (v.canConvert<QString>()) {
-        m_filename = v.toString();
-
+        QFileInfo filename = QFileInfo(v.toString());
+        m_dir = filename.dir().path();
+        m_basename = filename.baseName();
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
@@ -35,18 +197,14 @@ dtkCoreParameterFile::dtkCoreParameterFile(const QVariant& v) : dtkCoreParameter
     }
 }
 
-dtkCoreParameterFile::dtkCoreParameterFile(const dtkCoreParameterFile& o) : dtkCoreParameterBase<dtkCoreParameterFile>(o),
-                                                                            m_filename(o.m_filename),
-                                                                            m_dir(o.m_dir),
-                                                                            m_filters(o.m_filters)
+dtkCoreParameterFile::dtkCoreParameterFile(const dtkCoreParameterFile& o) : dtkCoreParameterDir(o),
+                                                                            m_basename(o.m_basename)
 {
 
 }
 
-dtkCoreParameterFile::dtkCoreParameterFile(const QString& label, const QString& filename, const QString& dir, const QStringList& filters, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterFile>(label, doc),
-                                                                                                                                                                m_filename(filename),
-                                                                                                                                                                m_dir(dir),
-                                                                                                                                                                m_filters(filters)
+dtkCoreParameterFile::dtkCoreParameterFile(const QString& label, const QString& basename, const QString& dir, const QStringList& filters, const QString& doc) : dtkCoreParameterDir(label, dir, filters, doc),
+                                                                                                                                                                m_basename(basename)
 {
 
 }
@@ -62,12 +220,14 @@ dtkCoreParameterFile& dtkCoreParameterFile::operator = (const QVariant& v)
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
 
-        m_filename = map["filename"].toString();
+        m_basename = map["basename"].toString();
         m_dir = map["dir"].toString();
         m_filters = map["filters"].toStringList();
 
     } else if (v.canConvert<QString>()) {
-        m_filename = v.toString();
+        QFileInfo fileinfo = QFileInfo(v.toString());
+        m_dir = fileinfo.dir().path();
+        m_basename = fileinfo.baseName();
 
     } else {
         return *this;
@@ -81,7 +241,7 @@ dtkCoreParameterFile& dtkCoreParameterFile::operator = (const dtkCoreParameterFi
     if (this != &o) {
         m_label = o.m_label;
         m_doc = o.m_doc;
-        m_filename = o.m_filename;
+        m_basename = o.m_basename;
         m_dir = o.m_dir;
         m_filters = o.m_filters;
         this->sync();
@@ -91,7 +251,9 @@ dtkCoreParameterFile& dtkCoreParameterFile::operator = (const dtkCoreParameterFi
 
 void dtkCoreParameterFile::setValue(const QString& filename)
 {
-    m_filename = filename;
+    QFileInfo fileinfo = QFileInfo(filename);
+    m_dir = fileinfo.dir().path();
+    m_basename = fileinfo.baseName();
     this->sync();
 }
 
@@ -106,13 +268,14 @@ void dtkCoreParameterFile::setValue(const QVariant& v)
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
 
-        m_filename = map["filename"].toString();
+        m_basename = map["basename"].toString();
         m_dir = map["dir"].toString();
         m_filters = map["filters"].toStringList();
 
     } else if (v.canConvert<QString>()) {
-        m_filename = v.toString();
-
+        QFileInfo fileinfo = v.toString();
+        m_dir = fileinfo.dir().path();
+        m_basename = fileinfo.baseName();
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
@@ -126,23 +289,18 @@ void dtkCoreParameterFile::setValue(const QVariant& v)
 
 QString dtkCoreParameterFile::fileName(void) const
 {
-    return m_filename;
+    return m_dir + QDir::separator() + m_basename;
 }
 
-QString dtkCoreParameterFile::dir(void) const
+QString dtkCoreParameterFile::baseName(void) const
 {
-    return m_dir;
-}
-
-QStringList dtkCoreParameterFile::filters(void) const
-{
-    return m_filters;
+    return m_basename;
 }
 
 QDataStream& operator << (QDataStream& s, const dtkCoreParameterFile& p)
 {
     s << p.label();
-    s << p.fileName();
+    s << p.baseName();
     s << p.dir();
     auto filters = p.filters();
     s << filters.size();
@@ -157,7 +315,7 @@ QDataStream& operator << (QDataStream& s, const dtkCoreParameterFile& p)
 QDataStream& operator >> (QDataStream& s, dtkCoreParameterFile& p)
 {
     QString label; s >> label;
-    QString filename; s >> filename;
+    QString basename; s >> basename;
     QString dir; s >> dir;
     int count; s >> count;
     QStringList filters;
@@ -167,7 +325,7 @@ QDataStream& operator >> (QDataStream& s, dtkCoreParameterFile& p)
     }
     QString doc; s >> doc;
 
-    p = dtkCoreParameterFile(label, filename, dir, filters, doc);
+    p = dtkCoreParameterFile(label, basename, dir, filters, doc);
     return s;
 
 }
@@ -177,7 +335,7 @@ QDebug operator << (QDebug dbg, dtkCoreParameterFile p)
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
     dbg.nospace() << "label " << p.label() << ", "
-                  << "filename " << p.fileName() << ", "
+                  << "basename " << p.baseName() << ", "
                   << "dir " << p.dir() << ", "
                   << "filters " << p.filters() << ", "
                   << "documentation : " << p.documentation()
