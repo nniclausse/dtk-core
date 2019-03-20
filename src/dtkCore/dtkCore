@@ -8,7 +8,7 @@
 #include "dtkCoreMetaType.h"
 #include "dtkCoreObjectManager.h"
 #include "dtkCoreParameter.h"
-#include "dtkCoreParameterFile.h"
+#include "dtkCoreParameterPath.h"
 #include "dtkCorePlugin.h"
 #include "dtkCorePluginBase.h"
 #include "dtkCorePluginFactory.h"

@@ -17,7 +17,7 @@
 #include <dtkCoreTest>
 
 #include <dtkCore/dtkCoreParameter>
-#include <dtkCore/dtkCoreParameterFile>
+#include <dtkCore/dtkCoreParameterPath>
 
 class dtkCoreParameterTestCasePrivate
 {
@@ -25,11 +25,16 @@ public:
 };
 
 // ///////////////////////////////////////////////////////////////////
+// example on how to use dtkCoreParameterSimple
+// (see code at dtkCoreParameterTestCase::testText(void)
+//)
 // use std::string as dtkCoreParameter
-// (dtk::d_string is implemented on QString and not son std::string)
+// (dtk::d_string is implemented on QString and not on std::string)
 //
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
+//
+// ///////////////////////////////////////////////////////////////////
 
 QDebug& operator << (QDebug &dbg, const std::string &p)
 {
@@ -44,22 +49,7 @@ QDebug& operator << (QDebug &dbg, const std::string &p)
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
-    qRegisterMetaType<std::string>();
-
-    qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
-
-    qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
-    qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
-    qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
-
-    QMetaType::registerDebugStreamOperator<dtk::d_real>();
-    QMetaType::registerDebugStreamOperator<dtk::d_int>();
-    QMetaType::registerDebugStreamOperator<dtk::d_bool>();
-    QMetaType::registerDebugStreamOperator<dtk::d_string>();
-
-    qRegisterMetaType<dtk::d_range_int>();
-    qRegisterMetaType<dtk::d_range_int*>();
-    qRegisterMetaType<dtk::d_range_int::range>();
+    dtk::core::registerParameters();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -781,8 +771,6 @@ void dtkCoreParameterTestCase::testText(void)
 
 void dtkCoreParameterTestCase::testCreation(void)
 {
-    qRegisterMetaType<dtk::d_real *>();
-
     dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
 
     QVariantHash map;
@@ -842,19 +830,13 @@ void dtkCoreParameterTestCase::testRange(void)
 
 void dtkCoreParameterTestCase::testFile(void)
 {
-    qRegisterMetaType<dtk::d_file>();
-    qRegisterMetaType<dtk::d_file*>();
-
-    QMetaType::registerDebugStreamOperator<dtk::d_file>();
-
-    dtk::d_file source("file", "toto.jpg", "/home/tkloczko/Development/dtk/dtk-core", {"*.jpg", "*.png"},  "File parameter example");
+    dtk::d_path source("file", "/pim/pam/poum/pipo.jpg", {"*.jpg", "*.png"},  "File parameter example");
 
     QVariantHash map;
-    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_file>());
+    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_path>());
     map["label"] = source.label();
     map["doc"] = source.documentation();
-    map["filename"] = source.fileName();
-    map["dir"] = source.dir();
+    map["path"] = source.path();
     map["filters"] = source.filters();
 
     auto *target = dtkCoreParameter::create(map);
@@ -863,14 +845,33 @@ void dtkCoreParameterTestCase::testFile(void)
     QCOMPARE(target->label(), source.label());
     QCOMPARE(target->documentation(), source.documentation());
 
-    dtk::d_file& target_file = dynamic_cast<dtk::d_file&>(*target);
+    dtk::d_path& target_file = dynamic_cast<dtk::d_path&>(*target);
 
     QVERIFY(&target_file);
-    QCOMPARE(source.fileName(), target_file.fileName());
-    QCOMPARE(source.dir(), target_file.dir());
+    QCOMPARE(source.path(), target_file.path());
+    QCOMPARE(source.dirName(), target_file.dirName());
+    QCOMPARE(source.baseName(), target_file.baseName());
     QCOMPARE(source.filters(), target_file.filters());
 
     qDebug() << target_file;
+
+    QByteArray data;
+    {
+        QDataStream out(&data, QIODevice::WriteOnly);
+        out << source;
+    }
+
+    dtk::d_path destination;
+    dtk::d_string psi;
+    {
+        QDataStream in(data);
+        in >> destination;
+    }
+
+    QCOMPARE(source.path(), destination.path());
+    QCOMPARE(source.dirName(), destination.dirName());
+    QCOMPARE(source.baseName(), destination.baseName());
+    QCOMPARE(source.filters(), destination.filters());
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)
