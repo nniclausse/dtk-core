@@ -25,11 +25,16 @@ public:
 };
 
 // ///////////////////////////////////////////////////////////////////
+// example on how to use dtkCoreParameterSimple
+// (see code at dtkCoreParameterTestCase::testText(void)
+//)
 // use std::string as dtkCoreParameter
-// (dtk::d_string is implemented on QString and not son std::string)
+// (dtk::d_string is implemented on QString and not on std::string)
 //
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
+//
+// ///////////////////////////////////////////////////////////////////
 
 QDebug& operator << (QDebug &dbg, const std::string &p)
 {
@@ -44,22 +49,7 @@ QDebug& operator << (QDebug &dbg, const std::string &p)
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
-    qRegisterMetaType<std::string>();
-
-    qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
-
-    qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
-    qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
-    qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
-
-    QMetaType::registerDebugStreamOperator<dtk::d_real>();
-    QMetaType::registerDebugStreamOperator<dtk::d_int>();
-    QMetaType::registerDebugStreamOperator<dtk::d_bool>();
-    QMetaType::registerDebugStreamOperator<dtk::d_string>();
-
-    qRegisterMetaType<dtk::d_range_int>();
-    qRegisterMetaType<dtk::d_range_int*>();
-    qRegisterMetaType<dtk::d_range_int::range>();
+    dtk::core::registerParameters();
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -781,8 +771,6 @@ void dtkCoreParameterTestCase::testText(void)
 
 void dtkCoreParameterTestCase::testCreation(void)
 {
-    qRegisterMetaType<dtk::d_real *>();
-
     dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
 
     QVariantHash map;
@@ -842,11 +830,6 @@ void dtkCoreParameterTestCase::testRange(void)
 
 void dtkCoreParameterTestCase::testFile(void)
 {
-    qRegisterMetaType<dtk::d_path>();
-    qRegisterMetaType<dtk::d_path *>();
-
-    QMetaType::registerDebugStreamOperator<dtk::d_path>();
-
     dtk::d_path source("file", "/home/tkloczko/Development/dtk/dtk-core/toto.jpg", {"*.jpg", "*.png"},  "File parameter example");
 
     QVariantHash map;
