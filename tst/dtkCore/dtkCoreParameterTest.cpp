@@ -17,7 +17,7 @@
 #include <dtkCoreTest>
 
 #include <dtkCore/dtkCoreParameter>
-#include <dtkCore/dtkCoreParameterFile>
+#include <dtkCore/dtkCoreParameterPath>
 
 class dtkCoreParameterTestCasePrivate
 {
@@ -834,19 +834,18 @@ void dtkCoreParameterTestCase::testRange(void)
 
 void dtkCoreParameterTestCase::testFile(void)
 {
-    qRegisterMetaType<dtk::d_file>();
-    qRegisterMetaType<dtk::d_file*>();
+    qRegisterMetaType<dtk::d_path>();
+    qRegisterMetaType<dtk::d_path *>();
 
-    QMetaType::registerDebugStreamOperator<dtk::d_file>();
+    QMetaType::registerDebugStreamOperator<dtk::d_path>();
 
-    dtk::d_file source("file", "toto.jpg", "/home/tkloczko/Development/dtk/dtk-core", {"*.jpg", "*.png"},  "File parameter example");
+    dtk::d_path source("file", "/home/tkloczko/Development/dtk/dtk-core/toto.jpg", {"*.jpg", "*.png"},  "File parameter example");
 
     QVariantHash map;
-    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_file>());
+    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_path>());
     map["label"] = source.label();
     map["doc"] = source.documentation();
-    map["filename"] = source.fileName();
-    map["dir"] = source.dir();
+    map["path"] = source.path();
     map["filters"] = source.filters();
 
     auto *target = dtkCoreParameter::create(map);
@@ -855,11 +854,12 @@ void dtkCoreParameterTestCase::testFile(void)
     QCOMPARE(target->label(), source.label());
     QCOMPARE(target->documentation(), source.documentation());
 
-    dtk::d_file& target_file = dynamic_cast<dtk::d_file&>(*target);
+    dtk::d_path& target_file = dynamic_cast<dtk::d_path&>(*target);
 
     QVERIFY(&target_file);
-    QCOMPARE(source.fileName(), target_file.fileName());
-    QCOMPARE(source.dir(), target_file.dir());
+    QCOMPARE(source.path(), target_file.path());
+    QCOMPARE(source.dirName(), target_file.dirName());
+    QCOMPARE(source.baseName(), target_file.baseName());
     QCOMPARE(source.filters(), target_file.filters());
 
     qDebug() << target_file;
