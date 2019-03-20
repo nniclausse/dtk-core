@@ -13,7 +13,7 @@
 // Code:
 
 #include "dtkCoreParameter.h"
-#include "dtkCoreParameterFile.h"
+#include "dtkCoreParameterPath.h"
 
 // ///////////////////////////////////////////////////////////////////
 // helper functions
@@ -102,12 +102,12 @@ namespace dtk {
             QMetaType::registerDebugStreamOperator<dtk::d_range_real>();
 
 
-            qRegisterMetaType<dtk::d_file>();
-            qRegisterMetaType<dtk::d_file*>();
+            qRegisterMetaType<dtk::d_path>();
+            qRegisterMetaType<dtk::d_path*>();
 
-            qRegisterMetaTypeStreamOperators<dtk::d_file>("dtk::d_file");
+            qRegisterMetaTypeStreamOperators<dtk::d_path>("dtk::d_path");
 
-            QMetaType::registerDebugStreamOperator<dtk::d_file>();
+            QMetaType::registerDebugStreamOperator<dtk::d_path>();
         }
     }
 }
