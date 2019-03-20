@@ -830,7 +830,7 @@ void dtkCoreParameterTestCase::testRange(void)
 
 void dtkCoreParameterTestCase::testFile(void)
 {
-    dtk::d_path source("file", "/home/tkloczko/Development/dtk/dtk-core/toto.jpg", {"*.jpg", "*.png"},  "File parameter example");
+    dtk::d_path source("file", "/pim/pam/poum/pipo.jpg", {"*.jpg", "*.png"},  "File parameter example");
 
     QVariantHash map;
     map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_path>());
@@ -854,6 +854,24 @@ void dtkCoreParameterTestCase::testFile(void)
     QCOMPARE(source.filters(), target_file.filters());
 
     qDebug() << target_file;
+
+    QByteArray data;
+    {
+        QDataStream out(&data, QIODevice::WriteOnly);
+        out << source;
+    }
+
+    dtk::d_path destination;
+    dtk::d_string psi;
+    {
+        QDataStream in(data);
+        in >> destination;
+    }
+
+    QCOMPARE(source.path(), destination.path());
+    QCOMPARE(source.dirName(), destination.dirName());
+    QCOMPARE(source.baseName(), destination.baseName());
+    QCOMPARE(source.filters(), destination.filters());
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

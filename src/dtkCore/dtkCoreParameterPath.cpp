@@ -156,7 +156,6 @@ QDataStream& operator >> (QDataStream& s, dtkCoreParameterPath& p)
 {
     QString label; s >> label;
     QString path; s >> path;
-    QString dir; s >> dir;
     int count; s >> count;
     QStringList filters;
     for (int i = 0; i < count; ++i) {
