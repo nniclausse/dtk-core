@@ -735,6 +735,31 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<T>& p)
     return s;
 }
 
+inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterNumeric<char>& p)
+{
+    s << p.label();
+    s << (qint8)p.value();
+    s << (qint8)p.min();
+    s << (qint8)p.max();
+    s << p.decimals();
+    s << p.documentation();
+
+    return s;
+}
+
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<char>& p)
+{
+    QString label; s >> label;
+    qint8 val; s >> val;
+    qint8 min; s >> min;
+    qint8 max; s >> max;
+    int dec; s >> dec;
+    QString doc; s >> doc;
+
+    p = dtkCoreParameterNumeric<char>(label, (char)val, (char)min, (char)max, doc);
+    return s;
+}
+
 template <typename T>
 inline QDebug operator << (QDebug dbg, dtkCoreParameterNumeric<T> p)
 {
@@ -1002,10 +1027,10 @@ inline QDebug operator << (QDebug dbg, dtkCoreParameterInList<T> p)
     dbg.nospace() << "label" << p.label() << ", "
                   << "value_index" << p.valueIndex() << ", "
                   << "values [";
-    for (int i = 0; i < p.values.size(); ++i) {
+    for (int i = 0; i < p.values().size(); ++i) {
         if (i)
             dbg.nospace() << ", ";
-        dbg.nospace() << p.values.at(i);
+        dbg.nospace() << p.values().at(i);
     }
     dbg.nospace() << "], "
                   << "documentation : " << p.documentation()
@@ -1136,8 +1161,12 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
 
-        auto min = map["min"].value<T>();
-        auto max = map["max"].value<T>();
+        T min, max;
+        if (map.contains("min")) min = map["min"].value<T>();
+        else                     min = std::numeric_limits<T>::lowest();
+
+        if (map.contains("max")) max = map["max"].value<T>();
+        else                     max = std::numeric_limits<T>::max();
 
         auto list = map["values"].toList();
         auto v_min = list[0].value<T>();
@@ -1223,8 +1252,12 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
 
-        auto min = map["min"].value<T>();
-        auto max = map["max"].value<T>();
+        T min, max;
+        if (map.contains("min")) min = map["min"].value<T>();
+        else                     min = std::numeric_limits<T>::lowest();
+
+        if (map.contains("max")) max = map["max"].value<T>();
+        else                     max = std::numeric_limits<T>::max();
 
         auto list = map["values"].toList();
         auto v_min = list[0].value<T>();
@@ -1305,7 +1338,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterRange<T>&
     return s;
 }
 
-template <typename T>
+template <typename T, typename E>
 inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
 {
     QString label; s >> label;
@@ -1319,6 +1352,52 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
     std::array<T, 2> val = {v_min, v_max};
 
     p = dtkCoreParameterRange<T>(label, val, min, max, dec, doc);
+    return s;
+}
+
+template <typename T, typename E, typename U>
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
+{
+    QString label; s >> label;
+    T v_min; s >> v_min;
+    T v_max; s >> v_max;
+    T min; s >> min;
+    T max; s >> max;
+    int dec; s >> dec;
+    QString doc; s >> doc;
+
+    std::array<T, 2> val = {v_min, v_max};
+
+    p = dtkCoreParameterRange<T>(label, val, min, max, doc);
+    return s;
+}
+
+inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterRange<char>& p)
+{
+    s << p.label();
+    s << (qint8)p.value()[0];
+    s << (qint8)p.value()[1];
+    s << (qint8)p.min();
+    s << (qint8)p.max();
+    s << p.decimals();
+    s << p.documentation();
+
+    return s;
+}
+
+inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<char>& p)
+{
+    QString label; s >> label;
+    qint8 v_min; s >> v_min;
+    qint8 v_max; s >> v_max;
+    qint8 min; s >> min;
+    qint8 max; s >> max;
+    int dec; s >> dec;
+    QString doc; s >> doc;
+
+    std::array<char, 2> val = {(char)v_min, (char)v_max};
+
+    p = dtkCoreParameterRange<char>(label, val, (char)min, (char)max, doc);
     return s;
 }
 

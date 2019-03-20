@@ -29,6 +29,14 @@ namespace dtk {
     using parameter_not_arithmetic = std::enable_if_t<!std::is_arithmetic<T>::value, E>;
 }
 
+namespace dtk {
+    namespace core {
+
+        DTKCORE_EXPORT void registerParameters(void);
+
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 // Helper class managing connection
 // ///////////////////////////////////////////////////////////////////
@@ -156,7 +164,7 @@ private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
-    T m_value;
+    T m_value = T();
 };
 
 template <typename T>
@@ -249,6 +257,9 @@ template <typename T, typename E = std::enable_if_t<std::is_floating_point<T>::v
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<T>&);
 template <typename T, typename E = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<T>&);
+
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterNumeric<char>&);
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterNumeric<char>&);
 
 template <typename T>
 DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterNumeric<T>);
@@ -355,8 +366,13 @@ private:
 
 template <typename T>
 DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterRange<T>&);
-template <typename T>
+template <typename T, typename E = std::enable_if_t<std::is_floating_point<T>::value>>
 DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterRange<T>&);
+template <typename T, typename E = std::enable_if_t<!std::is_floating_point<T>::value>, typename U = T>
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterRange<T>&);
+
+DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterRange<char>&);
+DTKCORE_EXPORT QDataStream& operator >> (QDataStream&, dtkCoreParameterRange<char>&);
 
 template <typename T>
 DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterRange<T>);
@@ -376,6 +392,8 @@ namespace dtk {
     using d_string = dtkCoreParameterSimple<QString>;
 
     using d_inliststring = dtkCoreParameterInList<QString>;
+    using d_inlistreal   = dtkCoreParameterInList<double>;
+    using d_inlistint    = dtkCoreParameterInList<qlonglong>;
 
     using d_range_uchar = dtkCoreParameterRange<unsigned char>;
     using d_range_char  = dtkCoreParameterRange<char>;
@@ -389,13 +407,26 @@ namespace dtk {
 // ///////////////////////////////////////////////////////////////////
 
 Q_DECLARE_METATYPE(dtk::d_uchar);
+Q_DECLARE_METATYPE(dtk::d_uchar*);
 Q_DECLARE_METATYPE(dtk::d_char);
+Q_DECLARE_METATYPE(dtk::d_char*);
 Q_DECLARE_METATYPE(dtk::d_uint);
+Q_DECLARE_METATYPE(dtk::d_uint*);
 Q_DECLARE_METATYPE(dtk::d_int);
+Q_DECLARE_METATYPE(dtk::d_int*);
 Q_DECLARE_METATYPE(dtk::d_real);
+Q_DECLARE_METATYPE(dtk::d_real*);
 Q_DECLARE_METATYPE(dtk::d_bool);
+Q_DECLARE_METATYPE(dtk::d_bool*);
 Q_DECLARE_METATYPE(dtk::d_string);
+Q_DECLARE_METATYPE(dtk::d_string*);
+
 Q_DECLARE_METATYPE(dtk::d_inliststring);
+Q_DECLARE_METATYPE(dtk::d_inliststring*);
+Q_DECLARE_METATYPE(dtk::d_inlistreal);
+Q_DECLARE_METATYPE(dtk::d_inlistreal*);
+Q_DECLARE_METATYPE(dtk::d_inlistint);
+Q_DECLARE_METATYPE(dtk::d_inlistint*);
 
 Q_DECLARE_METATYPE(dtk::d_range_uchar);
 Q_DECLARE_METATYPE(dtk::d_range_uchar*);
@@ -412,15 +443,6 @@ Q_DECLARE_METATYPE(dtk::d_range_int::range);
 Q_DECLARE_METATYPE(dtk::d_range_real);
 Q_DECLARE_METATYPE(dtk::d_range_real*);
 Q_DECLARE_METATYPE(dtk::d_range_real::range);
-
-Q_DECLARE_METATYPE(dtk::d_uchar*);
-Q_DECLARE_METATYPE(dtk::d_char*);
-Q_DECLARE_METATYPE(dtk::d_uint*);
-Q_DECLARE_METATYPE(dtk::d_int*);
-Q_DECLARE_METATYPE(dtk::d_real*);
-Q_DECLARE_METATYPE(dtk::d_bool*);
-Q_DECLARE_METATYPE(dtk::d_string*);
-Q_DECLARE_METATYPE(dtk::d_inliststring*);
 
 // ///////////////////////////////////////////////////////////////////
 
