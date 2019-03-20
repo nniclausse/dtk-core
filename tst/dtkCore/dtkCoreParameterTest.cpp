@@ -496,6 +496,14 @@ void dtkCoreParameterTestCase::testBoolean(void)
     b1 = not(b1); // b1 <= false
     QCOMPARE( b1 == false, true);
 
+    b1.setValue(true);
+    QCOMPARE( b1 == true, true);
+    QCOMPARE( b1.value(), true);
+
+    b1.setValue(false);
+    QCOMPARE( b1 == false, true);
+    QCOMPARE( b1.value(), false);
+
     // one *bool
     dtk::d_bool *pb;
 
