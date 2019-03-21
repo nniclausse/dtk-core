@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.3.1 - 2019-03-21
+
+- fix build on windows
+
 ## version 2.3.0 - 2019-03-21
 
 - add dtkParameter abstract class and implementations
