@@ -101,10 +101,19 @@ namespace dtk {
     // Creating of a variant by downcasting the class as much as possible
     namespace detail
     {
+        // Default fallback to create QVariant
+        template <typename T, typename E = void, typename F = void>
+        struct variant_handler
+        {
+            static QVariant fromValue(const T& t) {
+                return QVariant::fromValue(t);
+            }
+        };
+
         template <typename T>
         std::enable_if_t<!dtk::is_qobject<T>::value, QVariant> variant_from_value(const T& t)
         {
-            return QVariant::fromValue(t);
+            return variant_handler<T>::fromValue(t);
         }
 
         template <typename T>
