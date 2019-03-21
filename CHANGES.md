@@ -1,5 +1,10 @@
 # ChangeLog
 
+## version 2.3.0 - 2019-03-21
+
+- add dtkParameter abstract class and implementations
+- expand ~/ in path in plugin manager
+
 ## version 2.2.2 - 2018-09-19
 
 - fix install rule of `dtkCoreRuntime`.
