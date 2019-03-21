@@ -193,6 +193,10 @@ template <typename T> void dtkCorePluginManager<T>::initialize(const QString& pa
 
     for (QString path2 : path.split(":", QString::SkipEmptyParts)) {
 
+        if (path2.startsWith ("~/")) {
+            path2.replace (0, 1, QDir::homePath());
+        }
+
         QDir dir(path2);
 
         if (d->verboseLoading) {
