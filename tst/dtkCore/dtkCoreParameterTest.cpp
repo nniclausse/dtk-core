@@ -19,6 +19,8 @@
 #include <dtkCore/dtkCoreParameter>
 #include <dtkCore/dtkCoreParameterPath>
 
+#include <ciso646>
+
 class dtkCoreParameterTestCasePrivate
 {
 public:

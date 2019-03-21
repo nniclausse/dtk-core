@@ -119,7 +119,7 @@ Q_DECLARE_METATYPE(dtkCoreParameter *);
 // ///////////////////////////////////////////////////////////////////
 
 template <typename Derive>
-class DTKCORE_EXPORT dtkCoreParameterBase : public dtkCoreParameter
+class dtkCoreParameterBase : public dtkCoreParameter
 {
 public:
      dtkCoreParameterBase(void) = default;
@@ -138,7 +138,7 @@ public:
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable = void>
-class DTKCORE_EXPORT dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
+class dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
 {
 public:
      dtkCoreParameterSimple(void) = default;
@@ -180,7 +180,7 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterSimple<T>);
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename E = dtk::parameter_arithmetic<T>>
-class DTKCORE_EXPORT dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
+class dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
 {
 public:
      dtkCoreParameterNumeric(void) = default;
@@ -269,7 +269,7 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterNumeric<T>);
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
-class DTKCORE_EXPORT dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
+class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
 public:
      dtkCoreParameterInList(void) = default;
@@ -318,7 +318,7 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterInList<T>);
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename E = dtk::parameter_arithmetic<T>>
-class DTKCORE_EXPORT dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<T>>
+class dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<T>>
 {
 public:
     using range = std::array<T, 2>;
