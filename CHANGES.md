@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.3.2 - 2019-03-28
+
+- fix install rules on windows
+
 ## version 2.3.1 - 2019-03-21
 
 - fix build on windows
