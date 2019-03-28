@@ -75,9 +75,13 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## ###################################################################
 
 install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT core
-         EXPORT dtkCoreDepends)
+  EXPORT dtkCoreDepends
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          COMPONENT   core-runtime)
+
+
 
 ######################################################################
 ### CMakeLists.txt ends here
