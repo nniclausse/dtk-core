@@ -30,7 +30,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 set(${PROJECT_NAME}_VERSION_MAJOR 2)
 set(${PROJECT_NAME}_VERSION_MINOR 3)
-set(${PROJECT_NAME}_VERSION_PATCH 2)
+set(${PROJECT_NAME}_VERSION_PATCH 1)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 
@@ -106,7 +106,7 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Test Widgets WebSockets)
+find_package(Qt5 REQUIRED COMPONENTS Core Test Widgets Gui)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -114,28 +114,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(DTK_HAVE_ZLIB "NO")
 find_package(ZLIB QUIET)
 if(ZLIB_FOUND)
-  include_directories(${ZLIB_INCLUDE_DIRS})
+  add_library(zlib_interface INTERFACE)
+  target_include_directories(zlib_interface INTERFACE ${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(zlib_interface INTERFACE ${ZLIB_LIBRARIES})
   set(DTK_HAVE_ZLIB "YES")
 endif(ZLIB_FOUND)
 
 find_package(dtkLog REQUIRED)
-include_directories(${dtkLog_INCLUDE_DIRS})
-
-## #################################################################
-## Dependencies - internal
-## #################################################################
-
-include_directories(${CMAKE_BINARY_DIR})
-include_directories(${CMAKE_BINARY_DIR}/src)
-include_directories(${CMAKE_BINARY_DIR}/src/dtkCore)
-include_directories(${CMAKE_BINARY_DIR}/src/dtkCoreRuntime)
-include_directories(${CMAKE_BINARY_DIR}/tst/dtkCoreLayerTest/src)
-include_directories(${CMAKE_BINARY_DIR}/tst/dtkCoreLayerTest/plugins)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/dtkCore)
-include_directories(${CMAKE_SOURCE_DIR}/src/dtkCoreRuntime)
-include_directories(${CMAKE_SOURCE_DIR}/tst/dtkCoreLayerTest/src)
-include_directories(${CMAKE_SOURCE_DIR}/tst/dtkCoreLayerTest/plugins)
 
 ## ###################################################################
 ## Input
@@ -145,26 +130,43 @@ add_subdirectory(src)
 add_subdirectory(tst)
 
 ## ###################################################################
+## Export configuration
+## ###################################################################
+
+include(CMakePackageConfigHelpers)
+
+set(${PROJECT_NAME}_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE
+  STRING "install path for ${PROJECT_NAME}Config.cmake")
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+configure_package_config_file(cmake/${PROJECT_NAME}Config.cmake.in
+  ${PROJECT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  VERSION ${${PROJECT_NAME}_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+## ###################################################################
 ## Exporting
 ## ###################################################################
 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
+install(EXPORT layer-targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
 export(PACKAGE ${PROJECT_NAME})
-
-configure_file(${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in
-  "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake.in
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
-
-install(FILES
-  "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION  ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
-
-install(EXPORT ${PROJECT_NAME}Depends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 ## ###################################################################
 ## Beautifying
@@ -174,26 +176,19 @@ mark_as_advanced(${PROJECT_NAME}_VERSION_MAJOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_MINOR)
 mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
 
+mark_as_advanced(${PROJECT_NAME}_CMAKE_INSTALL_DIR)
+
 mark_as_advanced(Qt5_DIR)
 mark_as_advanced(Qt5Core_DIR)
+mark_as_advanced(Qt5Widgets_DIR)
+mark_as_advanced(Qt5Gui_DIR)
 mark_as_advanced(Qt5Test_DIR)
 
 mark_as_advanced(CMAKE_AR)
+mark_as_advanced(CMAKE_INSTALL_PREFIX)
 mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
 mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
 mark_as_advanced(CMAKE_OSX_SYSROOT)
-
-## ###################################################################
-## Packaging
-## ###################################################################
-
-include(InstallRequiredSystemLibraries)
-
-set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${${PROJECT_NAME}_VERSION_PATCH}")
-
-include(CPack)
 
 ######################################################################
 ### CMakeLists.txt ends here

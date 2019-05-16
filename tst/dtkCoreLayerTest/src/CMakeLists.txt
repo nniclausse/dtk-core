@@ -12,37 +12,7 @@
 ##
 ### Code:
 
-project(dtkCoreLayerTest)
-
-## #################################################################
-## Install prefix
-## #################################################################
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
-## ###################################################################
-## Exporting
-## ###################################################################
-
-export(PACKAGE ${PROJECT_NAME})
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.install.cmake.in
-  "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake" @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}ConfigVersion.cmake.in
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
-
-install(FILES
-  "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake"
-  "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION  ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
-
-install(EXPORT ${PROJECT_NAME}Depends DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+project(dtkCoreLayerTest VERSION ${dtkCore_VERSION})
 
 ## ###################################################################
 ## Input
@@ -62,29 +32,43 @@ set(${PROJECT_NAME}_SOURCES
   dtkAbstractCoreConcept.cpp)
 
 ## ###################################################################
-## Build rules
+## Config file
 ## ###################################################################
 
-qt5_add_RESOURCES(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+## ###################################################################
+## Build rules
+## ###################################################################
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS})
 
-## ###################################################################
-## Link rules
-## ###################################################################
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkCore)
 
-target_link_libraries(${PROJECT_NAME} dtkCore)
-target_link_libraries(${PROJECT_NAME} dtkLog)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>)
 
 ## #################################################################
-## Target export
+## Install prefix
 ## #################################################################
 
-export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_BINARY_DIR}/dtkCoreLayerTestDepends.cmake")
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "${PROJECT_NAME} install prefix" FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 ## #################################################################
 ## Target properties
@@ -107,33 +91,62 @@ set(${PROJECT_NAME}_HEADERS
   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
 ## ###################################################################
-## Config file
-## ###################################################################
-
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
-
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
-
-## ###################################################################
 ## Install rules - files
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/${PROJECT_NAME}
-    COMPONENT core-layer-test)
+  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT core-layer-test
-         EXPORT dtkCoreLayerTestDepends)
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+## ###################################################################
+## Export configuration
+## ###################################################################
+
+include(CMakePackageConfigHelpers)
+
+set(${PROJECT_NAME}_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE
+  STRING "install path for ${PROJECT_NAME}Config.cmake")
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in
+  ${PROJECT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION "${${PROJECT_NAME}_CMAKE_INSTALL_DIR}"
+  PATH_VARS ${PROJECT_NAME}_INCLUDE_DIRS)
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  VERSION ${${PROJECT_NAME}_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+## ###################################################################
+## Exporting
+## ###################################################################
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
+export(EXPORT layer-targets
+  FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
+install(EXPORT layer-targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
+
+export(PACKAGE ${PROJECT_NAME})
 
 ######################################################################
 ### CMakeLists.txt ends here

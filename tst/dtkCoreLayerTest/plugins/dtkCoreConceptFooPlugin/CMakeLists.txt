@@ -46,16 +46,24 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS})
 
-## ###################################################################
-## Link rules
-## ###################################################################
+target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
 
-target_link_libraries(${PROJECT_NAME} dtkCoreLayerTest)
-target_link_libraries(${PROJECT_NAME} dtkCore)
-target_link_libraries(${PROJECT_NAME} dtkLog)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkCoreLayerTest)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+set(plugin_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
+set(plugin_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
+
+message("${plugin_BINARY_DIR}")
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${plugin_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${plugin_BINARY_DIR}>)
 
 ## #################################################################
 ## Export header file

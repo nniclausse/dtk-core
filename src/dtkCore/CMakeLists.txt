@@ -84,6 +84,20 @@ set(${PROJECT_NAME}_SOURCES
   dtkCorePluginManagerRecorder.cpp
   dtkCorePluginWidgetManager.cpp)
 
+## ###################################################################
+## Config file
+## ###################################################################
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+set(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
+
+set(layer_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
+
 ## #################################################################
 ## Build rules
 ## #################################################################
@@ -92,13 +106,22 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Core)
-
-target_link_libraries(${PROJECT_NAME} dtkLog)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 
 if(DTK_HAVE_ZLIB)
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
+  target_link_libraries(${PROJECT_NAME} PRIVATE zlib_interface)
 endif(DTK_HAVE_ZLIB)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${layer_BINARY_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include>)
 
 ## #################################################################
 ## Target properties
@@ -123,35 +146,20 @@ set(${PROJECT_NAME}_HEADERS
   "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Export.h")
 
 ## ###################################################################
-## Config file
-## ###################################################################
-
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.h.in"
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
-
-set(${PROJECT_NAME}_HEADERS
-  ${${PROJECT_NAME}_HEADERS}
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h")
-
-## ###################################################################
 ## Install rules - files
 ## ###################################################################
 
 install(FILES ${${PROJECT_NAME}_HEADERS}
-  DESTINATION include/${PROJECT_NAME}
-    COMPONENT core)
+  DESTINATION include/${PROJECT_NAME})
 
 ## ###################################################################
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}Depends
-  RUNTIME DESTINATION bin
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-          COMPONENT   core)
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 ######################################################################
 ### CMakeLists.txt ends here
