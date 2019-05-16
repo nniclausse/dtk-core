@@ -14,18 +14,18 @@
 
 #pragma once
 
-#include <dtkCoreRuntimeExport.h>
+#include <dtkCoreRuntimeExport>
 
-#include <dtkLog>
+#include <QtWidgets/QApplication>
 
-#include <QtCore>
-#include <QtWidgets>
+class QCommandLineParser;
+class QSettings;
 
 class DTKCORERUNTIME_EXPORT dtkCoreRuntimeApplication : public QApplication
 {
 public:
-             dtkCoreRuntimeApplication(int& argc, char **argv);
-    virtual ~dtkCoreRuntimeApplication(void);
+     dtkCoreRuntimeApplication(int& argc, char **argv);
+    ~dtkCoreRuntimeApplication(void);
 
 public:
     virtual void initialize(void);
@@ -34,15 +34,7 @@ public:
     virtual bool noGui(void);
 
 public:
-    static dtkCoreRuntimeApplication *create(int& argc, char *argv[]) {
-        for (int i = 0; i < argc; i++) {
-            if (!qstrcmp(argv[i], "-nw") || !qstrcmp(argv[i], "--nw") ||  !qstrcmp(argv[i], "-no-window") || !qstrcmp(argv[i], "--no-window") || !qstrcmp(argv[i], "-h") || !qstrcmp(argv[i], "--help") || !qstrcmp(argv[i], "--version")) {
-                qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
-            }
-        }
-
-        return new dtkCoreRuntimeApplication(argc, argv);
-    }
+    static dtkCoreRuntimeApplication *create(int& argc, char *argv[]);
 
 public:
     QCommandLineParser *parser(void);

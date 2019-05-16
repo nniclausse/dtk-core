@@ -12,15 +12,7 @@
 ##
 ### Code:
 
-set(dtkCore_INCLUDE_DIRS
-  "@CMAKE_CURRENT_SOURCE_DIR@/src"
-  "@CMAKE_CURRENT_SOURCE_DIR@/src/dtkCore"
-  "@CMAKE_CURRENT_SOURCE_DIR@/src/dtkCoreRuntime"
-  "@CMAKE_CURRENT_BINARY_DIR@"
-  "@CMAKE_CURRENT_BINARY_DIR@/src"
-  "@CMAKE_CURRENT_BINARY_DIR@/src/dtkCore")
-
-include("@CMAKE_BINARY_DIR@/dtkCoreDepends.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 
 ######################################################################
 ### dtkCoreConfig.cmake.in ends here

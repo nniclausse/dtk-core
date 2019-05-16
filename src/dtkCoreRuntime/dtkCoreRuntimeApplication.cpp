@@ -16,6 +16,9 @@
 
 #include <dtkCore>
 
+#include <QtCore>
+#include <QtGui>
+
 /*!
   \class dtkCoreRuntimeApplication
   \inmodule dtkWidgets
@@ -79,9 +82,8 @@ Options:
   Warning: The data referred to by \a argc and \a argv must stay valid for the entire lifetime of the dtkCoreApplication object. In addition, argc must be greater than zero and argv must contain at least one valid character string.
 */
 
-dtkCoreRuntimeApplication::dtkCoreRuntimeApplication(int& argc, char **argv): QApplication(argc, argv)
+dtkCoreRuntimeApplication::dtkCoreRuntimeApplication(int& argc, char **argv): QApplication(argc, argv), d(new dtkCoreApplicationPrivate)
 {
-    d = new dtkCoreApplicationPrivate;
     d->setApplication(this);
 }
 
@@ -94,13 +96,23 @@ dtkCoreRuntimeApplication::~dtkCoreRuntimeApplication(void)
 {
     delete d;
 
-    d = NULL;
+    d = nullptr;
 }
 
 /*! \fn dtkCoreRuntimeApplication *create(int &argc, char *argv[])
 
   Helper function to create an instance of a dtkCoreRuntimeApplication. If the \tt{--nw} option is set, it will use a \e{minimal} \tt{QT_QPA_PLATFORM}. \a argc and \a argv are the usual parameters of a QCoreApplication.
 */
+dtkCoreRuntimeApplication *dtkCoreRuntimeApplication::create(int& argc, char *argv[])
+{
+    for (int i = 0; i < argc; ++i) {
+        if (!qstrcmp(argv[i], "-nw") || !qstrcmp(argv[i], "--nw") ||  !qstrcmp(argv[i], "-no-window") || !qstrcmp(argv[i], "--no-window") || !qstrcmp(argv[i], "-h") || !qstrcmp(argv[i], "--help") || !qstrcmp(argv[i], "--version")) {
+            qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
+        }
+    }
+
+    return new dtkCoreRuntimeApplication(argc, argv);
+}
 
 /*! \fn Qsettings dtkCoreRuntimeApplication::settings(void)
 
