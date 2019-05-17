@@ -9,6 +9,7 @@
 #include "dtkCoreObjectManager.h"
 #include "dtkCoreParameter.h"
 #include "dtkCoreParameterPath.h"
+#include "dtkCoreParameterReader.h"
 #include "dtkCorePlugin.h"
 #include "dtkCorePluginBase.h"
 #include "dtkCorePluginFactory.h"
