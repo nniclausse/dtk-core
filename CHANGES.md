@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.4.0 - 2019-05-17
+
+- cmake refactoring
+
 ## version 2.3.2 - 2019-03-28
 
 - fix install rules on windows

@@ -2,4 +2,5 @@ name:         dtk-core
 channels:
   - dtk
 dependencies:
+    - dtk-log >=2.2.0
     - qt >=5.9.0
