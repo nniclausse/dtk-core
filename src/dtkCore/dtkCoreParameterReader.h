@@ -8,15 +8,19 @@
 
 #include <dtkCoreExport>
 
-#include <QtCore>
+#include <QString>
 
 class dtkCoreParameter;
 
 class DTKCORE_EXPORT dtkCoreParameterReader
 {
 public:
-    dtkCoreParameterReader(const QString&);
+     dtkCoreParameterReader(const QString& json_file = QString());
     ~dtkCoreParameterReader(void);
+
+public:
+    void setJsonFile(const QString &json_file);
+    bool read(void);
 
 public:
     QHash<QString, dtkCoreParameter *> parameters(void) const;
