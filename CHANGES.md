@@ -1,5 +1,10 @@
 # ChangeLog
 
+
+## version 2.5.0 - 2019-05-21
+
+- add dtkCoreParameterReader
+
 ## version 2.4.0 - 2019-05-17
 
 - cmake refactoring
