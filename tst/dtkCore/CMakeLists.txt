@@ -30,7 +30,6 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreMetaContainerSequentialTest.tpp
   dtkCoreMetaTypeTest.h
   dtkCoreParameterTest.h
-  dtkCoreParameterReaderTest.h
   dtkCorePluginFactoryTest.h)
 
 set(${PROJECT_NAME}_SOURCES
@@ -38,7 +37,6 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreMetaContainerSequentialTest.cpp
   dtkCoreMetaTypeTest.cpp
   dtkCoreParameterTest.cpp
-  dtkCoreParameterReaderTest.cpp
   dtkCorePluginFactoryTest.cpp)
 
 ## ###################################################################
@@ -78,7 +76,6 @@ add_test(dtkCoreIOCompressorTest            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${
 add_test(dtkCoreMetaTypeTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
 add_test(dtkCoreMetaContainerSequentialTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaContainerSequentialTest)
 add_test(dtkCoreParameterTest               ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreParameterTest)
-add_test(dtkCoreParameterReaderTest         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreParameterReaderTest)
 add_test(dtkCorePluginFactoryTest           ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCorePluginFactoryTest)
 
 ######################################################################

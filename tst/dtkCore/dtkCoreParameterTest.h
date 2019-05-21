@@ -42,6 +42,7 @@ private slots:
     void testCreation(void);
     void testRange(void);
     void testFile(void);
+    void testReadParameters(void);
 
 private slots:
     void cleanupTestCase(void);
