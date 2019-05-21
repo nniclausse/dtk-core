@@ -1,0 +1,11 @@
+{
+    "contents":
+    {
+        "model/settings": {"label": "Settings file", "type": "dtk::d_path", "doc": "settings file", "filters": ["in file (*.in)"]},
+        "model/run": {"label": "Launch simulation", "type": "dtk::d_bool", "doc": "Ruuun", "value": false},
+        "hyp": {"label": "Porosity Model", "type": "dtk::d_int", "doc": "Porosity model, int(1, 2, 3)", "value": 2, "min": 0, "max": 5},
+        "dif": {"label": "Diffusion Flag", "type": "dtk::d_bool", "doc": "diffusion Flag", "value": false},
+        "toto": {"label": "toto real", "type": "dtk::d_real","doc": "miaou ", "value": 3.1415, "min": 0., "max":100., "decimals":6 },
+        "wind": {"label": "Wind Flag", "type": "dtk::d_not_a_type", "doc": "Wind Flag (0, 1)", "value": 0, "min": 0, "max":1 }
+    }
+}
