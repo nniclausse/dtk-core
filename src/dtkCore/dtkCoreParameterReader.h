@@ -10,7 +10,7 @@
 
 #include <QString>
 
-class dtkCoreParameter;
+#include "dtkCoreParameters.h"
 
 class DTKCORE_EXPORT dtkCoreParameterReader
 {
@@ -23,7 +23,7 @@ public:
     bool read(void);
 
 public:
-    QHash<QString, dtkCoreParameter *> parameters(void) const;
+    dtkCoreParameters parameters(void) const;
 
 protected:
     class dtkCoreParameterReaderPrivate *d;
