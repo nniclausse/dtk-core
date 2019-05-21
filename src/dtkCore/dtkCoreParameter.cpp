@@ -15,6 +15,8 @@
 #include "dtkCoreParameter.h"
 #include "dtkCoreParameterPath.h"
 
+#include <dtkLog>
+
 // ///////////////////////////////////////////////////////////////////
 // helper functions
 // ///////////////////////////////////////////////////////////////////
@@ -108,6 +110,65 @@ namespace dtk {
             qRegisterMetaTypeStreamOperators<dtk::d_path>("dtk::d_path");
 
             QMetaType::registerDebugStreamOperator<dtk::d_path>();
+        }
+
+        dtkCoreParameters readParameters(const QString& filename)
+        {
+            QFile definition_file(filename);
+
+            dtkCoreParameters parameters;
+            dtkCoreParameters dummy;
+
+            if(!definition_file.open(QFile::ReadOnly)) {
+                dtkWarn() << Q_FUNC_INFO << "input file" << filename << "cannot be opened in ReadOnly mode.";
+                return dummy;
+            }
+
+            QJsonParseError definition_error;
+            QJsonDocument definition_document = QJsonDocument::fromJson(definition_file.readAll(), &definition_error);
+
+            if(definition_error.error != QJsonParseError::NoError) {
+                dtkWarn() << Q_FUNC_INFO << "Error :" << definition_error.errorString() << "parsing" << filename << "offset :" << definition_error.offset << ".";
+                return dummy;
+            }
+
+            QJsonObject definition_object = definition_document.object();
+            if(!definition_object.contains("contents")) {
+                dtkWarn() << Q_FUNC_INFO << "The nature parameters file should contain a first json object with key 'contents'. The file cannot be processed any further.";
+                return dummy;
+            }
+
+            QJsonValue definition_contents = definition_object["contents"];
+            QJsonObject definitions;
+            if (definition_contents.isObject()) {
+                definitions = definition_contents.toObject();
+            } else {
+                dtkWarn() << Q_FUNC_INFO << "The first object with key 'contents' must be an object.";
+            }
+
+            QStringList keys = definitions.keys();
+            for (auto it = definitions.begin(); it != definitions.end(); ++it) {
+                QString name = keys.takeFirst();
+                if (it->isObject()) {
+                    QJsonObject content_object = it->toObject();
+
+                    QString type = content_object["type"].toString();
+
+                    QVariantHash map = content_object.toVariantHash();
+                    //map.insert("type", type);
+
+                    dtkCoreParameter *parameter = dtkCoreParameter::create(map);
+                    if (!parameter) {
+                        dtkWarn() << Q_FUNC_INFO << "fail to create parameter" << type << map;
+                        return dummy;
+                    }
+                    parameters.insert(name, parameter);
+
+                } else {
+                    dtkWarn() << Q_FUNC_INFO << "'contents' sections are expected to contain objects only. Non object entry is ignored.";
+                }
+            }
+            return parameters;
         }
     }
 }

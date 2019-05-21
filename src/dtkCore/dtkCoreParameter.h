@@ -16,11 +16,14 @@
 
 #include <dtkCoreExport>
 
+#include "dtkCoreParameters.h"
 #include "dtkCoreTypeTraits.h"
 
 #include <QtCore>
 
 #include <array>
+
+class dtkCoreParameter;
 
 namespace dtk {
     template <typename T, typename E = void>
@@ -33,6 +36,7 @@ namespace dtk {
     namespace core {
 
         DTKCORE_EXPORT void registerParameters(void);
+        DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
 
     }
 }
