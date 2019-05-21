@@ -78,7 +78,7 @@ bool dtkCoreParameterReader::read(void)
 
             dtkCoreParameter *parameter = dtkCoreParameter::create(map);
             if (!parameter) {
-                qWarnings() << "fail to create parameter" << type << map;
+                qWarning() << "fail to create parameter" << type << map;
                 d->parameters.clear();
                 return false;
             }
