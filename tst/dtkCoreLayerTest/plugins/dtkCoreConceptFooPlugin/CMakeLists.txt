@@ -56,8 +56,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Widgets)
 set(plugin_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 set(plugin_BINARY_DIR "${PROJECT_BINARY_DIR}/..")
 
-message("${plugin_BINARY_DIR}")
-
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${plugin_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
