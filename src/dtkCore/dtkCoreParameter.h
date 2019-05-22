@@ -148,12 +148,14 @@ public:
      dtkCoreParameterSimple(void) = default;
     ~dtkCoreParameterSimple(void) = default;
 
+    dtkCoreParameterSimple(const dtkCoreParameter *);
     dtkCoreParameterSimple(const QVariant&);
     dtkCoreParameterSimple(const dtkCoreParameterSimple&);
 
     dtkCoreParameterSimple(const QString&, const T&, const QString& = QString());
 
     dtkCoreParameterSimple& operator = (const T&);
+    dtkCoreParameterSimple& operator = (const dtkCoreParameter *);
     dtkCoreParameterSimple& operator = (const QVariant&);
     dtkCoreParameterSimple& operator = (const dtkCoreParameterSimple&);
 
@@ -191,13 +193,15 @@ public:
     ~dtkCoreParameterNumeric(void) = default;
 
     dtkCoreParameterNumeric(const T&);
-    dtkCoreParameterNumeric(const QVariant&);  // JLS: manque le doc pour la classe abstract ???
+    dtkCoreParameterNumeric(const dtkCoreParameter *);
+    dtkCoreParameterNumeric(const QVariant&);
     dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
 
     dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
 
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
+    dtkCoreParameterNumeric& operator = (const dtkCoreParameter *);
     dtkCoreParameterNumeric& operator = (const QVariant&);
     dtkCoreParameterNumeric& operator = (const dtkCoreParameterNumeric&);
     template <typename U> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const dtkCoreParameterNumeric<U>&);

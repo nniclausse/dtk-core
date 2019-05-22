@@ -28,12 +28,14 @@ public:
      dtkCoreParameterPath(void) = default;
     ~dtkCoreParameterPath(void) = default;
 
+    dtkCoreParameterPath(const dtkCoreParameter *);
     dtkCoreParameterPath(const QVariant&);
     dtkCoreParameterPath(const dtkCoreParameterPath&);
 
     dtkCoreParameterPath(const QString& label, const QString& path,
                          const QStringList& filters, const QString& = QString());
 
+    dtkCoreParameterPath& operator = (const dtkCoreParameter *);
     dtkCoreParameterPath& operator = (const QVariant&);
     dtkCoreParameterPath& operator = (const dtkCoreParameterPath&);
 

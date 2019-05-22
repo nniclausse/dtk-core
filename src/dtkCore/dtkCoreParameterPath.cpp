@@ -18,6 +18,15 @@
 // dtkCoreParameterPath implementation
 // ///////////////////////////////////////////////////////////////////
 
+dtkCoreParameterPath::dtkCoreParameterPath(const dtkCoreParameter *p) : dtkCoreParameterBase<dtkCoreParameterPath>()
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return;
+    }
+    *this = p->variant();
+}
+
 dtkCoreParameterPath::dtkCoreParameterPath(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterPath>()
 {
     if (v.canConvert<dtkCoreParameterPath>()) {
@@ -42,10 +51,19 @@ dtkCoreParameterPath::dtkCoreParameterPath(const dtkCoreParameterPath& o) : dtkC
 }
 
 dtkCoreParameterPath::dtkCoreParameterPath(const QString& label, const QString& path, const QStringList& filters, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterPath>(label, doc),
-                                                                                                                                                                m_path(path),
-                                                                                                                                                                m_filters(filters)
+                                                                                                                                        m_path(path),
+                                                                                                                                        m_filters(filters)
 {
 
+}
+
+dtkCoreParameterPath& dtkCoreParameterPath::operator = (const dtkCoreParameter *p)
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return *this;
+    }
+    return *this = p->variant();
 }
 
 dtkCoreParameterPath& dtkCoreParameterPath::operator = (const QVariant& v)

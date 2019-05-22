@@ -33,6 +33,7 @@ private slots:
     void testBounds(void);
     void testDecimals(void);
     void testVariant(void);
+    void testCoreParameter(void);
     void testOperations(void);
     void testComparisons(void);
     void testDataStream(void);
