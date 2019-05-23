@@ -301,8 +301,8 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const T& t) : dtkC
 {
 }
 
-template <typename T, typename E>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const dtkCoreParameter *p) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
+template <typename T, typename E> template < typename U, typename V>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const U *p) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
 {
     if (!p) {
         dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
@@ -346,8 +346,8 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const U& t) -> std::enabl
     return *this;
 }
 
-template <typename T, typename E>
-inline auto dtkCoreParameterNumeric<T, E>::operator = (const dtkCoreParameter *p) -> dtkCoreParameterNumeric&
+template <typename T, typename E> template <typename U>
+inline auto dtkCoreParameterNumeric<T, E>::operator = (const U *p) -> dtk::is_core_parameter<U, dtkCoreParameterNumeric&>
 {
     if (!p) {
         dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";

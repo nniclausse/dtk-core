@@ -26,10 +26,12 @@
 class dtkCoreParameter;
 
 namespace dtk {
-    template <typename T, typename E = void>
-    using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<T>::value, E>;
-    template <typename T, typename E = void>
-    using parameter_not_arithmetic = std::enable_if_t<!std::is_arithmetic<T>::value, E>;
+    template <typename U, typename V = void>
+    using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<U>::value, V>;
+    template <typename U, typename V = void>
+    using parameter_not_arithmetic = std::enable_if_t<!std::is_arithmetic<U>::value, V>;
+    template <typename U, typename V = void>
+    using is_core_parameter = std::enable_if_t<std::is_base_of<dtkCoreParameter, std::remove_pointer_t<std::decay_t<U>>>::value, V>;
 }
 
 namespace dtk {
@@ -37,7 +39,6 @@ namespace dtk {
 
         DTKCORE_EXPORT void registerParameters(void);
         DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
-
     }
 }
 
@@ -193,7 +194,8 @@ public:
     ~dtkCoreParameterNumeric(void) = default;
 
     dtkCoreParameterNumeric(const T&);
-    dtkCoreParameterNumeric(const dtkCoreParameter *);
+    template <typename U, typename V = typename dtk::is_core_parameter<U>>
+    dtkCoreParameterNumeric(const U *);
     dtkCoreParameterNumeric(const QVariant&);
     dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
 
@@ -201,7 +203,7 @@ public:
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
 
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
-    dtkCoreParameterNumeric& operator = (const dtkCoreParameter *);
+    template <typename U> dtk::is_core_parameter<U, dtkCoreParameterNumeric&> operator = (const U *);
     dtkCoreParameterNumeric& operator = (const QVariant&);
     dtkCoreParameterNumeric& operator = (const dtkCoreParameterNumeric&);
     template <typename U> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const dtkCoreParameterNumeric<U>&);
