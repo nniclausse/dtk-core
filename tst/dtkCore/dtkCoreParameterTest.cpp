@@ -266,6 +266,7 @@ void dtkCoreParameterTestCase::testCoreParameter(void)
     dtkCoreParameter *pp2 = &p2;
 
     {
+        dtk::d_int i0 = 0;
         dtk::d_real c0 = pp0;
         dtk::d_int c1 = pp1;
         dtk::d_string c2 = pp2;
