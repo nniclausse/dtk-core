@@ -123,6 +123,16 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable>
+inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCoreParameter *p) : dtkCoreParameterBase<dtkCoreParameterSimple>()
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return;
+    }
+    *this = p->variant();
+}
+
+template <typename T, typename Enable>
 inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterSimple>()
 {
     if (v.canConvert<dtkCoreParameterSimple>()) {
@@ -152,6 +162,16 @@ inline auto dtkCoreParameterSimple<T, Enable>::operator = (const T& t) -> dtkCor
     m_value = t;
     this->sync();
     return *this;
+}
+
+template <typename T, typename Enable>
+inline auto dtkCoreParameterSimple<T, Enable>::operator = (const dtkCoreParameter *p) -> dtkCoreParameterSimple&
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return *this;
+    }
+    return *this = p->variant();
 }
 
 template <typename T, typename Enable>
@@ -281,6 +301,16 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const T& t) : dtkC
 {
 }
 
+template <typename T, typename E> template < typename U, typename V>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const U *p) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return;
+    }
+    *this = p->variant();
+}
+
 template <typename T, typename E>
 inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
 {
@@ -314,6 +344,16 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const U& t) -> std::enabl
     m_val = t;
     this->sync();
     return *this;
+}
+
+template <typename T, typename E> template <typename U>
+inline auto dtkCoreParameterNumeric<T, E>::operator = (const U *p) -> dtk::is_core_parameter<U, dtkCoreParameterNumeric&>
+{
+    if (!p) {
+        dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
+        return *this;
+    }
+    return *this = p->variant();
 }
 
 template <typename T, typename E>

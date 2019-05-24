@@ -1,6 +1,10 @@
 # ChangeLog
 
 ## version 2.5.1 - 2019-05-21
+- qsettings setDefautFromat to ini
+- fix bug in dtkParameter : ambiguous choice between integer 0 and null pointer
+
+## version 2.5.1 - 2019-05-21
 
 - fix install of dtkCoreParameters.h
 - use static function instead of dtkCoreParameterReader class

@@ -21,14 +21,11 @@ project(dtkCoreLayerTest VERSION ${dtkCore_VERSION})
 set(${PROJECT_NAME}_HEADERS
   dtkCoreLayerTest
   dtkCoreLayerTest.h
-  dtkCoreLayerTestSettings
-  dtkCoreLayerTestSettings.h
   dtkAbstractCoreConcept
   dtkAbstractCoreConcept.h)
 
 set(${PROJECT_NAME}_SOURCES
   dtkCoreLayerTest.cpp
-  dtkCoreLayerTestSettings.cpp
   dtkAbstractCoreConcept.cpp)
 
 ## ###################################################################

@@ -18,8 +18,6 @@
 
 #include "dtkCoreLayerTestConfig.h"
 
-#include "dtkCoreLayerTestSettings.h"
-
 // /////////////////////////////////////////////////////////////////
 // Layer methods implementations
 // /////////////////////////////////////////////////////////////////
@@ -36,7 +34,7 @@ namespace dtkCoreLayerTest {
 
         QString path = s;
         if (path.isEmpty()) {
-            dtkCoreLayerTestSettings settings;
+            QSettings settings;
             settings.beginGroup("imaging");
             path = settings.value("plugins").toString();
             settings.endGroup();

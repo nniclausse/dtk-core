@@ -255,6 +255,42 @@ void dtkCoreParameterTestCase::testVariant(void)
 
 }
 
+void dtkCoreParameterTestCase::testCoreParameter(void)
+{
+    dtk::d_real p0(std::sqrt(2));
+    dtk::d_int p1(7);
+    dtk::d_string p2("toto");
+
+    dtkCoreParameter *pp0 = &p0;
+    dtkCoreParameter *pp1 = &p1;
+    dtkCoreParameter *pp2 = &p2;
+
+    {
+        dtk::d_int i0 = 0;
+        dtk::d_real c0 = pp0;
+        dtk::d_int c1 = pp1;
+        dtk::d_string c2 = pp2;
+
+        QCOMPARE(c0, p0);
+        QCOMPARE(c1, p1);
+        QCOMPARE(c2, p2);
+    }
+
+    {
+        dtk::d_real c0 = 2.;
+        dtk::d_int c1 = 3;
+        dtk::d_string c2 = dtk::d_string("tutu");
+
+        c0 = pp0;
+        c1 = pp1;
+        c2 = pp2;
+
+        QCOMPARE(c0, p0);
+        QCOMPARE(c1, p1);
+        QCOMPARE(c2, p2);
+    }
+}
+
 void dtkCoreParameterTestCase::testOperations(void)
 {
     double r0 = std::sqrt(2);
