@@ -50,6 +50,7 @@ void dtkCoreApplicationPrivate::initialize(void)
     qputenv("QT_PLUGIN_PATH", "1");
     qputenv("LC_ALL", "C");
     QLocale::setDefault(QLocale::c());
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
 #if defined (Q_OS_UNIX) && !defined(Q_OS_MAC)
     // to avoid troubles with floats separators ('.' and not ',')
@@ -83,7 +84,7 @@ void dtkCoreApplicationPrivate::initialize(void)
     if (this->parser->isSet(settingsOption)) {
         this->settings = new QSettings(this->parser->value(settingsOption), QSettings::IniFormat);
     } else {
-        this->settings = new QSettings(this->app->organizationName(), this->app->applicationName());
+        this->settings = new QSettings();
     }
 
     if (settings->contains("log_level")) {
