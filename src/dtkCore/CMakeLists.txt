@@ -111,7 +111,7 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 
 if(DTK_HAVE_ZLIB)
-  target_link_libraries(${PROJECT_NAME} PRIVATE zlib_interface)
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES})
 endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
