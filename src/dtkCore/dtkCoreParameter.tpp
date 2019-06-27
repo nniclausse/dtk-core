@@ -970,6 +970,14 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
 }
 
 template <typename T>
+inline void dtkCoreParameterInList<T>::setValues(const QList<T>& l)
+{
+    m_values = l;
+    m_value_index = 0;
+    this->sync();
+}
+
+template <typename T>
 inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 {
     if (v.canConvert<dtkCoreParameterInList>()) {
