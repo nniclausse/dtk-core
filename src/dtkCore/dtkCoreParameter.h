@@ -302,6 +302,7 @@ public:
     void setValueIndex(int);
     void setValue(const T&);
     void setValue(const QVariant&) override;
+    void setValues(const QList<T>&);
 
     int valueIndex(void) const;
     T value(void) const;
