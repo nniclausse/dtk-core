@@ -1,6 +1,11 @@
 # ChangeLog
 
-## version 2.5.1 - 2019-05-21
+## version 2.5.3 - 2019-06-28
+- set cmake rpath
+- edit link to zlib
+- add method setValues in dtkCoreParameter inlist
+
+## version 2.5.2 - 2019-05-24
 - qsettings setDefautFromat to ini
 - fix bug in dtkParameter : ambiguous choice between integer 0 and null pointer
 
