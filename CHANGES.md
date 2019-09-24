@@ -1,5 +1,8 @@
 # ChangeLog
 
+## version 2.5.4 - 2019-09-24
+- fix bug in dtkCoreParameter : initialiser_lists methods
+
 ## version 2.5.3 - 2019-06-28
 - set cmake rpath
 - edit link to zlib

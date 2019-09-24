@@ -864,6 +864,12 @@ void dtkCoreParameterTestCase::testRange(void)
     dtk::d_range_real::range values_r2 = { -1.23456, 7.891011};
     dtk::d_range_real range_r = dtk::d_range_real( QString("double range"), values_r2, -10.0, 10.0, QString("double range doc") );
 
+    double a = 0.0;
+    double b = 1.0;
+    dtk::d_range_real range_r2 = dtk::d_range_real( { a, b} );
+    a = 0.1;
+    b = 0.2;
+    range_r2.setValue( {a, b } );
 }
 
 void dtkCoreParameterTestCase::testFile(void)
