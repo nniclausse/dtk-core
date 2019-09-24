@@ -1107,9 +1107,9 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>
 template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(std::initializer_list<T> args) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
-    if (args.size == 2 && args[0] <= args[1]) {
-        m_val = args;
-
+    if (args.size() == 2 && *(args.begin()) <= *(args.end())) {
+        m_val[0] = *(args.begin());
+        m_val[1] = *(args.end());
     } else {
         dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
     }
@@ -1185,8 +1185,9 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
 template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (std::initializer_list<T> args)
 {
-    if (args.size() == 2 && m_bounds[0] <= args[0] && args[0] <= args[1] && args[1] <= m_bounds[1]) {
-        m_val = args;
+    if (args.size() == 2 && m_bounds[0] <= *(args.begin()) && *(args.begin()) <= *(args.end()) && *(args.end()) <= m_bounds[1]) {
+        m_val[0] = *(args.begin());
+        m_val[1] = *(args.end());
         this->sync();
 
     } else {
@@ -1275,12 +1276,13 @@ inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
 template <typename T, typename E>
 inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
 {
-    if (args.size() == 2 && m_bounds[0] <= args[0] && args[0] <= args[1] && args[1] <= m_bounds[1]) {
-        m_val = args;
+    if ( ( args.size() == 2 ) && ( m_bounds[0] <= *(args.begin()) ) && ( *(args.begin()) <= *(args.end()) ) && ( *(args.end()) <= m_bounds[1]) ) {
+        m_val[0] = *(args.begin());
+        m_val[1] = *(args.end());
         this->sync();
 
     } else {
-        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are are not the right number of values or not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";"Input values not setted because out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are are not the right number of values or not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
         this->syncFail();
     }
 }
