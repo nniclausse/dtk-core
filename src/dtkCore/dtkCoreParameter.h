@@ -147,6 +147,12 @@ template <typename T, typename Enable = void>
 class dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
 {
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterSimple(void) = default;
     ~dtkCoreParameterSimple(void) = default;
 
@@ -190,6 +196,12 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterSimple<T>);
 template <typename T, typename E = dtk::parameter_arithmetic<T>>
 class dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
 {
+public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
 public:
      dtkCoreParameterNumeric(void) = default;
     ~dtkCoreParameterNumeric(void) = default;
@@ -285,6 +297,12 @@ template <typename T>
 class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterInList(void) = default;
     ~dtkCoreParameterInList(void) = default;
 
@@ -337,6 +355,12 @@ class dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<
 {
 public:
     using range = std::array<T, 2>;
+
+public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
 
 public:
      dtkCoreParameterRange(void) = default;
