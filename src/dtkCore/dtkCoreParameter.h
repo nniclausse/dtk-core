@@ -86,6 +86,7 @@ public:
 
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
+    virtual QVariantHash toVariantHash(void) = 0;
 
 #pragma mark - Connection management
 
@@ -164,7 +165,7 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
-
+    QVariantHash toVariantHash(void) override;
     T value(void) const;
 
 private:
@@ -240,6 +241,7 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
+    QVariantHash toVariantHash(void) override;
 
     T value(void) const;
 
@@ -303,6 +305,7 @@ public:
     void setValue(const T&);
     void setValue(const QVariant&) override;
     void setValues(const QList<T>&);
+    QVariantHash toVariantHash(void) override;
 
     int valueIndex(void) const;
     T value(void) const;
@@ -354,6 +357,7 @@ public:
     void setValue(const std::array<T, 2>&);
     void setValue(std::initializer_list<T>);
     void setValue(const QVariant&) override;
+    QVariantHash toVariantHash(void) override;
 
     const std::array<T, 2>& value(void) const;
 
