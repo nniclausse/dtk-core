@@ -201,8 +201,9 @@ public:
     dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
 
     dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+#ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
-
+#endif
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
     template <typename U> dtk::is_core_parameter<U, dtkCoreParameterNumeric&> operator = (const U *);
     dtkCoreParameterNumeric& operator = (const QVariant&);
@@ -347,8 +348,9 @@ public:
     dtkCoreParameterRange(const dtkCoreParameterRange&);
 
     dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const QString& doc = QString());
+#ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
-
+#endif
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
     dtkCoreParameterRange& operator = (std::initializer_list<T>);
     dtkCoreParameterRange& operator = (const QVariant&);
