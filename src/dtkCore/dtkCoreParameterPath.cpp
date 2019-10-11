@@ -134,6 +134,17 @@ void dtkCoreParameterPath::setValue(const QVariant& v)
     this->sync();
 }
 
+QVariantHash dtkCoreParameterPath::toVariantHash(void)
+{
+    QVariantHash hash;
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    hash.insert("filters", m_filters);
+    hash.insert("path", m_path);
+
+    return hash;
+}
+
 QString dtkCoreParameterPath::path(void) const
 {
     return m_path;

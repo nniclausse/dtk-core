@@ -52,8 +52,11 @@ public:
 
 public:
     void record(const QString& key, creator func);
-    void recordPlugin(const QString& key, class dtkCorePluginBase *plugin);
+    void recordPlugin(const QString& key, class dtkCorePluginBase *plugin, bool force = false);
     void record(const QString& key, widget_creator func);
+
+public:
+    void clear(void);
 
 public:
     T *create(const QString& key) const;

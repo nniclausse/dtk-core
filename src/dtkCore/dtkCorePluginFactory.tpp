@@ -34,6 +34,17 @@ template <typename T> inline dtkCorePluginFactory<T>::~dtkCorePluginFactory(void
     delete m_d;
 }
 
+
+template <typename T> inline void dtkCorePluginFactory<T>::clear(void)
+{
+    this->creators.clear();
+    for (QString key: this->creators_plugins.keys()) {
+        delete this->creators_plugins[key];
+    }
+    this->creators_plugins.clear();
+}
+
+
 template <typename T> inline void dtkCorePluginFactory<T>::record(const QString& key, creator func)
 {
     if (this->creators.contains(key)) {
@@ -43,12 +54,18 @@ template <typename T> inline void dtkCorePluginFactory<T>::record(const QString&
     this->creators.insert(key, func);
 }
 
-template <typename T> inline void dtkCorePluginFactory<T>::recordPlugin(const QString& key, dtkCorePluginBase *plugin)
+template <typename T> inline void dtkCorePluginFactory<T>::recordPlugin(const QString& key, dtkCorePluginBase *plugin, bool force)
 {
     if (this->creators_plugins.contains(key)) {
-        dtkTrace() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
-        return;
+        if (!force) {
+            qDebug() << Q_FUNC_INFO << "Factory already contains key" << key << ". Nothing is done";
+            return;
+        } else {
+            qDebug() << Q_FUNC_INFO << "Factory already contains key" << key << ". replace old plugin";
+            delete this->creators_plugins[key];
+        }
     }
+
     this->creators_plugins.insert(key, plugin);
 }
 

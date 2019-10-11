@@ -251,6 +251,18 @@ inline void dtkCoreParameterSimple<T, Enable>::setValue(const QVariant &v)
     this->sync();
 }
 
+
+template <typename T, typename Enable>
+inline QVariantHash dtkCoreParameterSimple<T, Enable>::toVariantHash(void)
+{
+    QVariantHash hash;
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    hash.insert("value", QVariant::fromValue(m_value));
+
+    return hash;
+}
+
 template <typename T, typename Enable>
 inline T dtkCoreParameterSimple<T, Enable>::value(void) const
 {
@@ -699,6 +711,21 @@ inline void dtkCoreParameterNumeric<T, E>::setValue(const QVariant& v)
 }
 
 template <typename T, typename E>
+inline QVariantHash dtkCoreParameterNumeric<T, E>::toVariantHash(void)
+{
+    QVariantHash hash;
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    hash.insert("value", m_val);
+    hash.insert("min", m_bounds[0]);
+    hash.insert("max", m_bounds[1]);
+    hash.insert("decimals", m_decimals);
+
+    return hash;
+}
+
+
+template <typename T, typename E>
 inline T dtkCoreParameterNumeric<T, E>::value(void) const
 {
     return m_val;
@@ -1018,6 +1045,20 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
     this->sync();
 }
 
+
+template <typename T>
+inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void)
+{
+    QVariantHash hash;
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    hash.insert("index", m_value_index);
+    hash.insert("values",  QVariant::fromValue(m_values));
+
+    return hash;
+}
+
+
 template <typename T>
 inline int dtkCoreParameterInList<T>::valueIndex(void) const
 {
@@ -1309,6 +1350,10 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
         if (map.contains("max")) max = map["max"].value<T>();
         else                     max = std::numeric_limits<T>::max();
 
+        if (map.contains("decimals")) {
+            m_decimals = map["decimals"].value<int>();
+        }
+
         auto list = map["values"].toList();
         auto v_min = list[0].value<T>();
         auto v_max = list[1].value<T>();
@@ -1335,6 +1380,20 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
          }
     }
     this->sync();
+}
+
+template <typename T, typename E>
+inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void)
+{
+    QVariantHash hash;
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    hash.insert("values", QVariant::fromValue(m_val));
+    hash.insert("min", m_bounds[0]);
+    hash.insert("max", m_bounds[1]);
+    hash.insert("decimals", m_decimals);
+
+    return hash;
 }
 
 template <typename T, typename E>

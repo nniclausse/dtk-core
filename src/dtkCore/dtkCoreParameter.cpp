@@ -317,5 +317,16 @@ dtkCoreParameter *dtkCoreParameter::create(const QVariantHash& map)
     return p;
 }
 
+void dtkCoreParameter::setAdvanced(bool adv)
+{
+    m_advanced = adv;
+    emit advancedChanged(m_advanced);
+}
+
+bool dtkCoreParameter::advanced(void)
+{
+    return m_advanced;
+}
+
 //
 // dtkCoreParameter.cpp ends here

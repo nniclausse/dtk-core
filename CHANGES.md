@@ -1,5 +1,11 @@
 # ChangeLog
 
+## version 2.6.0 - 2019-10-11
+- add setter/getter on parameters for advanced
+- fix for swig wrapping
+- add clear on factory
+- add toVariantHash method to create parameters
+
 ## version 2.5.4 - 2019-09-24
 - fix bug in dtkCoreParameter : initialiser_lists methods
 

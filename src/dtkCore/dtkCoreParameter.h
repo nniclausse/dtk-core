@@ -86,6 +86,7 @@ public:
 
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
+    virtual QVariantHash toVariantHash(void) = 0;
 
 #pragma mark - Connection management
 
@@ -108,9 +109,18 @@ public:
 public:
     static dtkCoreParameter *create(const QVariantHash&);
 
+#pragma mark - advanced
+
+    void setAdvanced(bool);
+    bool advanced(void);
+
+signals:
+    void advancedChanged(bool new_adv);
+
 protected:
     QString m_label;
     QString m_doc;
+    bool    m_advanced = false;
     connection m_connection;
 
 protected:
@@ -146,6 +156,12 @@ template <typename T, typename Enable = void>
 class dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
 {
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterSimple(void) = default;
     ~dtkCoreParameterSimple(void) = default;
 
@@ -164,7 +180,7 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
-
+    QVariantHash toVariantHash(void) override;
     T value(void) const;
 
 private:
@@ -190,6 +206,12 @@ template <typename T, typename E = dtk::parameter_arithmetic<T>>
 class dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
 {
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterNumeric(void) = default;
     ~dtkCoreParameterNumeric(void) = default;
 
@@ -200,8 +222,9 @@ public:
     dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
 
     dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+#ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
-
+#endif
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
     template <typename U> dtk::is_core_parameter<U, dtkCoreParameterNumeric&> operator = (const U *);
     dtkCoreParameterNumeric& operator = (const QVariant&);
@@ -240,6 +263,7 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
+    QVariantHash toVariantHash(void) override;
 
     T value(void) const;
 
@@ -282,6 +306,12 @@ template <typename T>
 class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterInList(void) = default;
     ~dtkCoreParameterInList(void) = default;
 
@@ -303,6 +333,7 @@ public:
     void setValue(const T&);
     void setValue(const QVariant&) override;
     void setValues(const QList<T>&);
+    QVariantHash toVariantHash(void) override;
 
     int valueIndex(void) const;
     T value(void) const;
@@ -335,6 +366,12 @@ public:
     using range = std::array<T, 2>;
 
 public:
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
+
+public:
      dtkCoreParameterRange(void) = default;
     ~dtkCoreParameterRange(void) = default;
 
@@ -344,8 +381,9 @@ public:
     dtkCoreParameterRange(const dtkCoreParameterRange&);
 
     dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const QString& doc = QString());
+#ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
-
+#endif
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
     dtkCoreParameterRange& operator = (std::initializer_list<T>);
     dtkCoreParameterRange& operator = (const QVariant&);
@@ -354,6 +392,7 @@ public:
     void setValue(const std::array<T, 2>&);
     void setValue(std::initializer_list<T>);
     void setValue(const QVariant&) override;
+    QVariantHash toVariantHash(void) override;
 
     const std::array<T, 2>& value(void) const;
 
