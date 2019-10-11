@@ -109,9 +109,18 @@ public:
 public:
     static dtkCoreParameter *create(const QVariantHash&);
 
+#pragma mark - advanced
+
+    void setAdvanced(bool);
+    bool advanced(void);
+
+signals:
+    void advancedChanged(bool new_adv);
+
 protected:
     QString m_label;
     QString m_doc;
+    bool    m_advanced = false;
     connection m_connection;
 
 protected:
