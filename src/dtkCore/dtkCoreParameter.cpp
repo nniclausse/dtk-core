@@ -226,6 +226,7 @@ void dtkCoreParameter::disconnect(void)
 {
     if (m_connection) {
         if (m_connection.use_count() > 1) {
+            m_connection->param_list.removeAll(this);
             m_connection = connection(nullptr);
         } else {
             for (auto c : m_connection->value_list) {
@@ -257,6 +258,13 @@ void dtkCoreParameter::disconnectFail(void)
             }
             m_connection->invalid_list.clear();
         }
+    }
+}
+
+void dtkCoreParameter::shareValue(QVariant v)
+{
+    for (dtkCoreParameter *p: this->m_connection->param_list) {
+        p->setValue(v);
     }
 }
 

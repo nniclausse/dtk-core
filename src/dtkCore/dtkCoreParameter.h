@@ -57,6 +57,7 @@ signals:
 public:
     QVector<QMetaObject::Connection> value_list;
     QVector<QMetaObject::Connection> invalid_list;
+    QVector<dtkCoreParameter *>      param_list;
 };
 
 Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreParameterConnection>);
@@ -100,6 +101,7 @@ public:
     void disconnectFail(void);
 
     bool shareConnectionWith(dtkCoreParameter *);
+    void shareValue(QVariant);
 
     virtual void copyAndShare(dtkCoreParameter *) = 0;
     virtual void copyAndShare(const QVariant&) = 0;
