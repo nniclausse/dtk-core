@@ -1,5 +1,8 @@
 # ChangeLog
 
+## version 2.7.0 - 2019-10-17
+- add shareValue method in dtkCoreParameter
+
 ## version 2.6.0 - 2019-10-11
 - add setter/getter on parameters for advanced
 - fix for swig wrapping
