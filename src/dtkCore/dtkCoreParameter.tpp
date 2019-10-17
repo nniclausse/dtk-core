@@ -29,6 +29,9 @@ inline QMetaObject::Connection dtkCoreParameter::connect(F slot)
     auto c = QObject::connect(m_connection.get(), &dtkCoreParameterConnection::valueChanged, slot);
     if (c) {
         m_connection->value_list << c;
+        if (!m_connection->param_list.contains(this)) {
+            m_connection->param_list << this;
+        }
     }
     return c;
 }
@@ -89,6 +92,9 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(dtkCoreParameter *source)
                 *self = *s;
                 if (s->m_connection) {
                     self->m_connection = s->m_connection;
+                    if (!self->m_connection->param_list.contains(self)) {
+                        self->m_connection->param_list << self;
+                    }
                 } else {
                     dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
                 }
@@ -112,6 +118,9 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
         self = i;
         if (i.m_connection) {
             self.m_connection = i.m_connection;
+            if (!self.m_connection->param_list.contains(&self)) {
+                self.m_connection->param_list << &self;
+            }
         } else {
             dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
         }
