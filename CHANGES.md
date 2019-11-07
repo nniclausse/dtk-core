@@ -1,5 +1,8 @@
 # ChangeLog
 
+## version 2.7.1 - 2019-11-07
+- Enhance dtk core parameters API
+
 ## version 2.7.0 - 2019-10-17
 - add shareValue method in dtkCoreParameter
 
