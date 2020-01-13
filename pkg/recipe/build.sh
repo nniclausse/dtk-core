@@ -5,6 +5,11 @@ if [[ -d build ]]; then
 fi
 mkdir build
 cd build
+
+if [[ "$c_compiler" == "gcc" ]]; then
+  export PATH="${PATH}:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
+fi
+
 if [ `uname` = "Darwin" ]; then
     cmake .. \
           -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
