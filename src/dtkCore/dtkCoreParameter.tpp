@@ -415,7 +415,7 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const QVariant& v) -> dtk
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
                   << QMetaType::typeName(qMetaTypeId<dtkCoreParameterNumeric>())
-                  << ". Nothing is done.";
+        << ". Nothing is done." << v;
         this->syncFail();
         return *this;
     }
