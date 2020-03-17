@@ -43,6 +43,8 @@ public:
     void setValue(const QVariant&) override;
     QVariantHash toVariantHash(void) override;
 
+    void setFilters(const QStringList&);
+
     QString path(void) const;
     QStringList filters(void) const;
 
