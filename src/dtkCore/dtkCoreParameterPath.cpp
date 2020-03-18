@@ -145,6 +145,11 @@ QVariantHash dtkCoreParameterPath::toVariantHash(void)
     return hash;
 }
 
+void dtkCoreParameterPath::setFilters(const QStringList& filters)
+{
+    m_filters = filters;
+}
+
 QString dtkCoreParameterPath::path(void) const
 {
     return m_path;
