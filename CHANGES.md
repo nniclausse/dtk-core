@@ -1,5 +1,8 @@
 # ChangeLog
 
+## version 2.7.1 - 2020-03-18
+- Adding filters on parameters
+
 ## version 2.7.1 - 2019-11-07
 - Enhance dtk core parameters API
 
