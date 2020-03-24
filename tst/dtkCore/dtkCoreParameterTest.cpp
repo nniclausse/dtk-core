@@ -150,37 +150,11 @@ void dtkCoreParameterTestCase::testBounds(void)
         dtk::d_uint ui;
         dtk::d_int i;
 
-        switch ( sizeof(long) ) {  // I do not trust  std::numeric_limits :)
-        case 4: // 32 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFF, true);
+        QCOMPARE(ui.min() == 0, true);
+        QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFF, true);
 
-            QCOMPARE(i.min()  == 0x80000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFF, true);
-            break;
-
-        case 8: // 64 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFF, true);
-
-            QCOMPARE(i.min()  == 0x8000000000000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFF, true);
-            break;
-
-            /*
-              case 16: // 128 bits - ready for January 19, 2038 03:14:07 GMT
-              QCOMPARE(ui.min() == 0, true);
-              QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-
-              QCOMPARE(i.min()  == 0x80000000000000000000000000000000, true);
-              QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-              break;
-            */
-
-        default:
-            qDebug() <<  "Please implement testBounds for your system";
-            break;
-        }
+        QCOMPARE(i.min()  == 0x8000000000000000, true);
+        QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFF, true);
 
     }
     {
