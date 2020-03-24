@@ -132,44 +132,21 @@ void dtkCoreParameterTestCase::testBounds(void)
     {
         // check all default numeric bouds
         dtk::d_real r;
-        auto&& r_bounds = r.bounds();
-        QCOMPARE(r_bounds[0], std::numeric_limits<double>::lowest());
-        QCOMPARE(r_bounds[1], std::numeric_limits<double>::max());
-
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<double>::max());
+    }
+    {
         dtk::d_uint ui;
+        auto&& bounds = ui.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qulonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qulonglong>::max());
+    }
+    {
         dtk::d_int i;
-
-        switch ( sizeof(long) ) {  // I do not trust  std::numeric_limits :)
-        case 4: // 32 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFF, true);
-
-            QCOMPARE(i.min()  == 0x80000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFF, true);
-            break;
-
-        case 8: // 64 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFF, true);
-
-            QCOMPARE(i.min()  == 0x8000000000000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFF, true);
-            break;
-
-            /*
-              case 16: // 128 bits - ready for January 19, 2038 03:14:07 GMT
-              QCOMPARE(ui.min() == 0, true);
-              QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-
-              QCOMPARE(i.min()  == 0x80000000000000000000000000000000, true);
-              QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-              break;
-            */
-
-        default:
-            qDebug() <<  "Please implement testBounds for your system";
-            break;
-        }
+        auto&& bounds = i.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qlonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qlonglong>::max());
 
     }
     {
