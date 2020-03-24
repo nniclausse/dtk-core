@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterTest.cpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreParameterTest.h"
 
@@ -939,6 +928,25 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         auto resbad = dtk::core::readParameters(json_bad_file);
         QCOMPARE(resbad.count() , 0);
     }
+}
+
+void dtkCoreParameterTestCase::testToVariantHash(void)
+{
+    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+
+    auto *target = dtkCoreParameter::create(source.toVariantHash());
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+
+    QVERIFY(&target_real);
+    QCOMPARE((double)source, (double)(target_real));
+    QCOMPARE(source.min(), target_real.min());
+    QCOMPARE(source.max(), target_real.max());
+    QCOMPARE(source.decimals(), target_real.decimals());
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

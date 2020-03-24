@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterPath.h
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #pragma once
 
@@ -25,6 +14,9 @@
 class DTKCORE_EXPORT dtkCoreParameterPath : public dtkCoreParameterBase<dtkCoreParameterPath>
 {
 public:
+    using self_type = dtkCoreParameterPath;
+    using base_type = dtkCoreParameterBase<self_type>;
+
      dtkCoreParameterPath(void) = default;
     ~dtkCoreParameterPath(void) = default;
 
@@ -41,7 +33,7 @@ public:
 
     void setValue(const QString&);
     void setValue(const QVariant&) override;
-    QVariantHash toVariantHash(void) override;
+    QVariantHash toVariantHash(void) const override;
 
     void setFilters(const QStringList&);
 
