@@ -753,9 +753,42 @@ inline T dtkCoreParameterNumeric<T, E>::max(void) const
 }
 
 template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setMin(const T& min)
+{
+    if (this->m_bounds[0] == min)
+        return;
+
+    this->m_bounds[0] = min;
+    if (m_val < min) {
+        m_val = min;
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setMax(const T& max)
+{
+    if (this->m_bounds[1] == max)
+        return;
+
+    this->m_bounds[1] = max;
+    if (m_val > max) {
+        m_val = max;
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
 inline const std::array<T, 2>& dtkCoreParameterNumeric<T, E>::bounds(void) const
 {
     return this->m_bounds;
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setBounds(const std::array<T, 2>& b)
+{
+    this->setMin(b[0]);
+    this->setMax(b[1]);
 }
 
 template <typename T, typename E> template <typename U>
