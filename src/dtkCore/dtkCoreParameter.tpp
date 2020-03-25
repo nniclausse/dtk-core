@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameter.tpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreMetaType.h"
 
@@ -125,6 +114,19 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
             dtkWarn() << Q_FUNC_INFO << "Input parameter has no connection. Only copy of values is done.";
         }
     }
+}
+
+template <typename Derive>
+inline QVariantHash dtkCoreParameterBase<Derive>::toVariantHash(void) const
+{
+    using derive_type = Derive;
+
+    QVariantHash hash;
+    auto type_name = QMetaType::typeName(qMetaTypeId<derive_type>());
+    hash.insert("type", type_name);
+    hash.insert("label", m_label);
+    hash.insert("doc", m_doc);
+    return hash;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -262,11 +264,9 @@ inline void dtkCoreParameterSimple<T, Enable>::setValue(const QVariant &v)
 
 
 template <typename T, typename Enable>
-inline QVariantHash dtkCoreParameterSimple<T, Enable>::toVariantHash(void)
+inline QVariantHash dtkCoreParameterSimple<T, Enable>::toVariantHash(void) const
 {
-    QVariantHash hash;
-    hash.insert("label", m_label);
-    hash.insert("doc", m_doc);
+    QVariantHash hash = base_type::toVariantHash();
     hash.insert("value", QVariant::fromValue(m_value));
 
     return hash;
@@ -720,11 +720,9 @@ inline void dtkCoreParameterNumeric<T, E>::setValue(const QVariant& v)
 }
 
 template <typename T, typename E>
-inline QVariantHash dtkCoreParameterNumeric<T, E>::toVariantHash(void)
+inline QVariantHash dtkCoreParameterNumeric<T, E>::toVariantHash(void) const
 {
-    QVariantHash hash;
-    hash.insert("label", m_label);
-    hash.insert("doc", m_doc);
+    QVariantHash hash = base_type::toVariantHash();
     hash.insert("value", m_val);
     hash.insert("min", m_bounds[0]);
     hash.insert("max", m_bounds[1]);
@@ -1089,11 +1087,9 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 
 
 template <typename T>
-inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void)
+inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void) const
 {
-    QVariantHash hash;
-    hash.insert("label", m_label);
-    hash.insert("doc", m_doc);
+    QVariantHash hash = base_type::toVariantHash();
     hash.insert("index", m_value_index);
     hash.insert("values",  QVariant::fromValue(m_values));
 
@@ -1425,11 +1421,9 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
 }
 
 template <typename T, typename E>
-inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void)
+inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void) const
 {
-    QVariantHash hash;
-    hash.insert("label", m_label);
-    hash.insert("doc", m_doc);
+    QVariantHash hash = base_type::toVariantHash();
     hash.insert("values", QVariant::fromValue(m_val));
     hash.insert("min", m_bounds[0]);
     hash.insert("max", m_bounds[1]);

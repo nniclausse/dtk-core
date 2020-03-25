@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterTest.cpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreParameterTest.h"
 
@@ -143,18 +132,21 @@ void dtkCoreParameterTestCase::testBounds(void)
     {
         // check all default numeric bouds
         dtk::d_real r;
-        auto&& r_bounds = r.bounds();
-        QCOMPARE(r_bounds[0], std::numeric_limits<double>::lowest());
-        QCOMPARE(r_bounds[1], std::numeric_limits<double>::max());
-
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<double>::max());
+    }
+    {
         dtk::d_uint ui;
+        auto&& bounds = ui.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qulonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qulonglong>::max());
+    }
+    {
         dtk::d_int i;
-
-        QCOMPARE(ui.min() == 0, true);
-        QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFF, true);
-
-        QCOMPARE(i.min()  == 0x8000000000000000, true);
-        QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFF, true);
+        auto&& bounds = i.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qlonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qlonglong>::max());
 
     }
     {
@@ -945,6 +937,25 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         auto resbad = dtk::core::readParameters(json_bad_file);
         QCOMPARE(resbad.count() , 0);
     }
+}
+
+void dtkCoreParameterTestCase::testToVariantHash(void)
+{
+    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+
+    auto *target = dtkCoreParameter::create(source.toVariantHash());
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+
+    QVERIFY(&target_real);
+    QCOMPARE((double)source, (double)(target_real));
+    QCOMPARE(source.min(), target_real.min());
+    QCOMPARE(source.max(), target_real.max());
+    QCOMPARE(source.decimals(), target_real.decimals());
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

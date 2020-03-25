@@ -1,5 +1,9 @@
 # ChangeLog
 
+## NEXT VERSION
+- Complete `toVariantHash()` method in dtkCoreParameter so that it contains the
+  QMetaType name of the parameter.
+
 ## version 2.7.1 - 2020-03-18
 - Adding filters on parameters
 

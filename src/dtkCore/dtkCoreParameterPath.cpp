@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterPath.cpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreParameterPath.h"
 
@@ -134,11 +123,9 @@ void dtkCoreParameterPath::setValue(const QVariant& v)
     this->sync();
 }
 
-QVariantHash dtkCoreParameterPath::toVariantHash(void)
+QVariantHash dtkCoreParameterPath::toVariantHash(void) const
 {
-    QVariantHash hash;
-    hash.insert("label", m_label);
-    hash.insert("doc", m_doc);
+    QVariantHash hash = base_type::toVariantHash();
     hash.insert("filters", m_filters);
     hash.insert("path", m_path);
 
