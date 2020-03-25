@@ -163,11 +163,61 @@ void dtkCoreParameterTestCase::testBounds(void)
         r = 0.25;
         QCOMPARE( r.value(), 0.25 ); // back to normal
 
-        //r = -3.0;    // r is outside the boundaries
-        //QCOMPARE( r.value(), r.min()); // in this case, we stick to the min()
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchaned
 
-        //r =  3.0;    // r is outside the boundaries
-        //QCOMPARE( r.value(), r.max()); // in this case, we stick to the max()
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchanged
+    }
+    {
+        dtk::d_real r("r", 0.25, -1.0, 1.0);
+
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchanged
+
+        QCOMPARE( 1.0, r.max()); // r has changed
+
+        r.setMax(4.0);
+        QCOMPARE( 4.0, r.max()); // r has changed
+
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 3.0, r.value()); // r has changed
+
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( 3.0, r.value()); // r is unchanged
+
+        r.setMin(-4.0);
+        QCOMPARE( -4.0, r.min());
+
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( -3.0, r.value()); // r has changed
+
+        std::array<double,2> bounds;
+        bounds[0]= -1.0;
+        bounds[1]= 1.0;
+        r.setBounds(bounds);
+        QCOMPARE( -1.0, r.min());
+        QCOMPARE( 1.0, r.max());
+
+        QCOMPARE( -1.0, r.value()); // r has changed because min has changed
+
+        bounds[0]= -3.0;
+        bounds[1]= 3.0;
+        r.setBounds(bounds);
+        QCOMPARE( -3.0, r.min());
+        QCOMPARE( 3.0, r.max());
+
+        QCOMPARE( -1.0, r.value()); // r is unchanged
+        r.setValue(2.0);            // r is still in the bounay
+        QCOMPARE( 2.0, r.value());  //
+
+        bounds[0]= -1.0;
+        bounds[1]= 1.0;
+        r.setBounds(bounds);
+        QCOMPARE( -1.0, r.min());
+        QCOMPARE( 1.0, r.max());
+
+        QCOMPARE( 1.0, r.value()); // r has changed because max has changed
     }
 }
 
