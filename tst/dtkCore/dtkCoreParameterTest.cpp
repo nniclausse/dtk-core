@@ -200,6 +200,24 @@ void dtkCoreParameterTestCase::testBounds(void)
         QCOMPARE( 1.0, r.max());
 
         QCOMPARE( -1.0, r.value()); // r has changed because min has changed
+
+        bounds[0]= -3.0;
+        bounds[1]= 3.0;
+        r.setBounds(bounds);
+        QCOMPARE( -3.0, r.min());
+        QCOMPARE( 3.0, r.max());
+
+        QCOMPARE( -1.0, r.value()); // r is unchanged
+        r.setValue(2.0);            // r is still in the bounay
+        QCOMPARE( 2.0, r.value());  //
+
+        bounds[0]= -1.0;
+        bounds[1]= 1.0;
+        r.setBounds(bounds);
+        QCOMPARE( -1.0, r.min());
+        QCOMPARE( 1.0, r.max());
+
+        QCOMPARE( 1.0, r.value()); // r has changed because max has changed
     }
 }
 
