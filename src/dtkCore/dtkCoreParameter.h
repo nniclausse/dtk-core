@@ -55,10 +55,8 @@ Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreParameterConnection>);
 // dtkCoreParameter interface
 // ///////////////////////////////////////////////////////////////////
 
-class DTKCORE_EXPORT dtkCoreParameter : public QObject
+class DTKCORE_EXPORT dtkCoreParameter
 {
-    Q_OBJECT
-
 public:
     using connection = std::shared_ptr<dtkCoreParameterConnection>;
 
@@ -100,18 +98,9 @@ public:
 public:
     static dtkCoreParameter *create(const QVariantHash&);
 
-#pragma mark - advanced
-
-    void setAdvanced(bool);
-    bool advanced(void);
-
-signals:
-    void advancedChanged(bool new_adv);
-
 protected:
     QString m_label;
     QString m_doc;
-    bool    m_advanced = false;
     connection m_connection;
 
 protected:

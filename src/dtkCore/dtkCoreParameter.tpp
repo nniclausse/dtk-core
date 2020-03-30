@@ -985,6 +985,7 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 
     } else {
         m_value_index = index;
+        qDebug() << Q_FUNC_INFO << *this;
         this->sync();
     }
 }
@@ -1000,6 +1001,7 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
     } else {
         m_value_index = index;
         this->sync();
+        qDebug() << Q_FUNC_INFO << *this;
     }
 }
 
@@ -1008,6 +1010,7 @@ inline void dtkCoreParameterInList<T>::setValues(const QList<T>& l)
 {
     m_values = l;
     m_value_index = 0;
+    qDebug() << Q_FUNC_INFO << *this;
     this->sync();
 }
 
@@ -1118,8 +1121,8 @@ inline QDebug operator << (QDebug dbg, dtkCoreParameterInList<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "label" << p.label() << ", "
-                  << "value_index" << p.valueIndex() << ", "
+    dbg.nospace() << "label " << p.label() << ", "
+                  << "value_index " << p.valueIndex() << ", "
                   << "values [";
     for (int i = 0; i < p.values().size(); ++i) {
         if (i)
