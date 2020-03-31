@@ -415,7 +415,12 @@ public:
     T min(void) const;
     T max(void) const;
 
+    void setMin(const T&);
+    void setMax(const T&);
+
     const std::array<T, 2>& bounds(void) const;
+
+    void setBounds(const std::array<T, 2>&);
 
     template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
 

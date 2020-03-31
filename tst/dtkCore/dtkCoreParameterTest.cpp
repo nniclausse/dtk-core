@@ -219,6 +219,53 @@ void dtkCoreParameterTestCase::testBounds(void)
 
         QCOMPARE( 1.0, r.value()); // r has changed because max has changed
     }
+    {
+        dtk::d_range_real r({-3., 3.});
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<double>::max());
+
+        r.setMax( 4.0);
+        QCOMPARE( 4.0, r.max());
+        r.setMin(-4.0);
+        QCOMPARE(-4.0, r.min());
+
+        r.setMax( 2.0);
+        QCOMPARE( 2.0, r.max());
+        r.setMin(-2.0);
+        QCOMPARE(-2.0, r.min());
+
+        auto&& values = r.value();
+        QCOMPARE(-2.0, values[0]);
+        QCOMPARE( 2.0, values[1]);
+
+        r.setMax(-3.0);
+        QCOMPARE( 2.0, r.max());
+        r.setMin( 3.0);
+        QCOMPARE(-2.0, r.min());
+    }
+    {
+        dtk::d_range_real r("range", std::array<double, 2>({-1.5, 1.5}), -3.0, 3.0);
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], -3.);
+        QCOMPARE(bounds[1],  3.);
+
+        r.setBounds(std::array<double, 2>({2, 4}));
+        QCOMPARE(bounds[0], 2);
+        QCOMPARE(bounds[1], 4.);
+
+        auto&& values = r.value();
+        QCOMPARE(2.0, values[0]);
+        QCOMPARE(2.0, values[1]);
+
+        r.setValue({2.5, 3.5});
+        QCOMPARE(2.5, values[0]);
+        QCOMPARE(3.5, values[1]);
+
+        r.setBounds(std::array<double, 2>({4, 2}));
+        QCOMPARE(bounds[0], 2);
+        QCOMPARE(bounds[1], 4.);
+    }
 }
 
 void dtkCoreParameterTestCase::testDecimals(void)
