@@ -251,7 +251,7 @@ void dtkCoreParameterTestCase::testBounds(void)
         QCOMPARE(bounds[1],  3.);
 
         r.setBounds(std::array<double, 2>({2, 4}));
-        QCOMPARE(bounds[0], 2);
+        QCOMPARE(bounds[0], 2.);
         QCOMPARE(bounds[1], 4.);
 
         auto&& values = r.value();
@@ -263,7 +263,7 @@ void dtkCoreParameterTestCase::testBounds(void)
         QCOMPARE(3.5, values[1]);
 
         r.setBounds(std::array<double, 2>({4, 2}));
-        QCOMPARE(bounds[0], 2);
+        QCOMPARE(bounds[0], 2.);
         QCOMPARE(bounds[1], 4.);
     }
 }
