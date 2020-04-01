@@ -1006,6 +1006,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
 
 void dtkCoreParameterTestCase::testToVariantHash(void)
 {
+    {
     dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
 
     auto *target = dtkCoreParameter::create(source.toVariantHash());
@@ -1021,6 +1022,26 @@ void dtkCoreParameterTestCase::testToVariantHash(void)
     QCOMPARE(source.min(), target_real.min());
     QCOMPARE(source.max(), target_real.max());
     QCOMPARE(source.decimals(), target_real.decimals());
+    }
+    {
+    QStringList c_types; c_types << "Ganglion" << "CNS";
+
+    dtk::d_inliststring source("cell type", "", c_types, "Select the cell type");
+
+    dtk::d_inliststring *target = dynamic_cast<dtk::d_inliststring*>(dtkCoreParameter::create(source.toVariantHash()));
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->valueIndex(), source.valueIndex());
+    QCOMPARE(target->values(), source.values());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_inliststring& target_inlist = dynamic_cast<dtk::d_inliststring&>(*target);
+
+    QVERIFY(&target_inlist);
+    QCOMPARE(source.values(), target_inlist.values());
+    QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
+    }
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

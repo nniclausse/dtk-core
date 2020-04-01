@@ -1117,7 +1117,12 @@ inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void) const
 {
     QVariantHash hash = base_type::toVariantHash();
     hash.insert("index", m_value_index);
-    hash.insert("values",  QVariant::fromValue(m_values));
+    QList<QVariant> l; l.reserve(m_values.size());
+    for (auto v : m_values){
+        l << QVariant::fromValue(v);
+    }
+    QVariant ll(l);
+    hash.insert("values", ll);
 
     return hash;
 }
