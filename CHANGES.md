@@ -1,6 +1,8 @@
 # ChangeLog
 
-## 2.8.0
+## NEXT VERSION
+
+## 2.8.0 - 2020-04-06
 - Add setBounds methods for range parameter and fix bugs
 - Register std::array to QMETATYPE system
 - Fix test of bounds for parameters
@@ -8,10 +10,6 @@
 - switch env to staging channel
 - add setMin setMax and setBounds in dtkCoreParameterNumeric
 - use git_describe_number as build number
-
-## NEXT VERSION
-- Complete `toVariantHash()` method in dtkCoreParameter so that it contains the
-  QMetaType name of the parameter.
 
 ## version 2.7.1 - 2020-03-18
 - Adding filters on parameters
