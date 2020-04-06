@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameter.h
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #pragma once
 
@@ -87,7 +76,7 @@ public:
 
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
-    virtual QVariantHash toVariantHash(void) = 0;
+    virtual QVariantHash toVariantHash(void) const = 0;
 
 #pragma mark - Connection management
 
@@ -148,6 +137,8 @@ public:
     QVariant variant(void) const final;
     void copyAndShare(dtkCoreParameter *) final;
     void copyAndShare(const QVariant&) final;
+
+    virtual QVariantHash toVariantHash(void) const override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -158,6 +149,10 @@ template <typename T, typename Enable = void>
 class dtkCoreParameterSimple : public dtkCoreParameterBase<dtkCoreParameterSimple<T>>
 {
 public:
+    using value_type = T;
+    using self_type = dtkCoreParameterSimple<value_type>;
+    using base_type = dtkCoreParameterBase<self_type>;
+
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -182,8 +177,10 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
-    QVariantHash toVariantHash(void) override;
+
     T value(void) const;
+
+    QVariantHash toVariantHash(void) const override;
 
 private:
     using dtkCoreParameter::m_label;
@@ -208,6 +205,10 @@ template <typename T, typename E = dtk::parameter_arithmetic<T>>
 class dtkCoreParameterNumeric : public dtkCoreParameterBase<dtkCoreParameterNumeric<T>>
 {
 public:
+    using value_type = T;
+    using self_type = dtkCoreParameterNumeric<value_type>;
+    using base_type = dtkCoreParameterBase<self_type>;
+
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -265,18 +266,24 @@ public:
 
     void setValue(const T&);
     void setValue(const QVariant&) override;
-    QVariantHash toVariantHash(void) override;
 
     T value(void) const;
 
     T min(void) const;
     T max(void) const;
 
+    void setMin(const T&);
+    void setMax(const T&);
+
     const std::array<T, 2>& bounds(void) const;
+
+    void setBounds(const std::array<T, 2>&);
 
     template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
 
     int decimals(void) const;
+
+    QVariantHash toVariantHash(void) const override;
 
 protected:
     using dtkCoreParameter::m_label;
@@ -308,6 +315,10 @@ template <typename T>
 class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
 public:
+    using value_type = T;
+    using self_type = dtkCoreParameterInList<value_type>;
+    using base_type = dtkCoreParameterBase<self_type>;
+
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -335,11 +346,13 @@ public:
     void setValue(const T&);
     void setValue(const QVariant&) override;
     void setValues(const QList<T>&);
-    QVariantHash toVariantHash(void) override;
 
     int valueIndex(void) const;
     T value(void) const;
     QList<T> values(void) const;
+
+    QVariantHash toVariantHash(void) const override;
+
 
 private:
     using dtkCoreParameter::m_label;
@@ -366,8 +379,10 @@ class dtkCoreParameterRange : public dtkCoreParameterBase<dtkCoreParameterRange<
 {
 public:
     using range = std::array<T, 2>;
+    using value_type = T;
+    using self_type = dtkCoreParameterRange<value_type>;
+    using base_type = dtkCoreParameterBase<self_type>;
 
-public:
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -394,18 +409,24 @@ public:
     void setValue(const std::array<T, 2>&);
     void setValue(std::initializer_list<T>);
     void setValue(const QVariant&) override;
-    QVariantHash toVariantHash(void) override;
 
     const std::array<T, 2>& value(void) const;
 
     T min(void) const;
     T max(void) const;
 
+    void setMin(const T&);
+    void setMax(const T&);
+
     const std::array<T, 2>& bounds(void) const;
+
+    void setBounds(const std::array<T, 2>&);
 
     template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
 
     int decimals(void) const;
+
+    QVariantHash toVariantHash(void) const override;
 
 private:
     using dtkCoreParameter::m_label;
@@ -499,7 +520,6 @@ Q_DECLARE_METATYPE(dtk::d_range_real::range);
 // ///////////////////////////////////////////////////////////////////
 
 #include "dtkCoreParameter.tpp"
-
 
 //
 // dtkCoreParameter.h ends here

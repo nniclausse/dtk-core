@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterTest.cpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreParameterTest.h"
 
@@ -143,44 +132,21 @@ void dtkCoreParameterTestCase::testBounds(void)
     {
         // check all default numeric bouds
         dtk::d_real r;
-        auto&& r_bounds = r.bounds();
-        QCOMPARE(r_bounds[0], std::numeric_limits<double>::lowest());
-        QCOMPARE(r_bounds[1], std::numeric_limits<double>::max());
-
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<double>::max());
+    }
+    {
         dtk::d_uint ui;
+        auto&& bounds = ui.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qulonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qulonglong>::max());
+    }
+    {
         dtk::d_int i;
-
-        switch ( sizeof(long) ) {  // I do not trust  std::numeric_limits :)
-        case 4: // 32 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFF, true);
-
-            QCOMPARE(i.min()  == 0x80000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFF, true);
-            break;
-
-        case 8: // 64 bits
-            QCOMPARE(ui.min() == 0, true);
-            QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFF, true);
-
-            QCOMPARE(i.min()  == 0x8000000000000000, true);
-            QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFF, true);
-            break;
-
-            /*
-              case 16: // 128 bits - ready for January 19, 2038 03:14:07 GMT
-              QCOMPARE(ui.min() == 0, true);
-              QCOMPARE(ui.max() == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-
-              QCOMPARE(i.min()  == 0x80000000000000000000000000000000, true);
-              QCOMPARE(i.max()  == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF, true);
-              break;
-            */
-
-        default:
-            qDebug() <<  "Please implement testBounds for your system";
-            break;
-        }
+        auto&& bounds = i.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<qlonglong>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<qlonglong>::max());
 
     }
     {
@@ -197,11 +163,108 @@ void dtkCoreParameterTestCase::testBounds(void)
         r = 0.25;
         QCOMPARE( r.value(), 0.25 ); // back to normal
 
-        //r = -3.0;    // r is outside the boundaries
-        //QCOMPARE( r.value(), r.min()); // in this case, we stick to the min()
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchaned
 
-        //r =  3.0;    // r is outside the boundaries
-        //QCOMPARE( r.value(), r.max()); // in this case, we stick to the max()
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchanged
+    }
+    {
+        dtk::d_real r("r", 0.25, -1.0, 1.0);
+
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 0.25, r.value()); // r is unchanged
+
+        QCOMPARE( 1.0, r.max()); // r has changed
+
+        r.setMax(4.0);
+        QCOMPARE( 4.0, r.max()); // r has changed
+
+        r.setValue(3.0);    // r is outside the boundaries
+        QCOMPARE( 3.0, r.value()); // r has changed
+
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( 3.0, r.value()); // r is unchanged
+
+        r.setMin(-4.0);
+        QCOMPARE( -4.0, r.min());
+
+        r.setValue(-3.0);    // r is outside the boundaries
+        QCOMPARE( -3.0, r.value()); // r has changed
+
+        std::array<double,2> bounds;
+        bounds[0]= -1.0;
+        bounds[1]= 1.0;
+        r.setBounds(bounds);
+        QCOMPARE( -1.0, r.min());
+        QCOMPARE( 1.0, r.max());
+
+        QCOMPARE( -1.0, r.value()); // r has changed because min has changed
+
+        bounds[0]= -3.0;
+        bounds[1]= 3.0;
+        r.setBounds(bounds);
+        QCOMPARE( -3.0, r.min());
+        QCOMPARE( 3.0, r.max());
+
+        QCOMPARE( -1.0, r.value()); // r is unchanged
+        r.setValue(2.0);            // r is still in the bounay
+        QCOMPARE( 2.0, r.value());  //
+
+        bounds[0]= -1.0;
+        bounds[1]= 1.0;
+        r.setBounds(bounds);
+        QCOMPARE( -1.0, r.min());
+        QCOMPARE( 1.0, r.max());
+
+        QCOMPARE( 1.0, r.value()); // r has changed because max has changed
+    }
+    {
+        dtk::d_range_real r({-3., 3.});
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], std::numeric_limits<double>::lowest());
+        QCOMPARE(bounds[1], std::numeric_limits<double>::max());
+
+        r.setMax( 4.0);
+        QCOMPARE( 4.0, r.max());
+        r.setMin(-4.0);
+        QCOMPARE(-4.0, r.min());
+
+        r.setMax( 2.0);
+        QCOMPARE( 2.0, r.max());
+        r.setMin(-2.0);
+        QCOMPARE(-2.0, r.min());
+
+        auto&& values = r.value();
+        QCOMPARE(-2.0, values[0]);
+        QCOMPARE( 2.0, values[1]);
+
+        r.setMax(-3.0);
+        QCOMPARE( 2.0, r.max());
+        r.setMin( 3.0);
+        QCOMPARE(-2.0, r.min());
+    }
+    {
+        dtk::d_range_real r("range", std::array<double, 2>({-1.5, 1.5}), -3.0, 3.0);
+        auto&& bounds = r.bounds();
+        QCOMPARE(bounds[0], -3.);
+        QCOMPARE(bounds[1],  3.);
+
+        r.setBounds(std::array<double, 2>({2, 4}));
+        QCOMPARE(bounds[0], 2.);
+        QCOMPARE(bounds[1], 4.);
+
+        auto&& values = r.value();
+        QCOMPARE(2.0, values[0]);
+        QCOMPARE(2.0, values[1]);
+
+        r.setValue({2.5, 3.5});
+        QCOMPARE(2.5, values[0]);
+        QCOMPARE(3.5, values[1]);
+
+        r.setBounds(std::array<double, 2>({4, 2}));
+        QCOMPARE(bounds[0], 2.);
+        QCOMPARE(bounds[1], 4.);
     }
 }
 
@@ -938,6 +1001,46 @@ void dtkCoreParameterTestCase::testReadParameters(void)
     {
         auto resbad = dtk::core::readParameters(json_bad_file);
         QCOMPARE(resbad.count() , 0);
+    }
+}
+
+void dtkCoreParameterTestCase::testToVariantHash(void)
+{
+    {
+    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+
+    auto *target = dtkCoreParameter::create(source.toVariantHash());
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+
+    QVERIFY(&target_real);
+    QCOMPARE((double)source, (double)(target_real));
+    QCOMPARE(source.min(), target_real.min());
+    QCOMPARE(source.max(), target_real.max());
+    QCOMPARE(source.decimals(), target_real.decimals());
+    }
+    {
+    QStringList c_types; c_types << "Ganglion" << "CNS";
+
+    dtk::d_inliststring source("cell type", "", c_types, "Select the cell type");
+
+    dtk::d_inliststring *target = dynamic_cast<dtk::d_inliststring*>(dtkCoreParameter::create(source.toVariantHash()));
+
+    QVERIFY(target);
+    QCOMPARE(target->label(), source.label());
+    QCOMPARE(target->valueIndex(), source.valueIndex());
+    QCOMPARE(target->values(), source.values());
+    QCOMPARE(target->documentation(), source.documentation());
+
+    dtk::d_inliststring& target_inlist = dynamic_cast<dtk::d_inliststring&>(*target);
+
+    QVERIFY(&target_inlist);
+    QCOMPARE(source.values(), target_inlist.values());
+    QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
     }
 }
 

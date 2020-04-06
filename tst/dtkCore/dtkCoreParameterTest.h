@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameterTest.h
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include <QtCore>
 
@@ -44,6 +33,7 @@ private slots:
     void testRange(void);
     void testFile(void);
     void testReadParameters(void);
+    void testToVariantHash(void);
 
 private slots:
     void cleanupTestCase(void);

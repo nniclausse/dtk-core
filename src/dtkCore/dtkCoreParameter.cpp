@@ -1,16 +1,5 @@
-// Version: $Id$
+// dtkCoreParameter.cpp
 //
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
 
 #include "dtkCoreParameter.h"
 #include "dtkCoreParameterPath.h"

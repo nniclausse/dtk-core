@@ -66,5 +66,49 @@ template<typename T> QDataStream& operator >> (QDataStream& s,       std::vector
 
 #include "dtkCoreMetaType.tpp"
 
+// ///////////////////////////////////////////////////////////////////
+// Add std::array as sequential container
+// ///////////////////////////////////////////////////////////////////
+
+#include <array>
+
+template <typename T, std::size_t N>
+struct QMetaTypeId<std::array<T,N>>
+{
+    enum {
+        Defined = QMetaTypeId2<T>::Defined
+    };
+    static int qt_metatype_id()
+    {
+        static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
+        if (const int id = metatype_id.load())
+            return id;
+        const char *tName = QMetaType::typeName(qMetaTypeId<T>());
+        const char *nName = QMetaType::typeName(qMetaTypeId<std::size_t>());
+        Q_ASSERT(tName);
+        const int tNameLen = int(qstrlen(tName));
+        const int nNameLen = int(qstrlen(nName));
+        QByteArray typeName;
+        typeName.reserve(int(sizeof("std::array")) + 1 + tNameLen + 1 + nNameLen + 1);
+        typeName.append("std::array", int(sizeof("std::array")) - 1)
+            .append('<').append(tName, tNameLen)
+            .append(',')
+            .append(nName, nNameLen);
+        typeName.append('>');
+        const int newId = qRegisterNormalizedMetaType<std::array<T,N>>(
+                        typeName,
+                        reinterpret_cast<std::array<T,N> *>(quintptr(-1)));
+        metatype_id.storeRelease(newId);
+        return newId;
+    }
+};
+namespace QtPrivate {
+    template<typename T, std::size_t N>
+    struct IsSequentialContainer<std::array<T,N>>
+    {
+        enum { Value = true };
+    };
+}
+
 //
 // dtkCoreMetaType.h ends here

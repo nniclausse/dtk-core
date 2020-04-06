@@ -1,6 +1,7 @@
 name:         dtk-core
 channels:
-  - dtk
+  - dtk-forge-staging
+  - conda-forge
 dependencies:
-    - dtk-log >=2.2.0
-    - qt >=5.9.0
+  - dtk-log >=2.2.0
+  - qt >=5.9.0
