@@ -2,7 +2,7 @@
 
 ## NEXT VERSION
 
-## 2.8.0 - 2020-04-06
+## version 2.8.0 - 2020-04-06
 - Add setBounds methods for range parameter and fix bugs
 - Register std::array to QMETATYPE system
 - Fix test of bounds for parameters
