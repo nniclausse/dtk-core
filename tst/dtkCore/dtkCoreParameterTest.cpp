@@ -990,7 +990,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         auto res = dtk::core::readParameters(json_file);
         QCOMPARE(res.count() , 6);
 
-        QCOMPARE(res["toto"]->uid() , "toto");
+        QCOMPARE(res["toto"]->uid() , QString("toto"));
 
         QCOMPARE(res["hyp"]->label() , QString("Porosity Model"));
         QCOMPARE(dtk::d_int(res["hyp"]->variant()).value(), 2);
