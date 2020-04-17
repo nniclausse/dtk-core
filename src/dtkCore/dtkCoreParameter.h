@@ -68,6 +68,9 @@ public:
      dtkCoreParameter(const dtkCoreParameter&);
     ~dtkCoreParameter(void) = default;
 
+    void setUid(const QString&);
+    const QString& uid(void) const;
+
     void setLabel(const QString&);
     QString label(void) const;
 
@@ -109,9 +112,10 @@ signals:
     void advancedChanged(bool new_adv);
 
 protected:
-    QString m_label;
-    QString m_doc;
-    bool    m_advanced = false;
+    QString    m_uid;
+    QString    m_label;
+    QString    m_doc;
+    bool       m_advanced = false;
     connection m_connection;
 
 protected:
