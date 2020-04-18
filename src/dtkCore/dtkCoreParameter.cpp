@@ -137,7 +137,7 @@ namespace dtk {
 
             QStringList keys = definitions.keys();
             for (auto it = definitions.begin(); it != definitions.end(); ++it) {
-                QString name = keys.takeFirst();
+                QString uid = keys.takeFirst();
                 if (it->isObject()) {
                     QJsonObject content_object = it->toObject();
 
@@ -151,7 +151,10 @@ namespace dtk {
                         dtkWarn() << Q_FUNC_INFO << "fail to create parameter" << type << map;
                         return dummy;
                     }
-                    parameters.insert(name, parameter);
+
+                    parameter->setUid(uid);
+
+                    parameters.insert(uid, parameter);
 
                 } else {
                     dtkWarn() << Q_FUNC_INFO << "'contents' sections are expected to contain objects only. Non object entry is ignored.";
@@ -176,6 +179,16 @@ dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_labe
     if (o.m_enable_share_connection) {
         m_connection = o.m_connection;
     }
+}
+
+void dtkCoreParameter::setUid(const QString& uid)
+{
+    this->m_uid = uid;
+}
+
+const QString& dtkCoreParameter::uid(void) const
+{
+    return this->m_uid;
 }
 
 void dtkCoreParameter::setLabel(const QString& label)

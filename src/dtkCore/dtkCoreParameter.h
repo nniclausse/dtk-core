@@ -66,6 +66,9 @@ public:
      dtkCoreParameter(const dtkCoreParameter&);
     ~dtkCoreParameter(void) = default;
 
+    void setUid(const QString&);
+    const QString& uid(void) const;
+
     void setLabel(const QString&);
     QString label(void) const;
 
@@ -99,11 +102,11 @@ public:
     static dtkCoreParameter *create(const QVariantHash&);
 
 protected:
+    QString m_uid;
     QString m_label;
     QString m_doc;
     connection m_connection;
 
-protected:
     mutable bool m_enable_share_connection = true;
 };
 
@@ -261,7 +264,12 @@ public:
     T min(void) const;
     T max(void) const;
 
+    void setMin(const T&);
+    void setMax(const T&);
+
     const std::array<T, 2>& bounds(void) const;
+
+    void setBounds(const std::array<T, 2>&);
 
     template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
 
@@ -399,7 +407,12 @@ public:
     T min(void) const;
     T max(void) const;
 
+    void setMin(const T&);
+    void setMax(const T&);
+
     const std::array<T, 2>& bounds(void) const;
+
+    void setBounds(const std::array<T, 2>&);
 
     template <typename U = T> std::enable_if_t<std::is_floating_point<U>::value> setDecimals(const int&);
 

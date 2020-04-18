@@ -751,9 +751,68 @@ inline T dtkCoreParameterNumeric<T, E>::max(void) const
 }
 
 template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setMin(const T& min)
+{
+    if (this->m_bounds[0] == min)
+        return;
+
+    if (min > this->m_bounds[1]) {
+        dtkWarn() << Q_FUNC_INFO << "Input min bound is greater than max bound:" << min << ">" << m_bounds[1] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[0] = min;
+    if (m_val < min) {
+        m_val = min;
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setMax(const T& max)
+{
+    if (this->m_bounds[1] == max)
+        return;
+
+    if (max < this->m_bounds[0]) {
+        dtkWarn() << Q_FUNC_INFO << "Input max bound is lower than min bound:" << max << "<" << m_bounds[0] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[1] = max;
+    if (m_val > max) {
+        m_val = max;
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
 inline const std::array<T, 2>& dtkCoreParameterNumeric<T, E>::bounds(void) const
 {
     return this->m_bounds;
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterNumeric<T, E>::setBounds(const std::array<T, 2>& b)
+{
+    if (b[0] > b[1]) {
+        dtkWarn() << Q_FUNC_INFO << "Input bounds are not correctly ordered:" << b[0] << ">" << b[1] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[0] = b[0];
+    if (m_val < b[0]) {
+        m_val = b[0];
+    }
+
+    this->m_bounds[1] = b[1];
+    if (m_val > b[1]) {
+        m_val = b[1];
+    }
+    this->sync();
 }
 
 template <typename T, typename E> template <typename U>
@@ -1061,7 +1120,12 @@ inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void) const
 {
     QVariantHash hash = base_type::toVariantHash();
     hash.insert("index", m_value_index);
-    hash.insert("values",  QVariant::fromValue(m_values));
+    QList<QVariant> l; l.reserve(m_values.size());
+    for (auto v : m_values){
+        l << QVariant::fromValue(v);
+    }
+    QVariant ll(l);
+    hash.insert("values", ll);
 
     return hash;
 }
@@ -1149,18 +1213,26 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>
         m_val = t;
 
     } else {
-        dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+        dtkWarn() << Q_FUNC_INFO << "Input values are not in increasing order. Nothing is done.";
     }
 }
 
 template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(std::initializer_list<T> args) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
-    if (args.size() == 2 && *(args.begin()) <= *(args.end())) {
-        m_val[0] = *(args.begin());
-        m_val[1] = *(args.end());
+    if (args.size() != 2) {
+        dtkWarn() << Q_FUNC_INFO << "Wrong number of input values:" << args.size() << "instead of" << 2 << ". Nothing is done";
+        this->syncFail();
+
     } else {
-        dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+        auto v_min = *(args.begin());
+        auto v_max = *(args.begin()+1);
+        if (v_min <= v_max) {
+            m_val[0] = v_min;
+            m_val[1] = v_max;
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Input values are not in increasing order:" << v_min << ">" << v_max << ". Nothing is done.";
+        }
     }
 }
 
@@ -1176,7 +1248,7 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QVariant& v) : d
         if (t[0] <= t[1]) {
             m_val = t;
         } else {
-            dtkWarn() << Q_FUNC_INFO << "Input values are not increasing order. Nothing is done.";
+            dtkWarn() << Q_FUNC_INFO << "Input values are not in increasing order. Nothing is done.";
         }
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
@@ -1234,14 +1306,22 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
 template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (std::initializer_list<T> args)
 {
-    if (args.size() == 2 && m_bounds[0] <= *(args.begin()) && *(args.begin()) <= *(args.end()) && *(args.end()) <= m_bounds[1]) {
-        m_val[0] = *(args.begin());
-        m_val[1] = *(args.end());
-        this->sync();
+    if (args.size() != 2) {
+        dtkWarn() << Q_FUNC_INFO << "Wrong number of input values:" << args.size() << "instead of" << 2 << ". Nothing is done";
+        this->syncFail();
 
     } else {
-        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not the right number of values or they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-        this->syncFail();
+        auto v_min = *(args.begin());
+        auto v_max = *(args.begin()+1);
+        if (m_bounds[0] <= v_min && v_min <= v_max && v_max <= m_bounds[1]) {
+            m_val[0] = v_min;
+            m_val[1] = v_max;
+            this->sync();
+
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+            this->syncFail();
+        }
     }
     return *this;
 }
@@ -1275,7 +1355,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
             m_val = {v_min, v_max};
 
         } else {
-            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordred. Nothing is done";
+            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordered. Nothing is done";
             this->syncFail();
             return *this;
         }
@@ -1325,14 +1405,22 @@ inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
 template <typename T, typename E>
 inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
 {
-    if ( ( args.size() == 2 ) && ( m_bounds[0] <= *(args.begin()) ) && ( *(args.begin()) <= *(args.end()) ) && ( *(args.end()) <= m_bounds[1]) ) {
-        m_val[0] = *(args.begin());
-        m_val[1] = *(args.end());
-        this->sync();
+    if (args.size() != 2) {
+        dtkWarn() << Q_FUNC_INFO << "Wrong number of input values:" << args.size() << "instead of" << 2 << ". Nothing is done";
+        this->syncFail();
 
     } else {
-        dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are are not the right number of values or not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
-        this->syncFail();
+        auto v_min = *(args.begin());
+        auto v_max = *(args.begin()+1);
+        if (m_bounds[0] <= v_min && v_min <= v_max && v_max <= m_bounds[1]) {
+            m_val[0] = v_min;
+            m_val[1] = v_max;
+            this->sync();
+
+        } else {
+            dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+            this->syncFail();
+        }
     }
 }
 
@@ -1371,7 +1459,7 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
             m_val = {v_min, v_max};
 
         } else {
-            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordred. Nothing is done";
+            dtkWarn() << Q_FUNC_INFO << "Values and bouns in VariantHash are not correctly ordered. Nothing is done";
             this->syncFail();
             return;
         }
@@ -1421,9 +1509,80 @@ inline T dtkCoreParameterRange<T, E>::max(void) const
 }
 
 template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setMin(const T& min)
+{
+    if (this->m_bounds[0] == min)
+        return;
+
+    if (min > this->m_bounds[1]) {
+        dtkWarn() << Q_FUNC_INFO << "Input min bound is greater than max bound:" << min << ">" << m_bounds[1] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[0] = min;
+    if (m_val[0] < min) {
+        m_val[0] = min;
+        if (m_val[0] > m_val[1]) {
+            m_val[1] = m_val[0];
+        }
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setMax(const T& max)
+{
+    if (this->m_bounds[1] == max)
+        return;
+
+    if (max < this->m_bounds[0]) {
+        dtkWarn() << Q_FUNC_INFO << "Input max bound is lower than min bound:" << max << "<" << m_bounds[0] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[1] = max;
+    if (m_val[1] > max) {
+        m_val[1] = max;
+        if (m_val[1] < m_val[0]) {
+            m_val[0] = m_val[1];
+        }
+    }
+    this->sync();
+}
+
+template <typename T, typename E>
 inline const std::array<T, 2>& dtkCoreParameterRange<T, E>::bounds(void) const
 {
     return m_bounds;
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setBounds(const std::array<T, 2>& b)
+{
+    if (b[0] > b[1]) {
+        dtkWarn() << Q_FUNC_INFO << "Input bounds are not correctly ordered:" << b[0] << ">" << b[1] << ". Nothing is done.";
+        this->syncFail();
+        return;
+    }
+
+    this->m_bounds[0] = b[0];
+    if (m_val[0] < b[0]) {
+        m_val[0] = b[0];
+        if (m_val[0] > m_val[1]) {
+            m_val[1] = m_val[0];
+        }
+    }
+
+    this->m_bounds[1] = b[1];
+    if (m_val[1] > b[1]) {
+        m_val[1] = b[1];
+        if (m_val[1] < m_val[0]) {
+            m_val[0] = m_val[1];
+        }
+    }
+    this->sync();
 }
 
 template <typename T, typename E>
