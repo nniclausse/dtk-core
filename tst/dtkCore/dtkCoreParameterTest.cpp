@@ -22,18 +22,8 @@ public:
 // use std::string as dtkCoreParameter
 // (dtk::d_string is implemented on QString and not on std::string)
 //
-Q_DECLARE_METATYPE(std::string)
-Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
-//
-// ///////////////////////////////////////////////////////////////////
 
-QDebug& operator << (QDebug &dbg, const std::string &p)
-{
-    const bool old_setting = dbg.autoInsertSpaces();
-    dbg.nospace() << p.c_str();
-    dbg.setAutoInsertSpaces(old_setting);
-    return dbg.maybeSpace();
-}
+Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
 
 // ///////////////////////////////////////////////////////////////////
 

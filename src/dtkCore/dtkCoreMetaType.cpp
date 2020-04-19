@@ -18,6 +18,33 @@
 #include <dtkLog>
 
 // ///////////////////////////////////////////////////////////////////
+// Debug and DataStream for std::string
+// ///////////////////////////////////////////////////////////////////
+
+QDebug& operator << (QDebug &dbg, const std::string& s)
+{
+    const bool old_setting = dbg.autoInsertSpaces();
+    dbg.nospace() << s.c_str();
+    dbg.setAutoInsertSpaces(old_setting);
+    return dbg.maybeSpace();
+}
+
+QDataStream &operator<<(QDataStream& out, const std::string& s)
+{
+    QString tmp = QString::fromStdString(s);
+    out << tmp;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream& in, std::string& s)
+{
+    QString tmp;
+    in >> tmp;
+    s = tmp.toStdString();
+    return in;
+}
+
+// ///////////////////////////////////////////////////////////////////
 // dtkCoreMetaType function implementations
 // ///////////////////////////////////////////////////////////////////
 
