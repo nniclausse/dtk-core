@@ -100,21 +100,21 @@ inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const dtkCoreParameter
 template <typename Derive>
 inline void dtkCoreParameterBase<Derive>::registerToMetaType(void)
 {
-    m_type = qMetaTypeId<Derive>();
+    auto type = qMetaTypeId<Derive>();
     auto from = qMetaTypeId<Derive*>();
     auto to = qMetaTypeId<dtkCoreParameter *>();
     if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
         qDebug() << Q_FUNC_INFO;
         QMetaType::registerConverter<Derive *, dtkCoreParameter *>();
         QMetaType::registerDebugStreamOperator<Derive>();
-        qRegisterMetaTypeStreamOperators<Derive>(QMetaType::typeName(m_type));
+        qRegisterMetaTypeStreamOperators<Derive>(QMetaType::typeName(type));
     }
 }
 
 template <typename Derive>
 inline QString dtkCoreParameterBase<Derive>::typeName(void) const
 {
-    return QMetaType::typeName(m_type);
+    return QMetaType::typeName(qMetaTypeId<Derive>());
 }
 
 template <typename Derive>

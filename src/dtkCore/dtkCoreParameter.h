@@ -149,7 +149,6 @@ public:
 
 private:
     void registerToMetaType(void);
-    int m_type;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -466,24 +465,24 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterRange<T>);
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
-    using d_uchar  = dtkCoreParameterNumeric<unsigned char>;
-    using d_char   = dtkCoreParameterNumeric<char>;
-    using d_uint   = dtkCoreParameterNumeric<qulonglong>;
-    using d_int    = dtkCoreParameterNumeric<qlonglong>;
-    using d_real   = dtkCoreParameterNumeric<double>;
-    using d_bool   = dtkCoreParameterNumeric<bool>;
+    using d_uchar = dtkCoreParameterNumeric<unsigned char>;
+    using d_char = dtkCoreParameterNumeric<char>;
+    using d_uint = dtkCoreParameterNumeric<qulonglong>;
+    using d_int = dtkCoreParameterNumeric<qlonglong>;
+    using d_real = dtkCoreParameterNumeric<double>;
+    using d_bool = dtkCoreParameterNumeric<bool>;
 
     using d_string = dtkCoreParameterSimple<QString>;
 
     using d_inliststring = dtkCoreParameterInList<QString>;
-    using d_inlistreal   = dtkCoreParameterInList<double>;
-    using d_inlistint    = dtkCoreParameterInList<qlonglong>;
+    using d_inlistreal = dtkCoreParameterInList<double>;
+    using d_inlistint = dtkCoreParameterInList<qlonglong>;
 
     using d_range_uchar = dtkCoreParameterRange<unsigned char>;
-    using d_range_char  = dtkCoreParameterRange<char>;
-    using d_range_uint  = dtkCoreParameterRange<qulonglong>;
-    using d_range_int   = dtkCoreParameterRange<qlonglong>;
-    using d_range_real  = dtkCoreParameterRange<double>;
+    using d_range_char = dtkCoreParameterRange<char>;
+    using d_range_uint = dtkCoreParameterRange<qulonglong>;
+    using d_range_int = dtkCoreParameterRange<qlonglong>;
+    using d_range_real = dtkCoreParameterRange<double>;
 }
 
 // ///////////////////////////////////////////////////////////////////

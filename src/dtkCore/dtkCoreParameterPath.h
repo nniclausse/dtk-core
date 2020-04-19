@@ -63,12 +63,10 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterPath);
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
-
     using d_path = dtkCoreParameterPath;
 }
 
-Q_DECLARE_METATYPE(dtk::d_path);
-Q_DECLARE_METATYPE(dtk::d_path *);
+DTK_DECLARE_PARAMETER(dtk::d_path);
 
 //
 // dtkCoreParameterPath.h ends here

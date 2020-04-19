@@ -111,33 +111,34 @@ namespace dtk {
         };
 
         template <typename T>
-        std::enable_if_t<!dtk::is_qobject<T>::value, QVariant> variant_from_value(const T& t)
+        struct variant_handler<T, std::enable_if_t<dtk::is_qobject<T>::value>, std::enable_if_t<!std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(const T& t) {
+                int class_type = QMetaType::type(t.metaObject()->className());
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t);
+            }
+        };
+
+        template <typename T>
+        struct variant_handler<T, std::enable_if_t<dtk::is_qobject<T>::value>, std::enable_if_t<std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(const T& t) {
+                QString class_name(t->metaObject()->className());
+                int class_type = QMetaType::type(qPrintable(class_name + "*"));
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t, 1);
+            }
+        };
+
+        template <typename T>
+        QVariant variant_from_value(const T& t)
         {
             return variant_handler<T>::fromValue(t);
-        }
-
-        template <typename T>
-        std::enable_if_t<dtk::is_qobject<T>::value, QVariant> variant_from_value(const T& t)
-        {
-            int class_type = QMetaType::type(t.metaObject()->className());
-
-            if (class_type == QMetaType::UnknownType)
-                return QVariant::fromValue(t);
-
-            return QVariant(class_type, &t);
-        }
-
-        template <typename T>
-        std::enable_if_t<dtk::is_qobject<T>::value, QVariant> variant_from_value(T * const & t)
-        {
-            QString class_name(t->metaObject()->className());
-            int class_type = QMetaType::type(qPrintable(class_name + "*"));
-
-            if (class_type == QMetaType::UnknownType) {
-                return QVariant::fromValue(t);
-            }
-
-            return QVariant(class_type, &t, 1);
         }
     }
 
@@ -150,23 +151,28 @@ namespace dtk {
     // Cloning an object by trying to downcasting as much as possible so that it avoids slicing
     namespace detail {
 
-        template <typename T>
-        std::enable_if_t<!dtk::is_clonable<T>::value, T *> clone_default(const T *t)
+        // Default clone fallback that returns nullptr
+        template <typename T, typename E = void, typename F = void>
+        struct clone_handler
         {
-            return nullptr;
-        }
+            static T *clone(const T *) {
+                return nullptr;
+            }
+        };
 
         template <typename T>
-        std::enable_if_t<dtk::is_clonable<T>::value, T *> clone_default(const T *t)
+        struct clone_handler<T, std::enable_if_t<dtk::is_clonable<T>::value>>
         {
-            using Type = std::remove_pointer_t<std::decay_t<T>>;
-            return new Type(*t);
-        }
+            static T *clone(const T *t) {
+                using Type = std::remove_pointer_t<std::decay_t<T>>;
+                return new Type(*t);
+            }
+        };
 
         template <typename T>
         std::enable_if_t<!dtk::is_qobject<T>::value, T *> clone(const T *t)
         {
-            return detail::clone_default(t);
+            return clone_handler<T>::clone(t);
         }
 
         template <typename T>
@@ -174,9 +180,8 @@ namespace dtk {
         {
             QString class_name(t->metaObject()->className());
             int class_type = QMetaType::type(qPrintable(class_name));
-
             if (class_type == QMetaType::UnknownType) {
-                return detail::clone_default(t);
+                return clone_handler<T>::clone(t);
             }
             return static_cast<T *>(QMetaType::create(class_type, t));
         }
@@ -192,23 +197,29 @@ namespace dtk {
     // Copying an object by trying to downcasting as much as possible so that it avoids slicing
     namespace detail
     {
-        template <typename T>
-        std::enable_if_t<!dtk::is_copyable<T>::value, bool> copy_default(const T *, T *)
+
+        // Default fallback returning nullptr
+        template <typename T, typename E = void, typename F = void>
+        struct copy_handler
         {
-            return false;
-        }
+            static bool copy(const T *, T *) {
+                return false;
+            }
+        };
 
         template <typename T>
-        std::enable_if_t<dtk::is_copyable<T>::value, bool> copy_default(const T *s, T *t)
+        struct copy_handler<T, std::enable_if_t<dtk::is_copyable<T>::value>>
         {
-            *t = *s;
-            return true;
-        }
+            static bool copy(const T *s, T *t) {
+                *t = *s;
+                return true;
+            }
+        };
 
         template <typename T>
         std::enable_if_t<!dtk::is_qobject<T>::value, bool> copy(const T *s, T *t)
         {
-            return detail::copy_default(s, t);
+            return copy_handler<T>::copy(s, t);
         }
 
         template <typename T>
@@ -221,7 +232,7 @@ namespace dtk {
             int s_class_type = QMetaType::type(qPrintable(s_class_name));
 
             if (t_class_type == QMetaType::UnknownType || (t_class_type != s_class_type)) {
-                return detail::copy_default(s, t);
+                return copy_handler<T>::copy(s, t);
             }
 
             QMetaType::construct(t_class_type, t, s);
