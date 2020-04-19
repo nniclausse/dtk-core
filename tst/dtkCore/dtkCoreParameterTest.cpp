@@ -23,9 +23,21 @@ public:
 // (dtk::d_string is implemented on QString and not on std::string)
 //
 Q_DECLARE_METATYPE(std::string)
-Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
-//
-// ///////////////////////////////////////////////////////////////////
+DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
+
+QDataStream& operator << (QDataStream& s, const std::string& p)
+{
+    s << QString::fromStdString(p);
+    return s;
+}
+
+QDataStream& operator >> (QDataStream& s, std::string& p)
+{
+    QString tmp;
+    s >> tmp;
+    p = tmp.toStdString();
+    return s;
+}
 
 QDebug& operator << (QDebug &dbg, const std::string &p)
 {
@@ -316,6 +328,9 @@ void dtkCoreParameterTestCase::testVariant(void)
     v = r.variant();                  // r is out of range
     por.setValue(v);
 
+    dtkCoreParameter *pp = &por;
+    auto vv = dtk::variantFromValue(pp);
+    qDebug() << vv << *(vv.value<dtk::d_real*>()) << por;
 }
 
 void dtkCoreParameterTestCase::testCoreParameter(void)

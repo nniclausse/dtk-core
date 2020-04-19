@@ -50,17 +50,17 @@ namespace dtk {
 template <typename T> QDataStream& operator << (QDataStream& s, T   *t);
 template <typename T> QDataStream& operator >> (QDataStream& s, T *& t);
 
-template<typename T> QDataStream& operator << (QDataStream& s, const QList<T *>& l);
-template<typename T> QDataStream& operator >> (QDataStream& s,       QList<T *>& l);
+template <typename T> QDataStream& operator << (QDataStream& s, const QList<T *>& l);
+template <typename T> QDataStream& operator >> (QDataStream& s,       QList<T *>& l);
 
-template<typename T> QDataStream& operator << (QDataStream& s, const QVector<T *>& v);
-template<typename T> QDataStream& operator >> (QDataStream& s,       QVector<T *>& v);
+template <typename T> QDataStream& operator << (QDataStream& s, const QVector<T *>& v);
+template <typename T> QDataStream& operator >> (QDataStream& s,       QVector<T *>& v);
 
-template<typename T> QDataStream& operator << (QDataStream& s, const std::list<T *>& l);
-template<typename T> QDataStream& operator >> (QDataStream& s,       std::list<T *>& l);
+template <typename T> QDataStream& operator << (QDataStream& s, const std::list<T *>& l);
+template <typename T> QDataStream& operator >> (QDataStream& s,       std::list<T *>& l);
 
-template<typename T> QDataStream& operator << (QDataStream& s, const std::vector<T *>& v);
-template<typename T> QDataStream& operator >> (QDataStream& s,       std::vector<T *>& v);
+template <typename T> QDataStream& operator << (QDataStream& s, const std::vector<T *>& v);
+template <typename T> QDataStream& operator >> (QDataStream& s,       std::vector<T *>& v);
 
 // /////////////////////////////////////////////////////////////////
 

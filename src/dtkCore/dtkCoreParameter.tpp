@@ -4,7 +4,42 @@
 #include "dtkCoreMetaType.h"
 
 // ///////////////////////////////////////////////////////////////////
-//
+// MetaType covariance
+// ///////////////////////////////////////////////////////////////////
+
+namespace dtk {
+
+    namespace detail
+    {
+        // Custom fallback to create QVariant from dtkCoreParameter
+        template <typename T>
+        struct variant_handler<T, dtk::is_core_parameter<T>, std::enable_if_t<!std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(const T& t) {
+                int class_type = QMetaType::type(qPrintable(t.typeName()));
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t);
+            }
+        };
+
+        template <typename T>
+        struct variant_handler<T, dtk::is_core_parameter<T>, std::enable_if_t<std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(T const & t) {
+                int class_type = QMetaType::type(qPrintable(t->typeName() + "*"));
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t, 1);
+            }
+        };
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
 template <typename F>
@@ -41,19 +76,45 @@ inline QMetaObject::Connection dtkCoreParameter::connectFail(F slot)
 }
 
 // ///////////////////////////////////////////////////////////////////
-//
+// dtkCoreParameterBase
 // ///////////////////////////////////////////////////////////////////
+
+template <typename Derive>
+inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(void) : dtkCoreParameter()
+{
+    this->registerToMetaType();
+}
 
 template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label, const QString& doc) : dtkCoreParameter(label, doc)
 {
-
+    this->registerToMetaType();
 }
 
 template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const dtkCoreParameterBase& o) : dtkCoreParameter(o)
 {
+    this->registerToMetaType();
+}
 
+template <typename Derive>
+inline void dtkCoreParameterBase<Derive>::registerToMetaType(void)
+{
+    m_type = qMetaTypeId<Derive>();
+    auto from = qMetaTypeId<Derive*>();
+    auto to = qMetaTypeId<dtkCoreParameter *>();
+    if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
+        qDebug() << Q_FUNC_INFO;
+        QMetaType::registerConverter<Derive *, dtkCoreParameter *>();
+        QMetaType::registerDebugStreamOperator<Derive>();
+        qRegisterMetaTypeStreamOperators<Derive>(QMetaType::typeName(m_type));
+    }
+}
+
+template <typename Derive>
+inline QString dtkCoreParameterBase<Derive>::typeName(void) const
+{
+    return QMetaType::typeName(m_type);
 }
 
 template <typename Derive>
@@ -119,10 +180,8 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
 template <typename Derive>
 inline QVariantHash dtkCoreParameterBase<Derive>::toVariantHash(void) const
 {
-    using derive_type = Derive;
-
     QVariantHash hash;
-    auto type_name = QMetaType::typeName(qMetaTypeId<derive_type>());
+    auto type_name = QMetaType::typeName(qMetaTypeId<Derive>());
     hash.insert("type", type_name);
     hash.insert("label", m_label);
     hash.insert("doc", m_doc);

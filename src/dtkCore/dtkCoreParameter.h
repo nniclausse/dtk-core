@@ -14,6 +14,18 @@
 
 class dtkCoreParameter;
 
+// ///////////////////////////////////////////////////////////////////
+// DTK_DECLARE_PARAMETER
+// ///////////////////////////////////////////////////////////////////
+
+#define DTK_DECLARE_PARAMETER(type) \
+    Q_DECLARE_METATYPE(type) \
+    Q_DECLARE_METATYPE(type*)
+
+// ///////////////////////////////////////////////////////////////////
+// Typetraits
+// ///////////////////////////////////////////////////////////////////
+
 namespace dtk {
     template <typename U, typename V = void>
     using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<U>::value, V>;
@@ -25,7 +37,6 @@ namespace dtk {
 
 namespace dtk {
     namespace core {
-
         DTKCORE_EXPORT void registerParameters(void);
         DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
     }
@@ -65,6 +76,8 @@ public:
      dtkCoreParameter(const QString&, const QString& = QString());
      dtkCoreParameter(const dtkCoreParameter&);
     ~dtkCoreParameter(void) = default;
+
+    virtual QString typeName(void) const = 0;
 
     void setUid(const QString&);
     const QString& uid(void) const;
@@ -120,17 +133,23 @@ template <typename Derive>
 class dtkCoreParameterBase : public dtkCoreParameter
 {
 public:
-     dtkCoreParameterBase(void) = default;
+     dtkCoreParameterBase(void);
      dtkCoreParameterBase(const QString&, const QString& = QString());
      dtkCoreParameterBase(const dtkCoreParameterBase&);
     ~dtkCoreParameterBase(void) = default;
 
 public:
+    QString typeName(void) const override;
+
     QVariant variant(void) const final;
     void copyAndShare(dtkCoreParameter *) final;
     void copyAndShare(const QVariant&) final;
 
     virtual QVariantHash toVariantHash(void) const override = 0;
+
+private:
+    void registerToMetaType(void);
+    int m_type;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -471,43 +490,25 @@ namespace dtk {
 // Registration to QMetaType system
 // ///////////////////////////////////////////////////////////////////
 
-Q_DECLARE_METATYPE(dtk::d_uchar);
-Q_DECLARE_METATYPE(dtk::d_uchar*);
-Q_DECLARE_METATYPE(dtk::d_char);
-Q_DECLARE_METATYPE(dtk::d_char*);
-Q_DECLARE_METATYPE(dtk::d_uint);
-Q_DECLARE_METATYPE(dtk::d_uint*);
-Q_DECLARE_METATYPE(dtk::d_int);
-Q_DECLARE_METATYPE(dtk::d_int*);
-Q_DECLARE_METATYPE(dtk::d_real);
-Q_DECLARE_METATYPE(dtk::d_real*);
-Q_DECLARE_METATYPE(dtk::d_bool);
-Q_DECLARE_METATYPE(dtk::d_bool*);
-Q_DECLARE_METATYPE(dtk::d_string);
-Q_DECLARE_METATYPE(dtk::d_string*);
+DTK_DECLARE_PARAMETER(dtk::d_uchar);
+DTK_DECLARE_PARAMETER(dtk::d_char);
+DTK_DECLARE_PARAMETER(dtk::d_uint);
+DTK_DECLARE_PARAMETER(dtk::d_int);
+DTK_DECLARE_PARAMETER(dtk::d_real);
+DTK_DECLARE_PARAMETER(dtk::d_bool);
+DTK_DECLARE_PARAMETER(dtk::d_string);
 
-Q_DECLARE_METATYPE(dtk::d_inliststring);
-Q_DECLARE_METATYPE(dtk::d_inliststring*);
-Q_DECLARE_METATYPE(dtk::d_inlistreal);
-Q_DECLARE_METATYPE(dtk::d_inlistreal*);
-Q_DECLARE_METATYPE(dtk::d_inlistint);
-Q_DECLARE_METATYPE(dtk::d_inlistint*);
+DTK_DECLARE_PARAMETER(dtk::d_inliststring);
+DTK_DECLARE_PARAMETER(dtk::d_inlistreal);
+DTK_DECLARE_PARAMETER(dtk::d_inlistint);
 
-Q_DECLARE_METATYPE(dtk::d_range_uchar);
-Q_DECLARE_METATYPE(dtk::d_range_uchar*);
-Q_DECLARE_METATYPE(dtk::d_range_uchar::range);
-Q_DECLARE_METATYPE(dtk::d_range_char);
-Q_DECLARE_METATYPE(dtk::d_range_char*);
+DTK_DECLARE_PARAMETER(dtk::d_range_uchar);
+DTK_DECLARE_PARAMETER(dtk::d_range_char);
 Q_DECLARE_METATYPE(dtk::d_range_char::range);
-Q_DECLARE_METATYPE(dtk::d_range_uint);
-Q_DECLARE_METATYPE(dtk::d_range_uint*);
-Q_DECLARE_METATYPE(dtk::d_range_uint::range);
-Q_DECLARE_METATYPE(dtk::d_range_int);
-Q_DECLARE_METATYPE(dtk::d_range_int*);
+DTK_DECLARE_PARAMETER(dtk::d_range_uint);
+DTK_DECLARE_PARAMETER(dtk::d_range_int);
 Q_DECLARE_METATYPE(dtk::d_range_int::range);
-Q_DECLARE_METATYPE(dtk::d_range_real);
-Q_DECLARE_METATYPE(dtk::d_range_real*);
-Q_DECLARE_METATYPE(dtk::d_range_real::range);
+DTK_DECLARE_PARAMETER(dtk::d_range_real);
 
 // ///////////////////////////////////////////////////////////////////
 
