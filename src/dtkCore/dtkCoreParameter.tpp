@@ -1103,7 +1103,6 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 
     } else {
         m_value_index = index;
-        qDebug() << Q_FUNC_INFO << *this;
         this->sync();
     }
 }
@@ -1119,7 +1118,6 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
     } else {
         m_value_index = index;
         this->sync();
-        qDebug() << Q_FUNC_INFO << *this;
     }
 }
 
@@ -1128,7 +1126,6 @@ inline void dtkCoreParameterInList<T>::setValues(const QList<T>& l)
 {
     m_values = l;
     m_value_index = 0;
-    qDebug() << Q_FUNC_INFO << *this;
     this->sync();
 }
 
