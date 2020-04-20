@@ -104,7 +104,6 @@ inline void dtkCoreParameterBase<Derive>::registerToMetaType(void)
     auto from = qMetaTypeId<Derive*>();
     auto to = qMetaTypeId<dtkCoreParameter *>();
     if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
-        qDebug() << Q_FUNC_INFO;
         QMetaType::registerConverter<Derive *, dtkCoreParameter *>();
         QMetaType::registerDebugStreamOperator<Derive>();
         qRegisterMetaTypeStreamOperators<Derive>(QMetaType::typeName(type));
@@ -1265,7 +1264,6 @@ template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     if (t[0] <= t[1]) {
-        //qDebug() << Q_FUNC_INFO << t[0] << t[1] << m_bounds[0] << m_bounds[1];
         m_val = t;
 
     } else {
