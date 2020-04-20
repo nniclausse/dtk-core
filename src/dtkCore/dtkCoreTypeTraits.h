@@ -38,7 +38,6 @@ namespace dtk {
     template <typename T>
     using is_qobject = detail::is_qobject_impl<T>;
 
-
     // is_instantiable : detects whether an object of the class can be instantiated or not
     namespace detail
     {

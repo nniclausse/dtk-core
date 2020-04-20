@@ -23,14 +23,14 @@ public:
 // (dtk::d_string is implemented on QString and not on std::string)
 //
 
-Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
+DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
 
 // ///////////////////////////////////////////////////////////////////
 
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
-    dtk::core::registerParameters();
+
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -306,6 +306,12 @@ void dtkCoreParameterTestCase::testVariant(void)
     v = r.variant();                  // r is out of range
     por.setValue(v);
 
+    dtkCoreParameter *pp = &por;
+    auto vv = dtk::variantFromValue(pp);
+
+    dtk::d_real *pp_from_vv = vv.value<dtk::d_real *>();
+
+    QCOMPARE(*pp_from_vv, por);
 }
 
 void dtkCoreParameterTestCase::testCoreParameter(void)
