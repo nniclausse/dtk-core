@@ -204,5 +204,11 @@ QDebug operator << (QDebug dbg, dtkCoreParameterPath p)
     return dbg.maybeSpace();
 }
 
+// ///////////////////////////////////////////////////////////////////
+// Register parameter at runtime
+// ///////////////////////////////////////////////////////////////////
+
+DTK_DEFINE_PARAMETER(dtk::d_path, d_path);
+
 //
 // dtkCoreParameterPath.cpp ends here
