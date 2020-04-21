@@ -1,6 +1,10 @@
 # ChangeLog
 
-## NEXT VERSION
+## version 2.9.0 - 2020-04-21
+- remove advanced/setAdvaced methods (moved in dtkWidgets)
+- add uid/setUid in dtkCoreParameters
+- remove inheritance from QObject and signals in dtkCoreParameter
+- change the fallback system for variant, clone and copy.
 
 ## version 2.8.0 - 2020-04-06
 - Add setBounds methods for range parameter and fix bugs
