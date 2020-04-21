@@ -75,40 +75,34 @@ inline QMetaObject::Connection dtkCoreParameter::connectFail(F slot)
     return c;
 }
 
+template <typename T>
+inline int dtkCoreParameter::registerToMetaType(void)
+{
+    auto type = qMetaTypeId<T>();
+    auto from = qMetaTypeId<T *>();
+    auto to = qMetaTypeId<dtkCoreParameter *>();
+    if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
+        QMetaType::registerConverter<T *, dtkCoreParameter *>();
+        QMetaType::registerDebugStreamOperator<T>();
+        qRegisterMetaTypeStreamOperators<T>(QMetaType::typeName(type));
+    }
+    return type;
+}
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterBase
 // ///////////////////////////////////////////////////////////////////
 
 template <typename Derive>
-inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(void) : dtkCoreParameter()
-{
-    this->registerToMetaType();
-}
-
-template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label, const QString& doc) : dtkCoreParameter(label, doc)
 {
-    this->registerToMetaType();
+
 }
 
 template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const dtkCoreParameterBase& o) : dtkCoreParameter(o)
 {
-    this->registerToMetaType();
-}
 
-template <typename Derive>
-inline void dtkCoreParameterBase<Derive>::registerToMetaType(void)
-{
-    auto type = qMetaTypeId<Derive>();
-    auto from = qMetaTypeId<Derive*>();
-    auto to = qMetaTypeId<dtkCoreParameter *>();
-    if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
-        qDebug() << Q_FUNC_INFO;
-        QMetaType::registerConverter<Derive *, dtkCoreParameter *>();
-        QMetaType::registerDebugStreamOperator<Derive>();
-        qRegisterMetaTypeStreamOperators<Derive>(QMetaType::typeName(type));
-    }
 }
 
 template <typename Derive>

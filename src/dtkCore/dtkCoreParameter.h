@@ -15,12 +15,23 @@
 class dtkCoreParameter;
 
 // ///////////////////////////////////////////////////////////////////
-// DTK_DECLARE_PARAMETER
+// MACRO TO REGISTER PARAMETER TO QMETATYPE SYSTEM
 // ///////////////////////////////////////////////////////////////////
 
+// MACRO IN HEADER FILE
 #define DTK_DECLARE_PARAMETER(type) \
-    Q_DECLARE_METATYPE(type) \
+    Q_DECLARE_METATYPE(type)        \
     Q_DECLARE_METATYPE(type*)
+
+// MACRO IN CPP FILE
+#define DTK_DEFINE_PARAMETER(type, name_space)                          \
+    namespace dtk {                                                     \
+        namespace detail {                                              \
+            namespace name_space {                                      \
+                int m_dummy = dtkCoreParameter::registerToMetaType<type>(); \
+            }                                                           \
+        }                                                               \
+    }
 
 // ///////////////////////////////////////////////////////////////////
 // Typetraits
@@ -37,7 +48,6 @@ namespace dtk {
 
 namespace dtk {
     namespace core {
-        DTKCORE_EXPORT void registerParameters(void);
         DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
     }
 }
@@ -112,6 +122,8 @@ public:
 #pragma mark - Factory method
 
 public:
+    template <typename T>
+    static int registerToMetaType(void);
     static dtkCoreParameter *create(const QVariantHash&);
 
 protected:
@@ -133,7 +145,7 @@ template <typename Derive>
 class dtkCoreParameterBase : public dtkCoreParameter
 {
 public:
-     dtkCoreParameterBase(void);
+     dtkCoreParameterBase(void) = default;
      dtkCoreParameterBase(const QString&, const QString& = QString());
      dtkCoreParameterBase(const dtkCoreParameterBase&);
     ~dtkCoreParameterBase(void) = default;
@@ -146,9 +158,6 @@ public:
     void copyAndShare(const QVariant&) final;
 
     virtual QVariantHash toVariantHash(void) const override = 0;
-
-private:
-    void registerToMetaType(void);
 };
 
 // ///////////////////////////////////////////////////////////////////
