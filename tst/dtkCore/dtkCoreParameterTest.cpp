@@ -357,7 +357,10 @@ void dtkCoreParameterTestCase::testVariant(void)
 
     dtkCoreParameter *pp = &por;
     auto vv = dtk::variantFromValue(pp);
-    qDebug() << vv << *(vv.value<dtk::d_real*>()) << por;
+
+    dtk::d_real *pp_from_vv = vv.value<dtk::d_real *>();
+
+    QCOMPARE(*pp_from_vv, por);
 }
 
 void dtkCoreParameterTestCase::testCoreParameter(void)

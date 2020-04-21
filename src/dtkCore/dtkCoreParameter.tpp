@@ -1097,7 +1097,6 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 
     } else {
         m_value_index = index;
-        qDebug() << Q_FUNC_INFO << *this;
         this->sync();
     }
 }
@@ -1113,7 +1112,6 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
     } else {
         m_value_index = index;
         this->sync();
-        qDebug() << Q_FUNC_INFO << *this;
     }
 }
 
@@ -1122,7 +1120,6 @@ inline void dtkCoreParameterInList<T>::setValues(const QList<T>& l)
 {
     m_values = l;
     m_value_index = 0;
-    qDebug() << Q_FUNC_INFO << *this;
     this->sync();
 }
 
@@ -1262,7 +1259,6 @@ template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     if (t[0] <= t[1]) {
-        //qDebug() << Q_FUNC_INFO << t[0] << t[1] << m_bounds[0] << m_bounds[1];
         m_val = t;
 
     } else {
