@@ -14,6 +14,29 @@
 
 class dtkCoreParameter;
 
+// ///////////////////////////////////////////////////////////////////
+// MACRO TO REGISTER PARAMETER TO QMETATYPE SYSTEM
+// ///////////////////////////////////////////////////////////////////
+
+// MACRO IN HEADER FILE
+#define DTK_DECLARE_PARAMETER(type) \
+    Q_DECLARE_METATYPE(type)        \
+    Q_DECLARE_METATYPE(type*)
+
+// MACRO IN CPP FILE
+#define DTK_DEFINE_PARAMETER(type, name_space)                          \
+    namespace dtk {                                                     \
+        namespace detail {                                              \
+            namespace name_space {                                      \
+                int m_dummy = dtkCoreParameter::registerToMetaType<type>(); \
+            }                                                           \
+        }                                                               \
+    }
+
+// ///////////////////////////////////////////////////////////////////
+// Typetraits
+// ///////////////////////////////////////////////////////////////////
+
 namespace dtk {
     template <typename U, typename V = void>
     using parameter_arithmetic = std::enable_if_t<std::is_arithmetic<U>::value, V>;
@@ -25,8 +48,6 @@ namespace dtk {
 
 namespace dtk {
     namespace core {
-
-        DTKCORE_EXPORT void registerParameters(void);
         DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
     }
 }
@@ -55,10 +76,8 @@ Q_DECLARE_METATYPE(std::shared_ptr<dtkCoreParameterConnection>);
 // dtkCoreParameter interface
 // ///////////////////////////////////////////////////////////////////
 
-class DTKCORE_EXPORT dtkCoreParameter : public QObject
+class DTKCORE_EXPORT dtkCoreParameter
 {
-    Q_OBJECT
-
 public:
     using connection = std::shared_ptr<dtkCoreParameterConnection>;
 
@@ -67,6 +86,11 @@ public:
      dtkCoreParameter(const QString&, const QString& = QString());
      dtkCoreParameter(const dtkCoreParameter&);
     ~dtkCoreParameter(void) = default;
+
+    virtual QString typeName(void) const = 0;
+
+    void setUid(const QString&);
+    const QString& uid(void) const;
 
     void setLabel(const QString&);
     QString label(void) const;
@@ -98,23 +122,16 @@ public:
 #pragma mark - Factory method
 
 public:
+    template <typename T>
+    static int registerToMetaType(void);
     static dtkCoreParameter *create(const QVariantHash&);
 
-#pragma mark - advanced
-
-    void setAdvanced(bool);
-    bool advanced(void);
-
-signals:
-    void advancedChanged(bool new_adv);
-
 protected:
+    QString m_uid;
     QString m_label;
     QString m_doc;
-    bool    m_advanced = false;
     connection m_connection;
 
-protected:
     mutable bool m_enable_share_connection = true;
 };
 
@@ -134,6 +151,8 @@ public:
     ~dtkCoreParameterBase(void) = default;
 
 public:
+    QString typeName(void) const override;
+
     QVariant variant(void) const final;
     void copyAndShare(dtkCoreParameter *) final;
     void copyAndShare(const QVariant&) final;
@@ -455,67 +474,49 @@ DTKCORE_EXPORT QDebug operator << (QDebug, dtkCoreParameterRange<T>);
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
-    using d_uchar  = dtkCoreParameterNumeric<unsigned char>;
-    using d_char   = dtkCoreParameterNumeric<char>;
-    using d_uint   = dtkCoreParameterNumeric<qulonglong>;
-    using d_int    = dtkCoreParameterNumeric<qlonglong>;
-    using d_real   = dtkCoreParameterNumeric<double>;
-    using d_bool   = dtkCoreParameterNumeric<bool>;
+    using d_uchar = dtkCoreParameterNumeric<unsigned char>;
+    using d_char = dtkCoreParameterNumeric<char>;
+    using d_uint = dtkCoreParameterNumeric<qulonglong>;
+    using d_int = dtkCoreParameterNumeric<qlonglong>;
+    using d_real = dtkCoreParameterNumeric<double>;
+    using d_bool = dtkCoreParameterNumeric<bool>;
 
     using d_string = dtkCoreParameterSimple<QString>;
 
     using d_inliststring = dtkCoreParameterInList<QString>;
-    using d_inlistreal   = dtkCoreParameterInList<double>;
-    using d_inlistint    = dtkCoreParameterInList<qlonglong>;
+    using d_inlistreal = dtkCoreParameterInList<double>;
+    using d_inlistint = dtkCoreParameterInList<qlonglong>;
 
     using d_range_uchar = dtkCoreParameterRange<unsigned char>;
-    using d_range_char  = dtkCoreParameterRange<char>;
-    using d_range_uint  = dtkCoreParameterRange<qulonglong>;
-    using d_range_int   = dtkCoreParameterRange<qlonglong>;
-    using d_range_real  = dtkCoreParameterRange<double>;
+    using d_range_char = dtkCoreParameterRange<char>;
+    using d_range_uint = dtkCoreParameterRange<qulonglong>;
+    using d_range_int = dtkCoreParameterRange<qlonglong>;
+    using d_range_real = dtkCoreParameterRange<double>;
 }
 
 // ///////////////////////////////////////////////////////////////////
 // Registration to QMetaType system
 // ///////////////////////////////////////////////////////////////////
 
-Q_DECLARE_METATYPE(dtk::d_uchar);
-Q_DECLARE_METATYPE(dtk::d_uchar*);
-Q_DECLARE_METATYPE(dtk::d_char);
-Q_DECLARE_METATYPE(dtk::d_char*);
-Q_DECLARE_METATYPE(dtk::d_uint);
-Q_DECLARE_METATYPE(dtk::d_uint*);
-Q_DECLARE_METATYPE(dtk::d_int);
-Q_DECLARE_METATYPE(dtk::d_int*);
-Q_DECLARE_METATYPE(dtk::d_real);
-Q_DECLARE_METATYPE(dtk::d_real*);
-Q_DECLARE_METATYPE(dtk::d_bool);
-Q_DECLARE_METATYPE(dtk::d_bool*);
-Q_DECLARE_METATYPE(dtk::d_string);
-Q_DECLARE_METATYPE(dtk::d_string*);
+DTK_DECLARE_PARAMETER(dtk::d_uchar);
+DTK_DECLARE_PARAMETER(dtk::d_char);
+DTK_DECLARE_PARAMETER(dtk::d_uint);
+DTK_DECLARE_PARAMETER(dtk::d_int);
+DTK_DECLARE_PARAMETER(dtk::d_real);
+DTK_DECLARE_PARAMETER(dtk::d_bool);
+DTK_DECLARE_PARAMETER(dtk::d_string);
 
-Q_DECLARE_METATYPE(dtk::d_inliststring);
-Q_DECLARE_METATYPE(dtk::d_inliststring*);
-Q_DECLARE_METATYPE(dtk::d_inlistreal);
-Q_DECLARE_METATYPE(dtk::d_inlistreal*);
-Q_DECLARE_METATYPE(dtk::d_inlistint);
-Q_DECLARE_METATYPE(dtk::d_inlistint*);
+DTK_DECLARE_PARAMETER(dtk::d_inliststring);
+DTK_DECLARE_PARAMETER(dtk::d_inlistreal);
+DTK_DECLARE_PARAMETER(dtk::d_inlistint);
 
-Q_DECLARE_METATYPE(dtk::d_range_uchar);
-Q_DECLARE_METATYPE(dtk::d_range_uchar*);
-Q_DECLARE_METATYPE(dtk::d_range_uchar::range);
-Q_DECLARE_METATYPE(dtk::d_range_char);
-Q_DECLARE_METATYPE(dtk::d_range_char*);
+DTK_DECLARE_PARAMETER(dtk::d_range_uchar);
+DTK_DECLARE_PARAMETER(dtk::d_range_char);
 Q_DECLARE_METATYPE(dtk::d_range_char::range);
-Q_DECLARE_METATYPE(dtk::d_range_uint);
-Q_DECLARE_METATYPE(dtk::d_range_uint*);
-Q_DECLARE_METATYPE(dtk::d_range_uint::range);
-Q_DECLARE_METATYPE(dtk::d_range_int);
-Q_DECLARE_METATYPE(dtk::d_range_int*);
+DTK_DECLARE_PARAMETER(dtk::d_range_uint);
+DTK_DECLARE_PARAMETER(dtk::d_range_int);
 Q_DECLARE_METATYPE(dtk::d_range_int::range);
-Q_DECLARE_METATYPE(dtk::d_range_real);
-Q_DECLARE_METATYPE(dtk::d_range_real*);
-Q_DECLARE_METATYPE(dtk::d_range_real::range);
+DTK_DECLARE_PARAMETER(dtk::d_range_real);
 
 // ///////////////////////////////////////////////////////////////////
 

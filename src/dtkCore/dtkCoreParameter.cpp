@@ -11,95 +11,8 @@
 // ///////////////////////////////////////////////////////////////////
 
 namespace dtk {
+
     namespace core {
-
-        void registerParameters(void)
-        {
-            qRegisterMetaType<dtk::d_uchar>();
-            qRegisterMetaType<dtk::d_char>();
-            qRegisterMetaType<dtk::d_uint>();
-            qRegisterMetaType<dtk::d_int>();
-            qRegisterMetaType<dtk::d_real>();
-            qRegisterMetaType<dtk::d_bool>();
-            qRegisterMetaType<dtk::d_string>();
-
-            qRegisterMetaType<dtk::d_uchar*>();
-            qRegisterMetaType<dtk::d_char*>();
-            qRegisterMetaType<dtk::d_uint*>();
-            qRegisterMetaType<dtk::d_int*>();
-            qRegisterMetaType<dtk::d_real*>();
-            qRegisterMetaType<dtk::d_bool*>();
-            qRegisterMetaType<dtk::d_string*>();
-
-            qRegisterMetaTypeStreamOperators<dtk::d_uchar>("dtk::d_uchar");
-            qRegisterMetaTypeStreamOperators<dtk::d_char>("dtk::d_char");
-            qRegisterMetaTypeStreamOperators<dtk::d_uint>("dtk::d_uint");
-            qRegisterMetaTypeStreamOperators<dtk::d_int>("dtk::d_int");
-            qRegisterMetaTypeStreamOperators<dtk::d_real>("dtk::d_real");
-            qRegisterMetaTypeStreamOperators<dtk::d_bool>("dtk::d_bool");
-            qRegisterMetaTypeStreamOperators<dtk::d_string>("dtk::d_string");
-
-            QMetaType::registerDebugStreamOperator<dtk::d_uchar>();
-            QMetaType::registerDebugStreamOperator<dtk::d_char>();
-            QMetaType::registerDebugStreamOperator<dtk::d_uint>();
-            QMetaType::registerDebugStreamOperator<dtk::d_int>();
-            QMetaType::registerDebugStreamOperator<dtk::d_real>();
-            QMetaType::registerDebugStreamOperator<dtk::d_bool>();
-            QMetaType::registerDebugStreamOperator<dtk::d_string>();
-
-
-            qRegisterMetaType<dtk::d_inliststring>();
-            qRegisterMetaType<dtk::d_inliststring*>();
-            qRegisterMetaType<dtk::d_inlistreal>();
-            qRegisterMetaType<dtk::d_inlistreal*>();
-            qRegisterMetaType<dtk::d_inlistint>();
-            qRegisterMetaType<dtk::d_inlistint*>();
-
-            qRegisterMetaTypeStreamOperators<dtk::d_inliststring>("dtk::d_inliststring");
-            qRegisterMetaTypeStreamOperators<dtk::d_inlistreal>("dtk::d_inlistreal");
-            qRegisterMetaTypeStreamOperators<dtk::d_inlistint>("dtk::d_inlistint");
-
-            QMetaType::registerDebugStreamOperator<dtk::d_inliststring>();
-            QMetaType::registerDebugStreamOperator<dtk::d_inlistreal>();
-            QMetaType::registerDebugStreamOperator<dtk::d_inlistint>();
-
-
-            qRegisterMetaType<dtk::d_range_uchar>();
-            qRegisterMetaType<dtk::d_range_uchar*>();
-            qRegisterMetaType<dtk::d_range_uchar::range>();
-            qRegisterMetaType<dtk::d_range_char>();
-            qRegisterMetaType<dtk::d_range_char*>();
-            qRegisterMetaType<dtk::d_range_char::range>();
-            qRegisterMetaType<dtk::d_range_uint>();
-            qRegisterMetaType<dtk::d_range_uint*>();
-            qRegisterMetaType<dtk::d_range_uint::range>();
-            qRegisterMetaType<dtk::d_range_int>();
-            qRegisterMetaType<dtk::d_range_int*>();
-            qRegisterMetaType<dtk::d_range_int::range>();
-            qRegisterMetaType<dtk::d_range_real>();
-            qRegisterMetaType<dtk::d_range_real*>();
-            qRegisterMetaType<dtk::d_range_real::range>();
-
-            qRegisterMetaTypeStreamOperators<dtk::d_range_uchar>("dtk::d_range_uchar");
-            qRegisterMetaTypeStreamOperators<dtk::d_range_char>("dtk::d_range_char");
-            qRegisterMetaTypeStreamOperators<dtk::d_range_uint>("dtk::d_range_uint");
-            qRegisterMetaTypeStreamOperators<dtk::d_range_int>("dtk::d_range_int");
-            qRegisterMetaTypeStreamOperators<dtk::d_range_real>("dtk::d_range_real");
-
-            QMetaType::registerDebugStreamOperator<dtk::d_range_uchar>();
-            QMetaType::registerDebugStreamOperator<dtk::d_range_char>();
-            QMetaType::registerDebugStreamOperator<dtk::d_range_uint>();
-            QMetaType::registerDebugStreamOperator<dtk::d_range_int>();
-            QMetaType::registerDebugStreamOperator<dtk::d_range_real>();
-
-
-            qRegisterMetaType<dtk::d_path>();
-            qRegisterMetaType<dtk::d_path*>();
-
-            qRegisterMetaTypeStreamOperators<dtk::d_path>("dtk::d_path");
-
-            QMetaType::registerDebugStreamOperator<dtk::d_path>();
-        }
 
         dtkCoreParameters readParameters(const QString& filename)
         {
@@ -137,7 +50,7 @@ namespace dtk {
 
             QStringList keys = definitions.keys();
             for (auto it = definitions.begin(); it != definitions.end(); ++it) {
-                QString name = keys.takeFirst();
+                QString uid = keys.takeFirst();
                 if (it->isObject()) {
                     QJsonObject content_object = it->toObject();
 
@@ -151,7 +64,10 @@ namespace dtk {
                         dtkWarn() << Q_FUNC_INFO << "fail to create parameter" << type << map;
                         return dummy;
                     }
-                    parameters.insert(name, parameter);
+
+                    parameter->setUid(uid);
+
+                    parameters.insert(uid, parameter);
 
                 } else {
                     dtkWarn() << Q_FUNC_INFO << "'contents' sections are expected to contain objects only. Non object entry is ignored.";
@@ -176,6 +92,16 @@ dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_labe
     if (o.m_enable_share_connection) {
         m_connection = o.m_connection;
     }
+}
+
+void dtkCoreParameter::setUid(const QString& uid)
+{
+    this->m_uid = uid;
+}
+
+const QString& dtkCoreParameter::uid(void) const
+{
+    return this->m_uid;
 }
 
 void dtkCoreParameter::setLabel(const QString& label)
@@ -314,16 +240,27 @@ dtkCoreParameter *dtkCoreParameter::create(const QVariantHash& map)
     return p;
 }
 
-void dtkCoreParameter::setAdvanced(bool adv)
-{
-    m_advanced = adv;
-    emit advancedChanged(m_advanced);
-}
+// ///////////////////////////////////////////////////////////////////
+// Registration of parameters at runtime
+// ///////////////////////////////////////////////////////////////////
 
-bool dtkCoreParameter::advanced(void)
-{
-    return m_advanced;
-}
+DTK_DEFINE_PARAMETER(dtk::d_uchar, d_uchar);
+DTK_DEFINE_PARAMETER(dtk::d_char, d_char);
+DTK_DEFINE_PARAMETER(dtk::d_uint, d_uint);
+DTK_DEFINE_PARAMETER(dtk::d_int, d_int);
+DTK_DEFINE_PARAMETER(dtk::d_real, d_real);
+DTK_DEFINE_PARAMETER(dtk::d_bool, d_bool);
+DTK_DEFINE_PARAMETER(dtk::d_string, d_string);
+
+DTK_DEFINE_PARAMETER(dtk::d_inliststring, d_inliststring);
+DTK_DEFINE_PARAMETER(dtk::d_inlistreal, d_inlistreal);
+DTK_DEFINE_PARAMETER(dtk::d_inlistint, d_inlistint);
+
+DTK_DEFINE_PARAMETER(dtk::d_range_uchar, d_range_uchar);
+DTK_DEFINE_PARAMETER(dtk::d_range_char, d_range_char);
+DTK_DEFINE_PARAMETER(dtk::d_range_uint, d_range_uint);
+DTK_DEFINE_PARAMETER(dtk::d_range_int, d_range_int);
+DTK_DEFINE_PARAMETER(dtk::d_range_real, d_range_real);
 
 //
 // dtkCoreParameter.cpp ends here

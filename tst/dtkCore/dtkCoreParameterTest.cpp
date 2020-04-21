@@ -22,25 +22,16 @@ public:
 // use std::string as dtkCoreParameter
 // (dtk::d_string is implemented on QString and not on std::string)
 //
-Q_DECLARE_METATYPE(std::string)
-Q_DECLARE_METATYPE(dtkCoreParameterSimple<std::string>)
-//
-// ///////////////////////////////////////////////////////////////////
 
-QDebug& operator << (QDebug &dbg, const std::string &p)
-{
-    const bool old_setting = dbg.autoInsertSpaces();
-    dbg.nospace() << p.c_str();
-    dbg.setAutoInsertSpaces(old_setting);
-    return dbg.maybeSpace();
-}
+DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
+DTK_DEFINE_PARAMETER(dtkCoreParameterSimple<std::string>, simple_string)
 
 // ///////////////////////////////////////////////////////////////////
 
 
 dtkCoreParameterTestCase::dtkCoreParameterTestCase(void) : d(new dtkCoreParameterTestCasePrivate)
 {
-    dtk::core::registerParameters();
+
 }
 
 dtkCoreParameterTestCase::~dtkCoreParameterTestCase(void)
@@ -55,6 +46,54 @@ void dtkCoreParameterTestCase::initTestCase(void)
 
 void dtkCoreParameterTestCase::init(void)
 {
+}
+
+void dtkCoreParameterTestCase::testRegistration(void)
+{
+    QVERIFY(QMetaType::type("dtk::d_real") != QMetaType::UnknownType);
+    QVERIFY(QMetaType::type("dtk::d_range_real") != QMetaType::UnknownType);
+    QVERIFY(QMetaType::type("dtk::d_inliststring") != QMetaType::UnknownType);
+    QVERIFY(QMetaType::type("dtkCoreParameterSimple<std::string>") != QMetaType::UnknownType);
+}
+
+void dtkCoreParameterTestCase::testCreation(void)
+{
+    {
+        QVariantHash map;
+        map["type"] = "dtk::d_real";
+        map["label"] = "intensity";
+        map["doc"] = "Intensity of the light";
+        map["value"] = 3.14159;
+        map["min"] = -1;
+        map["max"] = 4;
+
+        auto *target = dtkCoreParameter::create(map);
+        QVERIFY(target);
+
+        dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+
+        QVERIFY(target);
+        QCOMPARE(target->label(), source.label());
+        QCOMPARE(target->documentation(), source.documentation());
+
+        dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+
+        QVERIFY(&target_real);
+        QCOMPARE((double)source, (double)(target_real));
+        QCOMPARE(source.min(), target_real.min());
+        QCOMPARE(source.max(), target_real.max());
+        QCOMPARE(source.decimals(), target_real.decimals());
+    }
+    {
+        QVariantHash map;
+        map["type"] = "dtkCoreParameterSimple<std::string>";
+        map["label"] = "string_simple";
+        map["doc"] = "Test of simple parameter with std::string";
+        map["value"] = "Toto";
+
+        auto *target = dtkCoreParameter::create(map);
+        QVERIFY(target);
+    }
 }
 
 void dtkCoreParameterTestCase::testLabel(void)
@@ -316,6 +355,12 @@ void dtkCoreParameterTestCase::testVariant(void)
     v = r.variant();                  // r is out of range
     por.setValue(v);
 
+    dtkCoreParameter *pp = &por;
+    auto vv = dtk::variantFromValue(pp);
+
+    dtk::d_real *pp_from_vv = vv.value<dtk::d_real *>();
+
+    QCOMPARE(*pp_from_vv, por);
 }
 
 void dtkCoreParameterTestCase::testCoreParameter(void)
@@ -870,33 +915,6 @@ void dtkCoreParameterTestCase::testText(void)
 
 }
 
-void dtkCoreParameterTestCase::testCreation(void)
-{
-    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
-
-    QVariantHash map;
-    map["type"] = QMetaType::typeName(qMetaTypeId<dtk::d_real>());
-    map["label"] = source.label();
-    map["doc"] = source.documentation();
-    map["value"] = source.value();
-    map["min"] = source.min();
-    map["max"] = source.max();
-
-    auto *target = dtkCoreParameter::create(map);
-
-    QVERIFY(target);
-    QCOMPARE(target->label(), source.label());
-    QCOMPARE(target->documentation(), source.documentation());
-
-    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
-
-    QVERIFY(&target_real);
-    QCOMPARE((double)source, (double)(target_real));
-    QCOMPARE(source.min(), target_real.min());
-    QCOMPARE(source.max(), target_real.max());
-    QCOMPARE(source.decimals(), target_real.decimals());
-}
-
 void dtkCoreParameterTestCase::testRange(void)
 {
     dtk::d_range_uint::range values_ui = {0, 255};
@@ -990,6 +1008,8 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         auto res = dtk::core::readParameters(json_file);
         QCOMPARE(res.count() , 6);
 
+        QCOMPARE(res["toto"]->uid() , QString("toto"));
+
         QCOMPARE(res["hyp"]->label() , QString("Porosity Model"));
         QCOMPARE(dtk::d_int(res["hyp"]->variant()).value(), 2);
 
@@ -1007,40 +1027,40 @@ void dtkCoreParameterTestCase::testReadParameters(void)
 void dtkCoreParameterTestCase::testToVariantHash(void)
 {
     {
-    dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
+        dtk::d_real source("intensity", 3.14159, -1, 4, "Intensity of the light");
 
-    auto *target = dtkCoreParameter::create(source.toVariantHash());
+        auto *target = dtkCoreParameter::create(source.toVariantHash());
 
-    QVERIFY(target);
-    QCOMPARE(target->label(), source.label());
-    QCOMPARE(target->documentation(), source.documentation());
+        QVERIFY(target);
+        QCOMPARE(target->label(), source.label());
+        QCOMPARE(target->documentation(), source.documentation());
 
-    dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
+        dtk::d_real& target_real = dynamic_cast<dtk::d_real&>(*target);
 
-    QVERIFY(&target_real);
-    QCOMPARE((double)source, (double)(target_real));
-    QCOMPARE(source.min(), target_real.min());
-    QCOMPARE(source.max(), target_real.max());
-    QCOMPARE(source.decimals(), target_real.decimals());
+        QVERIFY(&target_real);
+        QCOMPARE((double)source, (double)(target_real));
+        QCOMPARE(source.min(), target_real.min());
+        QCOMPARE(source.max(), target_real.max());
+        QCOMPARE(source.decimals(), target_real.decimals());
     }
     {
-    QStringList c_types; c_types << "Ganglion" << "CNS";
+        QStringList c_types; c_types << "Ganglion" << "CNS";
 
-    dtk::d_inliststring source("cell type", "", c_types, "Select the cell type");
+        dtk::d_inliststring source("cell type", "", c_types, "Select the cell type");
 
-    dtk::d_inliststring *target = dynamic_cast<dtk::d_inliststring*>(dtkCoreParameter::create(source.toVariantHash()));
+        dtk::d_inliststring *target = dynamic_cast<dtk::d_inliststring*>(dtkCoreParameter::create(source.toVariantHash()));
 
-    QVERIFY(target);
-    QCOMPARE(target->label(), source.label());
-    QCOMPARE(target->valueIndex(), source.valueIndex());
-    QCOMPARE(target->values(), source.values());
-    QCOMPARE(target->documentation(), source.documentation());
+        QVERIFY(target);
+        QCOMPARE(target->label(), source.label());
+        QCOMPARE(target->valueIndex(), source.valueIndex());
+        QCOMPARE(target->values(), source.values());
+        QCOMPARE(target->documentation(), source.documentation());
 
-    dtk::d_inliststring& target_inlist = dynamic_cast<dtk::d_inliststring&>(*target);
+        dtk::d_inliststring& target_inlist = dynamic_cast<dtk::d_inliststring&>(*target);
 
-    QVERIFY(&target_inlist);
-    QCOMPARE(source.values(), target_inlist.values());
-    QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
+        QVERIFY(&target_inlist);
+        QCOMPARE(source.values(), target_inlist.values());
+        QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
     }
 }
 

@@ -4,7 +4,42 @@
 #include "dtkCoreMetaType.h"
 
 // ///////////////////////////////////////////////////////////////////
-//
+// MetaType covariance
+// ///////////////////////////////////////////////////////////////////
+
+namespace dtk {
+
+    namespace detail
+    {
+        // Custom fallback to create QVariant from dtkCoreParameter
+        template <typename T>
+        struct variant_handler<T, dtk::is_core_parameter<T>, std::enable_if_t<!std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(const T& t) {
+                int class_type = QMetaType::type(qPrintable(t.typeName()));
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t);
+            }
+        };
+
+        template <typename T>
+        struct variant_handler<T, dtk::is_core_parameter<T>, std::enable_if_t<std::is_pointer<T>::value>>
+        {
+            static QVariant fromValue(T const & t) {
+                int class_type = QMetaType::type(qPrintable(t->typeName() + "*"));
+                if (class_type == QMetaType::UnknownType) {
+                    return QVariant::fromValue(t);
+                }
+                return QVariant(class_type, &t, 1);
+            }
+        };
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
+// dtkCoreParameter
 // ///////////////////////////////////////////////////////////////////
 
 template <typename F>
@@ -40,8 +75,22 @@ inline QMetaObject::Connection dtkCoreParameter::connectFail(F slot)
     return c;
 }
 
+template <typename T>
+inline int dtkCoreParameter::registerToMetaType(void)
+{
+    auto type = qMetaTypeId<T>();
+    auto from = qMetaTypeId<T *>();
+    auto to = qMetaTypeId<dtkCoreParameter *>();
+    if (!QMetaType::hasRegisteredConverterFunction(from, to)) {
+        QMetaType::registerConverter<T *, dtkCoreParameter *>();
+        QMetaType::registerDebugStreamOperator<T>();
+        qRegisterMetaTypeStreamOperators<T>(QMetaType::typeName(type));
+    }
+    return type;
+}
+
 // ///////////////////////////////////////////////////////////////////
-//
+// dtkCoreParameterBase
 // ///////////////////////////////////////////////////////////////////
 
 template <typename Derive>
@@ -54,6 +103,12 @@ template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const dtkCoreParameterBase& o) : dtkCoreParameter(o)
 {
 
+}
+
+template <typename Derive>
+inline QString dtkCoreParameterBase<Derive>::typeName(void) const
+{
+    return QMetaType::typeName(qMetaTypeId<Derive>());
 }
 
 template <typename Derive>
@@ -119,10 +174,8 @@ inline void dtkCoreParameterBase<Derive>::copyAndShare(const QVariant& v)
 template <typename Derive>
 inline QVariantHash dtkCoreParameterBase<Derive>::toVariantHash(void) const
 {
-    using derive_type = Derive;
-
     QVariantHash hash;
-    auto type_name = QMetaType::typeName(qMetaTypeId<derive_type>());
+    auto type_name = QMetaType::typeName(qMetaTypeId<Derive>());
     hash.insert("type", type_name);
     hash.insert("label", m_label);
     hash.insert("doc", m_doc);
@@ -1182,8 +1235,8 @@ inline QDebug operator << (QDebug dbg, dtkCoreParameterInList<T> p)
 {
     const bool old_setting = dbg.autoInsertSpaces();
     dbg.nospace() << p.variant().typeName() << " : { ";
-    dbg.nospace() << "label" << p.label() << ", "
-                  << "value_index" << p.valueIndex() << ", "
+    dbg.nospace() << "label " << p.label() << ", "
+                  << "value_index " << p.valueIndex() << ", "
                   << "values [";
     for (int i = 0; i < p.values().size(); ++i) {
         if (i)
@@ -1206,7 +1259,6 @@ template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     if (t[0] <= t[1]) {
-        //qDebug() << Q_FUNC_INFO << t[0] << t[1] << m_bounds[0] << m_bounds[1];
         m_val = t;
 
     } else {

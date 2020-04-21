@@ -16,6 +16,8 @@ private slots:
     void init(void);
 
 private slots:
+    void testRegistration(void);
+    void testCreation(void);
     void testLabel(void);
     void testDocumentation(void);
     void testValue(void);
@@ -29,7 +31,6 @@ private slots:
     void testBoolean(void);
     void testConnection(void);
     void testText(void);
-    void testCreation(void);
     void testRange(void);
     void testFile(void);
     void testReadParameters(void);
