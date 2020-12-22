@@ -130,7 +130,9 @@ if(ZLIB_FOUND)
   set(DTK_HAVE_ZLIB "YES")
 endif(ZLIB_FOUND)
 
-find_package(dtkLog REQUIRED)
+if(NOT TARGET dtkLog)
+  find_package(dtkLog REQUIRED)
+endif()
 
 ## ###################################################################
 ## Input
