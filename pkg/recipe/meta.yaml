@@ -41,11 +41,11 @@ requirements:
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
   host:
-    - dtk-log >=2.2.0
+    - dtk-log >=2.3.0
     - qt >=5.9.0
 
   run:
-    - dtk-log >=2.2.0
+    - dtk-log >=2.3.0
     - qt >=5.9.7
 
 about:
