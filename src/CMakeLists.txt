@@ -21,7 +21,7 @@ add_subdirectory(dtkCoreRuntime)
 ## Target export
 ## #################################################################
 
-export(EXPORT layer-targets-core
+export(EXPORT layer-targets-dtkCore
   FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 ######################################################################

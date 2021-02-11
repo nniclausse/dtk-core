@@ -98,7 +98,7 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} EXPORT layer-targets-core-layer-test
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets-dtkCoreLayerTest
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -136,10 +136,10 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
-export(EXPORT layer-targets-core-layer-test
+export(EXPORT layer-targets-dtkCoreLayerTest
   FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-install(EXPORT layer-targets-core-layer-test
+install(EXPORT layer-targets-dtkCoreLayerTest
   FILE ${PROJECT_NAME}Targets.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 

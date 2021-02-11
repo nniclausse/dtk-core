@@ -81,7 +81,7 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} EXPORT layer-targets-core
+install(TARGETS ${PROJECT_NAME} EXPORT layer-targets-dtkCore
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
