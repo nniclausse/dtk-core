@@ -83,7 +83,7 @@ DTKCORE_EXPORT QDataStream& operator>>(QDataStream&, std::string&);
 #include <array>
 
 template <typename T, std::size_t N>
-struct QMetaTypeId<std::array<T,N>>
+struct QMetaTypeId<std::array<T,N> >
 {
     enum {
         Defined = QMetaTypeId2<T>::Defined
@@ -105,7 +105,7 @@ struct QMetaTypeId<std::array<T,N>>
             .append(',')
             .append(nName, nNameLen);
         typeName.append('>');
-        const int newId = qRegisterNormalizedMetaType<std::array<T,N>>(
+        const int newId = qRegisterNormalizedMetaType<std::array<T,N> >(
                         typeName,
                         reinterpret_cast<std::array<T,N> *>(quintptr(-1)));
         metatype_id.storeRelease(newId);
@@ -114,7 +114,7 @@ struct QMetaTypeId<std::array<T,N>>
 };
 namespace QtPrivate {
     template<typename T, std::size_t N>
-    struct IsSequentialContainer<std::array<T,N>>
+    struct IsSequentialContainer<std::array<T,N> >
     {
         enum { Value = true };
     };

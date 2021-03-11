@@ -75,31 +75,31 @@ inline QVariant dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::vari
 template <typename T>
 inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::assign(const void *t)
 {
-    dtk::assign(*it, *static_cast<const container_value_type *>(t));
+    ::dtk::assign(*it, *static_cast<const container_value_type *>(t));
 }
 
 template <typename T>
 inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::addAssign(const void *t)
 {
-    dtk::addAssign(*it, *static_cast<const container_value_type *>(t));
+    ::dtk::addAssign(*it, *static_cast<const container_value_type *>(t));
 }
 
 template <typename T>
 inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::subAssign(const void *t)
 {
-    dtk::subAssign(*it, *static_cast<const container_value_type *>(t));
+    ::dtk::subAssign(*it, *static_cast<const container_value_type *>(t));
 }
 
 template <typename T>
 inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::mulAssign(const void *t)
 {
-    dtk::mulAssign(*it, *static_cast<const container_value_type *>(t));
+    ::dtk::mulAssign(*it, *static_cast<const container_value_type *>(t));
 }
 
 template <typename T>
 inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::iterator::divAssign(const void *t)
 {
-    dtk::divAssign(*it, *static_cast<const container_value_type *>(t));
+    ::dtk::divAssign(*it, *static_cast<const container_value_type *>(t));
 }
 
 template <typename T>
@@ -205,13 +205,13 @@ inline QString dtkCoreMetaContainerSequentialHandlerTemplate<T>::description(voi
 template <typename T>
 inline bool dtkCoreMetaContainerSequentialHandlerTemplate<T>::hasBiDirectionalIterator(void) const
 {
-    return dtk::is_bidirectional<typename T::iterator>::value;
+    return ::dtk::is_bidirectional<typename T::iterator>::value;
 }
 
 template <typename T>
 inline bool dtkCoreMetaContainerSequentialHandlerTemplate<T>::hasRandomAccessIterator(void) const
 {
-    return dtk::is_random_access<typename T::iterator>::value;
+    return ::dtk::is_random_access<typename T::iterator>::value;
 }
 
 template <typename T>
@@ -239,13 +239,13 @@ inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::reserve(long long 
 }
 
 template <typename T> template <typename U>
-inline dtk::enable_reserve<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::reserve_impl(long long size)
+inline ::dtk::enable_reserve<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::reserve_impl(long long size)
 {
     m_container->reserve(size);
 }
 
 template <typename T> template <typename U>
-inline dtk::disable_reserve<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::reserve_impl(long long)
+inline ::dtk::disable_reserve<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::reserve_impl(long long)
 {
     dtkTrace() << Q_FUNC_INFO << "This type of container does not support reserve operation.";
 }
@@ -257,13 +257,13 @@ inline void dtkCoreMetaContainerSequentialHandlerTemplate<T>::resize(long long s
 }
 
 template <typename T> template <typename U>
-inline dtk::enable_resize<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::resize_impl(long long size)
+inline ::dtk::enable_resize<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::resize_impl(long long size)
 {
     m_container->resize(size);
 }
 
 template <typename T> template <typename U>
-inline dtk::disable_resize<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::resize_impl(long long)
+inline ::dtk::disable_resize<U> dtkCoreMetaContainerSequentialHandlerTemplate<T>::resize_impl(long long)
 {
     dtkTrace() << Q_FUNC_INFO << "This type of container does not support resize operation.";
 }
@@ -391,17 +391,19 @@ namespace dtk
     // Registration of the above converter to the QMetaType system
     namespace detail
     {
-        template <typename T>
-        std::enable_if_t<!dtk::is_container_value_type_meta_type<T>::value, bool> register_converter_to_meta_container_sequential_impl(int)
+        template <typename T,
+          std::enable_if_t<!::dtk::is_container_value_type_meta_type<T>::value, bool> =0>
+		  bool register_converter_to_meta_container_sequential_impl(int)
         {
             return false;
         }
 
-        template <typename T>
-        std::enable_if_t<dtk::is_container_value_type_meta_type<T>::value, bool> register_converter_to_meta_container_sequential_impl(int id)
+        template <typename T,
+          std::enable_if_t<::dtk::is_container_value_type_meta_type<T>::value, bool> =0>
+		  bool register_converter_to_meta_container_sequential_impl(int id)
         {
             using handler = dtkCoreMetaContainerSequentialHandler;
-            using converter = dtk::converterToMetaContainerSequential<T>;
+            using converter = ::dtk::converterToMetaContainerSequential<T>;
 
             const int toId = qMetaTypeId<handler *>();
 
@@ -412,14 +414,16 @@ namespace dtk
             return true;
         }
 
-        template <typename T>
-        std::enable_if_t<!dtk::is_sequential_container_pointer<T>::value, bool> register_converter_to_meta_container_sequential(int)
+        template <typename T,
+          std::enable_if_t<!::dtk::is_sequential_container_pointer<T>::value, bool> =0>
+		bool register_converter_to_meta_container_sequential(int)
         {
             return false;
         }
 
-        template <typename T>
-        std::enable_if_t<dtk::is_sequential_container_pointer<T>::value, bool> register_converter_to_meta_container_sequential(int id)
+        template <typename T,
+          std::enable_if_t<::dtk::is_sequential_container_pointer<T>::value, bool> =0>
+		bool register_converter_to_meta_container_sequential(int id)
         {
             return register_converter_to_meta_container_sequential_impl<T>(id);
         }

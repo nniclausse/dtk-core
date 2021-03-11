@@ -112,6 +112,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 
 if(DTK_HAVE_ZLIB)
   target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES})
+  target_include_directories(${PROJECT_NAME} PUBLIC ${ZLIB_INCLUDE_DIR})
 endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
