@@ -18,6 +18,12 @@ cmake_minimum_required(VERSION 3.6.0)
 
 project(dtkCore)
 
+## #############################################################################
+## Define unique target name
+## #############################################################################
+
+set(LAYER_TARGETS ${PROJECT_NAME}-targets)
+
 ## ###################################################################
 ## cmake modules folder
 ## ###################################################################
@@ -126,11 +132,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(DTK_HAVE_ZLIB "NO")
 find_package(ZLIB QUIET)
+add_library(ZLIB_INTERFACE INTERFACE)
 if(ZLIB_FOUND)
   set(DTK_HAVE_ZLIB "YES")
+  target_include_directories(ZLIB_INTERFACE INTERFACE ${ZLIB_INCLUDE_DIR})
+  target_link_libraries(ZLIB_INTERFACE INTERFACE ${ZLIB_LIBRARIES})
 endif(ZLIB_FOUND)
 
-find_package(dtkLog REQUIRED)
+if(NOT TARGET dtkLog)
+  find_package(dtkLog REQUIRED)
+endif(NOT TARGET dtkLog)
 
 ## ###################################################################
 ## Input
@@ -172,7 +183,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/to_install/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
-install(EXPORT layer-targets
+install(EXPORT ${LAYER_TARGETS}
   FILE ${PROJECT_NAME}Targets.cmake
   DESTINATION ${${PROJECT_NAME}_CMAKE_INSTALL_DIR})
 
