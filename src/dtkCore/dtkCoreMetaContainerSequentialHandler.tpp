@@ -391,16 +391,16 @@ namespace dtk
     // Registration of the above converter to the QMetaType system
     namespace detail
     {
-        template <typename T,
-          std::enable_if_t<!::dtk::is_container_value_type_meta_type<T>::value, int> = 0 >
-        bool register_converter_to_meta_container_sequential_impl(int)
+        template <typename T>
+        std::enable_if_t<!::dtk::is_container_value_type_meta_type<T>::value, bool>
+        register_converter_to_meta_container_sequential_impl(int)
         {
             return false;
         }
 
-        template <typename T,
-          std::enable_if_t<::dtk::is_container_value_type_meta_type<T>::value, int> = 0 >
-        bool register_converter_to_meta_container_sequential_impl(int id)
+        template <typename T>
+        std::enable_if_t<::dtk::is_container_value_type_meta_type<T>::value, bool>
+        register_converter_to_meta_container_sequential_impl(int id)
         {
             using handler = dtkCoreMetaContainerSequentialHandler;
             using converter = ::dtk::converterToMetaContainerSequential<T>;
@@ -414,16 +414,16 @@ namespace dtk
             return true;
         }
 
-        template <typename T,
-          std::enable_if_t<!::dtk::is_sequential_container_pointer<T>::value, int> = 0 >
-        bool register_converter_to_meta_container_sequential(int)
+        template <typename T>
+        std::enable_if_t<!::dtk::is_sequential_container_pointer<T>::value, bool>
+        register_converter_to_meta_container_sequential(int)
         {
             return false;
         }
 
-        template <typename T,
-          std::enable_if_t<::dtk::is_sequential_container_pointer<T>::value, int> = 0 >
-        bool register_converter_to_meta_container_sequential(int id)
+        template <typename T>
+        std::enable_if_t<::dtk::is_sequential_container_pointer<T>::value, bool>
+        register_converter_to_meta_container_sequential(int id)
         {
             return register_converter_to_meta_container_sequential_impl<T>(id);
         }
