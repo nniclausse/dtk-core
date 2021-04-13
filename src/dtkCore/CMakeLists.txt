@@ -110,10 +110,9 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 
-if(DTK_HAVE_ZLIB)
-  target_link_libraries(${PROJECT_NAME} PUBLIC ${ZLIB_LIBRARIES})
-  target_include_directories(${PROJECT_NAME} PUBLIC ${ZLIB_INCLUDE_DIR})
-endif(DTK_HAVE_ZLIB)
+#if(DTK_HAVE_ZLIB)
+  target_link_libraries(${PROJECT_NAME} PRIVATE ZLIB_INTERFACE)
+#endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
 
@@ -159,7 +158,7 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 ## Install rules - targets
 ## ###################################################################
 
-install(TARGETS ${PROJECT_NAME} EXPORT layer-targets-dtkCore
+install(TARGETS ${PROJECT_NAME} EXPORT ${LAYER_TARGETS}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
