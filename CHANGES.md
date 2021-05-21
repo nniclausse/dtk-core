@@ -1,4 +1,7 @@
 # ChangeLog
+## version 2.9.1 - 2021-05-21
+ - update dtk log to 2.4.0
+ - update CMake
 
 ## version 2.9.0 - 2020-04-21
 - remove advanced/setAdvaced methods (moved in dtkWidgets)
