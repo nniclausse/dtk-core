@@ -34,6 +34,7 @@ private slots:
     void testRange(void);
     void testFile(void);
     void testReadParameters(void);
+    void testReadParametersResources(void);
     void testToVariantHash(void);
 
 private slots:

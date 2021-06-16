@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="params.json">../resources/parameters_def.json</file>
+  </qresource>
+</RCC>
+

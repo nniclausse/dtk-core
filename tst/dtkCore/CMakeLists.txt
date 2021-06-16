@@ -39,6 +39,9 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreParameterTest.cpp
   dtkCorePluginFactoryTest.cpp)
 
+set(${PROJECT_NAME}_SOURCES_QRC dtkCore.qrc)
+
+set_property( SOURCE qrc_dtkCore.cpp PROPERTY SKIP_AUTOMOC ON)
 ## ###################################################################
 ## Input - introspected
 ## ###################################################################
@@ -51,10 +54,13 @@ create_test_sourcelist(
 ## ###################################################################
 ## Build rules
 ## ###################################################################
+qt5_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
 
 add_executable(${PROJECT_NAME}
   ${${PROJECT_NAME}_SOURCES_TST}
-  ${${PROJECT_NAME}_SOURCES})
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_SOURCES_RCC}
+)
 
 ## ###################################################################
 ## Link rules
