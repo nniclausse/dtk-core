@@ -54,6 +54,7 @@ void dtkCoreParameterTestCase::testRegistration(void)
     QVERIFY(QMetaType::type("dtk::d_range_real") != QMetaType::UnknownType);
     QVERIFY(QMetaType::type("dtk::d_inliststring") != QMetaType::UnknownType);
     QVERIFY(QMetaType::type("dtkCoreParameterSimple<std::string>") != QMetaType::UnknownType);
+    QVERIFY(QMetaType::type("dtk::d_inliststringlist") != QMetaType::UnknownType);
 }
 
 void dtkCoreParameterTestCase::testCreation(void)
@@ -953,6 +954,25 @@ void dtkCoreParameterTestCase::testRange(void)
     range_r2.setValue( {a, b } );
 }
 
+void dtkCoreParameterTestCase::testStringList(void)
+{
+    dtk::d_inliststringlist param_list("name", {"aa", "bb"}, {"aa", "bb", "cc", "dd"});
+    QVERIFY(param_list.label() == "name");
+
+    QCOMPARE(param_list.value().size(), 2);
+    QCOMPARE(param_list.values().size(), 4);
+
+    param_list.addValue("zz");
+    QCOMPARE(param_list.value().size(), 2);
+    QCOMPARE(param_list.values().size(), 5);
+
+
+    param_list.removeValue("aa");
+    QCOMPARE(param_list.value().size(), 1);
+    QCOMPARE(param_list.values().size(), 4);
+
+}
+
 void dtkCoreParameterTestCase::testFile(void)
 {
     dtk::d_path source("file", "/pim/pam/poum/pipo.jpg", {"*.jpg", "*.png"},  "File parameter example");
@@ -1066,7 +1086,7 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
 
     }
-    
+
 }
 
 void dtkCoreParameterTestCase::testToVariantHash(void)

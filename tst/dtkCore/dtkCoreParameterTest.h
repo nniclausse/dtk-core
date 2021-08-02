@@ -32,6 +32,7 @@ private slots:
     void testConnection(void);
     void testText(void);
     void testRange(void);
+    void testStringList(void);
     void testFile(void);
     void testReadParameters(void);
     void testReadParametersResources(void);
