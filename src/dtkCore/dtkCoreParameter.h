@@ -102,6 +102,8 @@ public:
     virtual QVariant variant(void) const = 0;
     virtual QVariantHash toVariantHash(void) const = 0;
 
+    dtkCoreParameter *castToTop(void);
+
 #pragma mark - Connection management
 
     void block(bool);
@@ -172,6 +174,7 @@ public:
     using self_type = dtkCoreParameterSimple<value_type>;
     using base_type = dtkCoreParameterBase<self_type>;
 
+    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -228,6 +231,7 @@ public:
     using self_type = dtkCoreParameterNumeric<value_type>;
     using base_type = dtkCoreParameterBase<self_type>;
 
+    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -338,6 +342,7 @@ public:
     using self_type = dtkCoreParameterInList<value_type>;
     using base_type = dtkCoreParameterBase<self_type>;
 
+    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -401,6 +406,7 @@ public:
     using self_type = dtkCoreParameterInListStringList;
     using base_type = dtkCoreParameterBase<self_type>;
 
+    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
@@ -459,6 +465,7 @@ public:
     using self_type = dtkCoreParameterRange<value_type>;
     using base_type = dtkCoreParameterBase<self_type>;
 
+    using dtkCoreParameter::castToTop;
     using dtkCoreParameter::documentation;
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;

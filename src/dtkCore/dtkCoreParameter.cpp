@@ -124,6 +124,11 @@ QString dtkCoreParameter::documentation(void) const
     return this->m_doc;
 }
 
+dtkCoreParameter *dtkCoreParameter::castToTop(void)
+{
+    return dynamic_cast<dtkCoreParameter *>(this);
+}
+
 void dtkCoreParameter::block(bool b)
 {
     if (m_connection)
