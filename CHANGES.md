@@ -1,4 +1,9 @@
 # ChangeLog
+
+## version 2.10.0 - 2021-08-05
+ - add parameter d_liststringlist
+ - add method to remove a connection from a parameter
+
 ## version 2.9.1 - 2021-05-21
  - update dtk log to 2.4.0
  - update CMake
