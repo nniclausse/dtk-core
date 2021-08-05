@@ -110,6 +110,7 @@ public:
     void sync(void);
     template <typename F> QMetaObject::Connection connect(F);
     void disconnect(void);
+    void disconnect(QMetaObject::Connection);
 
     void syncFail(void);
     template <typename F> QMetaObject::Connection connectFail(F);
