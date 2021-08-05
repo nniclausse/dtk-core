@@ -159,6 +159,14 @@ void dtkCoreParameter::disconnect(void)
     }
 }
 
+void dtkCoreParameter::disconnect(QMetaObject::Connection c)
+{
+    QObject::disconnect(c);
+    if(m_connection) {
+        m_connection->value_list.removeOne(c);
+    }
+}
+
 void dtkCoreParameter::syncFail(void)
 {
     if (m_connection)
