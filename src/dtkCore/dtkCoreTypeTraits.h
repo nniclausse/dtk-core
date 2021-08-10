@@ -30,7 +30,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_qobject_impl : std::is_base_of<QObject, std::remove_pointer_t<std::decay_t<T> > >
+        struct is_qobject_impl : std::is_base_of<QObject, std::remove_pointer_t<std::decay_t<T>>>
         {
         };
     }
@@ -42,7 +42,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_instantiable_impl : std::conditional_t<!std::is_abstract<std::remove_pointer_t<std::decay_t<T> > >::value, std::is_constructible<std::remove_pointer_t<std::decay_t<T> > >, std::false_type>
+        struct is_instantiable_impl : std::conditional_t<!std::is_abstract<std::remove_pointer_t<std::decay_t<T>>>::value, std::is_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
         {
         };
     }
@@ -55,7 +55,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_clonable_impl : std::conditional_t<::dtk::is_instantiable<T>::value, std::is_copy_constructible<std::remove_pointer_t<std::decay_t<T> > >, std::false_type>
+        struct is_clonable_impl : std::conditional_t<::dtk::is_instantiable<T>::value, std::is_copy_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
         {
         };
     }
@@ -68,7 +68,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_copyable_impl : std::is_copy_assignable<std::remove_pointer_t<std::decay_t<T> > >
+        struct is_copyable_impl : std::is_copy_assignable<std::remove_pointer_t<std::decay_t<T>>>
         {
         };
     }
@@ -86,20 +86,20 @@ namespace dtk {
         };
 
         template <typename T>
-        struct is_numeric_impl<std::complex<T> > : std::is_arithmetic<T>
+        struct is_numeric_impl<std::complex<T>> : std::is_arithmetic<T>
         {
         };
     }
 
     template <typename T>
-    using is_numeric = detail::is_numeric_impl<std::remove_cv_t<T> >;
+    using is_numeric = detail::is_numeric_impl<std::remove_cv_t<T>>;
 
 
     // is_assignable : detects whether the type supports assignment operator = or not
     namespace detail
     {
         template <typename T>
-        struct is_assignable_impl : std::conditional_t<::dtk::is_numeric<T>::value, std::true_type, std::is_copy_assignable<T> >
+        struct is_assignable_impl : std::conditional_t<::dtk::is_numeric<T>::value, std::true_type, std::is_copy_assignable<T>>
         {
         };
     }
@@ -257,27 +257,27 @@ namespace dtk {
     };
 
     template <typename T>
-    struct is_resizable<QVector<T> > : std::true_type
+    struct is_resizable<QVector<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_resizable<QVarLengthArray<T> > : std::true_type
+    struct is_resizable<QVarLengthArray<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_resizable<QStack<T> > : std::true_type
+    struct is_resizable<QStack<T>> : std::true_type
     {
     };
 
     template <typename T, typename Allocator>
-    struct is_resizable<std::vector<T, Allocator> > : std::true_type
+    struct is_resizable<std::vector<T, Allocator>> : std::true_type
     {
     };
 
     template <typename T, typename Allocator>
-    struct is_resizable<std::list<T, Allocator> > : std::true_type
+    struct is_resizable<std::list<T, Allocator>> : std::true_type
     {
     };
 
@@ -295,37 +295,37 @@ namespace dtk {
     };
 
     template <typename T>
-    struct is_reservable<QVector<T> > : std::true_type
+    struct is_reservable<QVector<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_reservable<QVarLengthArray<T> > : std::true_type
+    struct is_reservable<QVarLengthArray<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_reservable<QStack<T> > : std::true_type
+    struct is_reservable<QStack<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_reservable<QList<T> > : std::true_type
+    struct is_reservable<QList<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_reservable<QQueue<T> > : std::true_type
+    struct is_reservable<QQueue<T>> : std::true_type
     {
     };
 
     template <typename T>
-    struct is_reservable<QSet<T> > : std::true_type
+    struct is_reservable<QSet<T>> : std::true_type
     {
     };
 
     template <typename T, typename Allocator>
-    struct is_reservable<std::vector<T, Allocator> > : std::true_type
+    struct is_reservable<std::vector<T, Allocator>> : std::true_type
     {
     };
 
