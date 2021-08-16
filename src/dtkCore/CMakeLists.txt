@@ -44,8 +44,22 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreParameter
   dtkCoreParameter.h
   dtkCoreParameter.tpp
+  dtkCoreParameterInList
+  dtkCoreParameterInList.h
+  dtkCoreParameterInList.tpp
+  dtkCoreParameterInListStringList
+  dtkCoreParameterInListStringList.h
+  dtkCoreParameterNumeric
+  dtkCoreParameterNumeric.h
+  dtkCoreParameterNumeric.tpp
   dtkCoreParameterPath
   dtkCoreParameterPath.h
+  dtkCoreParameterRange
+  dtkCoreParameterRange.h
+  dtkCoreParameterRange.tpp
+  dtkCoreParameterSimple
+  dtkCoreParameterSimple.h
+  dtkCoreParameterSimple.tpp
   dtkCorePlugin
   dtkCorePlugin.h
   dtkCorePluginBase
@@ -78,7 +92,12 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreObjectManager.cpp
   dtkCoreMetaContainerSequential.cpp
   dtkCoreParameter.cpp
+  dtkCoreParameterInList.cpp
+  dtkCoreParameterInListStringList.cpp
+  dtkCoreParameterNumeric.cpp
   dtkCoreParameterPath.cpp
+  dtkCoreParameterRange.cpp
+  dtkCoreParameterSimple.cpp
   dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp

@@ -6,7 +6,12 @@
 #include <dtkCoreTest>
 
 #include <dtkCore/dtkCoreParameter>
+#include <dtkCore/dtkCoreParameterInList>
+#include <dtkCore/dtkCoreParameterInListStringList>
+#include <dtkCore/dtkCoreParameterNumeric>
 #include <dtkCore/dtkCoreParameterPath>
+#include <dtkCore/dtkCoreParameterRange>
+#include <dtkCore/dtkCoreParameterSimple>
 
 #include <ciso646>
 
@@ -94,6 +99,11 @@ void dtkCoreParameterTestCase::testCreation(void)
 
         auto *target = dtkCoreParameter::create(map);
         QVERIFY(target);
+    }
+
+    {
+        dtk::d_bool b("Specific Ctor", true, "Example of specific constructor for boolean");
+        qDebug() << Q_FUNC_INFO << b;
     }
 }
 
