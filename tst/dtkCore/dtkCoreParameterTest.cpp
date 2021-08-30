@@ -930,9 +930,13 @@ void dtkCoreParameterTestCase::testRange(void)
 {
     dtk::d_range_uint::range values_ui = {0, 255};
     dtk::d_range_uint range_ui = dtk::d_range_uint( values_ui );
+    QCOMPARE(range_ui[0], 0);
+    QCOMPARE(range_ui[1], 255);
 
     dtk::d_range_int::range values_i = {-10, 10};
     dtk::d_range_int range_i = dtk::d_range_int( values_i );
+    QCOMPARE(range_i[0], -10);
+    QCOMPARE(range_i[1], 10);
 
     auto minimum = range_i.min();
     auto maximum = range_i.max();
@@ -946,22 +950,32 @@ void dtkCoreParameterTestCase::testRange(void)
 
     dtk::d_range_uchar::range values_uc = {0, 255};
     dtk::d_range_uchar range_uc = dtk::d_range_uchar( values_uc );
+    QCOMPARE(range_uc[0], 0);
+    QCOMPARE(range_uc[1], 255);
 
     dtk::d_range_char::range values_c = { 'a', 'z'};
     dtk::d_range_char range_c = dtk::d_range_char( values_c );
+    QCOMPARE(range_c[0], 'a');
+    QCOMPARE(range_c[1], 'z');
 
     dtk::d_range_real::range values_r1 = { -1.23456, 7.891011};
     dtk::d_range_real range_r1 = dtk::d_range_real( values_r1 );
+    QCOMPARE(range_r1[0], -1.23456);
+    QCOMPARE(range_r1[1], 7.891011);
 
     dtk::d_range_real::range values_r2 = { -1.23456, 7.891011};
     dtk::d_range_real range_r = dtk::d_range_real( QString("double range"), values_r2, -10.0, 10.0, QString("double range doc") );
 
     double a = 0.0;
     double b = 1.0;
-    dtk::d_range_real range_r2 = dtk::d_range_real( { a, b} );
+    dtk::d_range_real range_r2 = dtk::d_range_real({a, b});
+    QCOMPARE(range_r2[0], a);
+    QCOMPARE(range_r2[1], b);
     a = 0.1;
     b = 0.2;
-    range_r2.setValue( {a, b } );
+    range_r2.setValue({a, b});
+    QCOMPARE(range_r2[0], a);
+    QCOMPARE(range_r2[1], b);
 }
 
 void dtkCoreParameterTestCase::testStringList(void)
