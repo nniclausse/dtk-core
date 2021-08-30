@@ -392,16 +392,18 @@ namespace dtk
     namespace detail
     {
         template <typename T>
-        std::enable_if_t<!dtk::is_container_value_type_meta_type<T>::value, bool> register_converter_to_meta_container_sequential_impl(int)
+        std::enable_if_t<!::dtk::is_container_value_type_meta_type<T>::value, bool>
+        register_converter_to_meta_container_sequential_impl(int)
         {
             return false;
         }
 
         template <typename T>
-        std::enable_if_t<dtk::is_container_value_type_meta_type<T>::value, bool> register_converter_to_meta_container_sequential_impl(int id)
+        std::enable_if_t<::dtk::is_container_value_type_meta_type<T>::value, bool>
+        register_converter_to_meta_container_sequential_impl(int id)
         {
             using handler = dtkCoreMetaContainerSequentialHandler;
-            using converter = dtk::converterToMetaContainerSequential<T>;
+            using converter = ::dtk::converterToMetaContainerSequential<T>;
 
             const int toId = qMetaTypeId<handler *>();
 
@@ -413,13 +415,15 @@ namespace dtk
         }
 
         template <typename T>
-        std::enable_if_t<!dtk::is_sequential_container_pointer<T>::value, bool> register_converter_to_meta_container_sequential(int)
+        std::enable_if_t<!::dtk::is_sequential_container_pointer<T>::value, bool>
+        register_converter_to_meta_container_sequential(int)
         {
             return false;
         }
 
         template <typename T>
-        std::enable_if_t<dtk::is_sequential_container_pointer<T>::value, bool> register_converter_to_meta_container_sequential(int id)
+        std::enable_if_t<::dtk::is_sequential_container_pointer<T>::value, bool>
+        register_converter_to_meta_container_sequential(int id)
         {
             return register_converter_to_meta_container_sequential_impl<T>(id);
         }

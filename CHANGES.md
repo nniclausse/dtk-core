@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 2.11.0 - 2021-08-30
+ - add operator[] for dtkCoreParameterRange
+ - split dtkCoreParameter header
+
 ## version 2.10.0 - 2021-08-05
  - add parameter d_liststringlist
  - add method to remove a connection from a parameter

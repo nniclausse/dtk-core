@@ -55,7 +55,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_clonable_impl : std::conditional_t<dtk::is_instantiable<T>::value, std::is_copy_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
+        struct is_clonable_impl : std::conditional_t<::dtk::is_instantiable<T>::value, std::is_copy_constructible<std::remove_pointer_t<std::decay_t<T>>>, std::false_type>
         {
         };
     }
@@ -99,7 +99,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_assignable_impl : std::conditional_t<dtk::is_numeric<T>::value, std::true_type, std::is_copy_assignable<T>>
+        struct is_assignable_impl : std::conditional_t<::dtk::is_numeric<T>::value, std::true_type, std::is_copy_assignable<T>>
         {
         };
     }
@@ -118,7 +118,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_add_assignable_impl : dtk::is_numeric<T>
+        struct is_add_assignable_impl : ::dtk::is_numeric<T>
         {
         };
 
@@ -142,7 +142,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_sub_assignable_impl : dtk::is_numeric<T>
+        struct is_sub_assignable_impl : ::dtk::is_numeric<T>
         {
         };
     }
@@ -161,7 +161,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_mul_assignable_impl : dtk::is_numeric<T>
+        struct is_mul_assignable_impl : ::dtk::is_numeric<T>
         {
         };
     }
@@ -180,7 +180,7 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        struct is_div_assignable_impl : dtk::is_numeric<T>
+        struct is_div_assignable_impl : ::dtk::is_numeric<T>
         {
         };
     }

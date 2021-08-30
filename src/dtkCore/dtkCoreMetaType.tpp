@@ -46,7 +46,7 @@ namespace dtk {
         }
 
         template <typename T>
-        std::enable_if_t<std::is_pointer<T>::value && !dtk::is_instantiable<T>::value, bool> can_convert(const QList<int>& types)
+        std::enable_if_t<std::is_pointer<T>::value && !::dtk::is_instantiable<T>::value, bool> can_convert(const QList<int>& types)
         {
             using Type = std::remove_pointer_t<std::decay_t<T>>;
             int from = qMetaTypeId<Type *>();
@@ -63,7 +63,7 @@ namespace dtk {
         }
 
         template <typename T>
-        std::enable_if_t<std::is_pointer<T>::value && dtk::is_instantiable<T>::value, bool> can_convert(const QList<int>& types)
+        std::enable_if_t<std::is_pointer<T>::value && ::dtk::is_instantiable<T>::value, bool> can_convert(const QList<int>& types)
         {
             using Type = std::remove_pointer_t<std::decay_t<T>>;
             int from = qMetaTypeId<Type *>();
@@ -94,7 +94,7 @@ namespace dtk {
         if (types.empty()) {
             return true;
         }
-        return dtk::detail::can_convert<T>(types);
+        return ::dtk::detail::can_convert<T>(types);
     }
 
 
@@ -111,7 +111,7 @@ namespace dtk {
         };
 
         template <typename T>
-        struct variant_handler<T, std::enable_if_t<dtk::is_qobject<T>::value>, std::enable_if_t<!std::is_pointer<T>::value>>
+        struct variant_handler<T, std::enable_if_t<::dtk::is_qobject<T>::value>, std::enable_if_t<!std::is_pointer<T>::value>>
         {
             static QVariant fromValue(const T& t) {
                 int class_type = QMetaType::type(t.metaObject()->className());
@@ -123,7 +123,7 @@ namespace dtk {
         };
 
         template <typename T>
-        struct variant_handler<T, std::enable_if_t<dtk::is_qobject<T>::value>, std::enable_if_t<std::is_pointer<T>::value>>
+        struct variant_handler<T, std::enable_if_t<::dtk::is_qobject<T>::value>, std::enable_if_t<std::is_pointer<T>::value>>
         {
             static QVariant fromValue(const T& t) {
                 QString class_name(t->metaObject()->className());
@@ -145,7 +145,7 @@ namespace dtk {
     template <typename T>
     inline QVariant variantFromValue(const T& t)
     {
-        return dtk::detail::variant_from_value(t);
+        return ::dtk::detail::variant_from_value(t);
     }
 
     // Cloning an object by trying to downcasting as much as possible so that it avoids slicing
@@ -161,7 +161,7 @@ namespace dtk {
         };
 
         template <typename T>
-        struct clone_handler<T, std::enable_if_t<dtk::is_clonable<T>::value>>
+        struct clone_handler<T, std::enable_if_t<::dtk::is_clonable<T>::value>>
         {
             static T *clone(const T *t) {
                 using Type = std::remove_pointer_t<std::decay_t<T>>;
@@ -170,13 +170,13 @@ namespace dtk {
         };
 
         template <typename T>
-        std::enable_if_t<!dtk::is_qobject<T>::value, T *> clone(const T *t)
+        std::enable_if_t<!::dtk::is_qobject<T>::value, T *> clone(const T *t)
         {
             return clone_handler<T>::clone(t);
         }
 
         template <typename T>
-        std::enable_if_t<dtk::is_qobject<T>::value, T *> clone(const T *t)
+        std::enable_if_t<::dtk::is_qobject<T>::value, T *> clone(const T *t)
         {
             QString class_name(t->metaObject()->className());
             int class_type = QMetaType::type(qPrintable(class_name));
@@ -190,7 +190,7 @@ namespace dtk {
     template <typename T>
     inline T *clone(const T *t)
     {
-        return dtk::detail::clone(t);
+        return ::dtk::detail::clone(t);
     }
 
 
@@ -208,7 +208,7 @@ namespace dtk {
         };
 
         template <typename T>
-        struct copy_handler<T, std::enable_if_t<dtk::is_copyable<T>::value>>
+        struct copy_handler<T, std::enable_if_t<::dtk::is_copyable<T>::value>>
         {
             static bool copy(const T *s, T *t) {
                 *t = *s;
@@ -217,13 +217,13 @@ namespace dtk {
         };
 
         template <typename T>
-        std::enable_if_t<!dtk::is_qobject<T>::value, bool> copy(const T *s, T *t)
+        std::enable_if_t<!::dtk::is_qobject<T>::value, bool> copy(const T *s, T *t)
         {
             return copy_handler<T>::copy(s, t);
         }
 
         template <typename T>
-        std::enable_if_t<dtk::is_qobject<T>::value, bool> copy(const T *s, T *t)
+        std::enable_if_t<::dtk::is_qobject<T>::value, bool> copy(const T *s, T *t)
         {
             QString t_class_name(t->metaObject()->className());
             int t_class_type = QMetaType::type(qPrintable(t_class_name));
@@ -243,7 +243,7 @@ namespace dtk {
     template <typename T>
     inline bool copy(const T *s, T *t)
     {
-        return dtk::detail::copy(s, t);
+        return ::dtk::detail::copy(s, t);
     }
 
 
@@ -251,13 +251,13 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        dtk::enable_assignment<T> assign(T& lhs, const T& rhs)
+        ::dtk::enable_assignment<T> assign(T& lhs, const T& rhs)
         {
             lhs = rhs;
         }
 
         template <typename T>
-        dtk::disable_assignment<T> assign(T&, const T&)
+        ::dtk::disable_assignment<T> assign(T&, const T&)
         {
             dtkTrace() << Q_FUNC_INFO << "Current type does not support assignment";
         }
@@ -266,7 +266,7 @@ namespace dtk {
     template <typename T>
     inline void assign(T& lhs, const T& rhs)
     {
-        dtk::detail::assign(lhs, rhs);
+        ::dtk::detail::assign(lhs, rhs);
     }
 
 
@@ -274,13 +274,13 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        dtk::enable_add_assignment<T> add_assign(T& lhs, const T& rhs)
+        ::dtk::enable_add_assignment<T> add_assign(T& lhs, const T& rhs)
         {
             lhs += rhs;
         }
 
         template <typename T>
-        dtk::disable_add_assignment<T> add_assign(T&, const T&)
+        ::dtk::disable_add_assignment<T> add_assign(T&, const T&)
         {
             dtkTrace() << Q_FUNC_INFO << "Current type does not support += operation";
         }
@@ -289,7 +289,7 @@ namespace dtk {
     template <typename T>
     inline void addAssign(T& lhs, const T& rhs)
     {
-        dtk::detail::add_assign(lhs, rhs);
+        ::dtk::detail::add_assign(lhs, rhs);
     }
 
 
@@ -297,13 +297,13 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        dtk::enable_sub_assignment<T> sub_assign(T& lhs, const T& rhs)
+        ::dtk::enable_sub_assignment<T> sub_assign(T& lhs, const T& rhs)
         {
             lhs -= rhs;
         }
 
         template <typename T>
-        dtk::disable_sub_assignment<T> sub_assign(T&, const T&)
+        ::dtk::disable_sub_assignment<T> sub_assign(T&, const T&)
         {
             dtkTrace() << Q_FUNC_INFO << "Current type does not support -= operation";
         }
@@ -312,7 +312,7 @@ namespace dtk {
     template <typename T>
     inline void subAssign(T& lhs, const T& rhs)
     {
-        dtk::detail::sub_assign(lhs, rhs);
+        ::dtk::detail::sub_assign(lhs, rhs);
     }
 
 
@@ -320,13 +320,13 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        dtk::enable_mul_assignment<T> mul_assign(T& lhs, const T& rhs)
+        ::dtk::enable_mul_assignment<T> mul_assign(T& lhs, const T& rhs)
         {
             lhs *= rhs;
         }
 
         template <typename T>
-        dtk::disable_mul_assignment<T> mul_assign(T&, const T&)
+        ::dtk::disable_mul_assignment<T> mul_assign(T&, const T&)
         {
             dtkTrace() << Q_FUNC_INFO << "Current type does not support *= operation.";
         }
@@ -335,7 +335,7 @@ namespace dtk {
     template <typename T>
     inline void mulAssign(T& lhs, const T& rhs)
     {
-        dtk::detail::mul_assign(lhs, rhs);
+        ::dtk::detail::mul_assign(lhs, rhs);
     }
 
 
@@ -343,13 +343,13 @@ namespace dtk {
     namespace detail
     {
         template <typename T>
-        dtk::enable_div_assignment<T> div_assign(T& lhs, const T& rhs)
+        ::dtk::enable_div_assignment<T> div_assign(T& lhs, const T& rhs)
         {
             lhs /= rhs;
         }
 
         template <typename T>
-        dtk::disable_div_assignment<T> div_assign(T&, const T&)
+        ::dtk::disable_div_assignment<T> div_assign(T&, const T&)
         {
             dtkTrace() << Q_FUNC_INFO << "Current type does not support /= operation.";
         }
@@ -358,7 +358,7 @@ namespace dtk {
     template <typename T>
     inline void divAssign(T& lhs, const T& rhs)
     {
-        dtk::detail::div_assign(lhs, rhs);
+        ::dtk::detail::div_assign(lhs, rhs);
     }
 }
 
@@ -391,7 +391,7 @@ inline QDataStream& operator << (QDataStream& s, const QList<T *>& l)
     s << quint32(l.size());
 
     for (int i = 0; i < l.size(); ++i) {
-        s << dtk::variantFromValue(l.at(i));
+        s << ::dtk::variantFromValue(l.at(i));
     }
     return s;
 }
@@ -420,7 +420,7 @@ inline QDataStream& operator << (QDataStream& s, const QVector<T *>& v)
     s << quint32(v.size());
 
     for (typename QVector<T *>::const_iterator it = v.begin(); it != v.end(); ++it) {
-        s << dtk::variantFromValue(*it);
+        s << ::dtk::variantFromValue(*it);
     }
     return s;
 }
@@ -446,7 +446,7 @@ inline QDataStream& operator << (QDataStream& s, const std::list<T *>& l)
     s << quint32(l.size());
 
     for (typename std::list<T *>::const_iterator it = l.begin(); it != l.end(); ++it) {
-        s << dtk::variantFromValue(*it);
+        s << ::dtk::variantFromValue(*it);
     }
     return s;
 }
@@ -475,7 +475,7 @@ inline QDataStream& operator << (QDataStream& s, const std::vector<T *>& v)
     s << quint32(v.size());
 
     for (typename std::vector<T *>::const_iterator it = v.begin(); it != v.end(); ++it) {
-        s << dtk::variantFromValue(*it);
+        s << ::dtk::variantFromValue(*it);
     }
     return s;
 }
