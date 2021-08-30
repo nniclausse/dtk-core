@@ -47,6 +47,8 @@ public:
 
     const std::array<T, 2>& value(void) const;
 
+    value_type  operator[](int index) const;
+
     T min(void) const;
     T max(void) const;
 

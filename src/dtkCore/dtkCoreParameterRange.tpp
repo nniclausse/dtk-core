@@ -296,6 +296,12 @@ inline const std::array<T, 2>& dtkCoreParameterRange<T, E>::value(void) const
 }
 
 template <typename T, typename E>
+inline auto dtkCoreParameterRange<T, E>::operator[](int id) const -> value_type
+{
+    return m_val[id];
+}
+
+template <typename T, typename E>
 inline T dtkCoreParameterRange<T, E>::min(void) const
 {
     return m_bounds[0];
