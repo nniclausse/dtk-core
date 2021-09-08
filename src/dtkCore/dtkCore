@@ -16,6 +16,7 @@
 #include "dtkCoreParameterRange.h"
 #include "dtkCoreParameterSimple.h"
 #include "dtkCoreParameterObject.h"
+#include "dtkCoreParameterInListObject.h"
 #include "dtkCoreParameterNumericObject.h"
 #include "dtkCoreParameterSimpleObject.h"
 #include "dtkCorePlugin.h"

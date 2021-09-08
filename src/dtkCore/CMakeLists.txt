@@ -62,6 +62,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreParameterSimple.tpp
   dtkCoreParameterObject
   dtkCoreParameterObject.h
+  dtkCoreParameterInListObject
+  dtkCoreParameterInListObject.h
   dtkCoreParameterNumericObject
   dtkCoreParameterNumericObject.h
   dtkCoreParameterSimpleObject
@@ -105,6 +107,7 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreParameterRange.cpp
   dtkCoreParameterSimple.cpp
   dtkCoreParameterObject.cpp
+  dtkCoreParameterInListObject.cpp
   dtkCoreParameterNumericObject.cpp
   dtkCoreParameterSimpleObject.cpp
   dtkCorePlugin.cpp
