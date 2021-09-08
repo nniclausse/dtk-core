@@ -74,6 +74,37 @@ namespace dtk {
             }
             return parameters;
         }
+        bool writeParameters(const dtkCoreParameters& map, const QString& filename)
+        {
+            QJsonObject parametersObject;
+            parametersObject["contents"] = toJson(map);
+
+            QJsonDocument savedoc(parametersObject);
+
+            QFile output_file(filename);
+            if (!output_file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
+                dtkWarn() << Q_FUNC_INFO << "output file" << filename << "cannot be opened in WriteOnly mode.";
+                return false;
+            }
+
+            output_file.write(savedoc.toJson());
+            output_file.close();
+
+            return true;
+        }
+
+        QJsonObject toJson(const dtkCoreParameters& map)
+        {
+            QVariantHash target_map;
+            for (auto it = map.begin(); it != map.end(); ++it) {
+                target_map[it.key()] = QVariant(it.value()->toVariantHash());
+            }
+
+            QJsonObject parametersObject = QJsonObject::fromVariantHash(target_map);
+
+            return parametersObject;
+        }
+
     }
 }
 

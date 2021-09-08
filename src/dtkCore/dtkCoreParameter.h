@@ -47,6 +47,9 @@ namespace dtk {
 namespace dtk {
     namespace core {
         DTKCORE_EXPORT dtkCoreParameters readParameters(const QString&);
+        DTKCORE_EXPORT bool writeParameters(const dtkCoreParameters&, const QString&);
+        DTKCORE_EXPORT QJsonObject toJson(const dtkCoreParameters&);
+
     }
 }
 
