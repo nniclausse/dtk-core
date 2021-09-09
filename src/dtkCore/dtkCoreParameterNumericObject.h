@@ -12,10 +12,10 @@
 class DTKCORE_EXPORT dtkCoreParameterNumericRealObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(double value    READ value    WRITE setValue    NOTIFY valueChanged)
-    Q_PROPERTY(double max      READ max      WRITE setMax      NOTIFY maxChanged)
-    Q_PROPERTY(double min      READ min      WRITE setMin      NOTIFY minChanged)
-    Q_PROPERTY(double decimals READ decimals WRITE setDecimals NOTIFY decimalsChanged)
+    Q_PROPERTY(double value READ value    WRITE setValue    NOTIFY valueChanged)
+    Q_PROPERTY(double max   READ max      WRITE setMax      NOTIFY maxChanged)
+    Q_PROPERTY(double min   READ min      WRITE setMin      NOTIFY minChanged)
+    Q_PROPERTY(int decimals READ decimals WRITE setDecimals NOTIFY decimalsChanged)
 
 public:
      dtkCoreParameterNumericRealObject(dtkCoreParameterNumeric<double> *);
@@ -48,7 +48,7 @@ private:
 
 //
 
-class DTKCORE_EXPORT dtkCoreParameterNumericIntegerObject : public dtkCoreParameterObject
+class DTKCORE_EXPORT dtkCoreParameterNumericIntObject : public dtkCoreParameterObject
 {
     Q_OBJECT
     Q_PROPERTY(qlonglong value READ value WRITE setValue NOTIFY valueChanged)
@@ -56,8 +56,8 @@ class DTKCORE_EXPORT dtkCoreParameterNumericIntegerObject : public dtkCoreParame
     Q_PROPERTY(qlonglong min   READ min   WRITE setMin   NOTIFY minChanged)
 
 public:
-     dtkCoreParameterNumericIntegerObject(dtkCoreParameterNumeric<qlonglong> *);
-    ~dtkCoreParameterNumericIntegerObject(void);
+     dtkCoreParameterNumericIntObject(dtkCoreParameterNumeric<qlonglong> *);
+    ~dtkCoreParameterNumericIntObject(void);
 
     void setValue(qlonglong);
     qlonglong value(void) const;
@@ -78,6 +78,40 @@ public:
 
 private:
     dtkCoreParameterNumeric<qlonglong> *m_param = nullptr;
+};
+
+//
+
+class DTKCORE_EXPORT dtkCoreParameterNumericUintObject : public dtkCoreParameterObject
+{
+    Q_OBJECT
+    Q_PROPERTY(qulonglong value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(qulonglong max   READ max   WRITE setMax   NOTIFY maxChanged)
+    Q_PROPERTY(qulonglong min   READ min   WRITE setMin   NOTIFY minChanged)
+
+public:
+     dtkCoreParameterNumericUintObject(dtkCoreParameterNumeric<qulonglong> *);
+    ~dtkCoreParameterNumericUintObject(void);
+
+    void setValue(qulonglong);
+    qulonglong value(void) const;
+
+    void setMax(qulonglong);
+    qulonglong max(void) const;
+
+    void setMin(qulonglong);
+    qulonglong min(void) const;
+
+signals:
+    void valueChanged(qulonglong);
+    void maxChanged(qulonglong);
+    void minChanged(qulonglong);
+
+public:
+    dtkCoreParameterNumeric<qulonglong> *parameter(void) const override;
+
+private:
+    dtkCoreParameterNumeric<qulonglong> *m_param = nullptr;
 };
 
 //
@@ -170,6 +204,82 @@ public:
 
 private:
     dtkCoreParameterNumeric<bool> *m_param = nullptr;
+};
+
+//
+
+template <typename T = void> class dtkCoreParameterNumericObject;
+
+template <> class dtkCoreParameterNumericObject<double> : public dtkCoreParameterNumericRealObject
+{
+public:
+     dtkCoreParameterNumericObject<double>(dtkCoreParameterNumeric<double> *p) : dtkCoreParameterNumericRealObject(p) {};
+    ~dtkCoreParameterNumericObject<double>(void) = default;
+
+        void notifyValue(double t) { emit valueChanged(t); }
+        void notifyMin(double m) { emit minChanged(m); }
+        void notifyMax(double m) { emit maxChanged(m); }
+        void notifyDecimals(int d) { emit decimalsChanged(d); }
+};
+
+template <> class dtkCoreParameterNumericObject<qlonglong> : public dtkCoreParameterNumericIntObject
+{
+public:
+     dtkCoreParameterNumericObject<qlonglong>(dtkCoreParameterNumeric<qlonglong> *p) : dtkCoreParameterNumericIntObject(p) {};
+    ~dtkCoreParameterNumericObject<qlonglong>(void) = default;
+
+    void notifyValue(qlonglong t) { emit valueChanged(t); }
+    void notifyMin(qlonglong m) { emit minChanged(m); }
+    void notifyMax(qlonglong m) { emit maxChanged(m); }
+    void notifyDecimals(int) {}
+};
+
+template <> class dtkCoreParameterNumericObject<qulonglong> : public dtkCoreParameterNumericUintObject
+{
+public:
+     dtkCoreParameterNumericObject<qulonglong>(dtkCoreParameterNumeric<qulonglong> *p) : dtkCoreParameterNumericUintObject(p) {};
+    ~dtkCoreParameterNumericObject<qulonglong>(void) = default;
+
+    void notifyValue(qulonglong t) { emit valueChanged(t); }
+    void notifyMin(qulonglong m) { emit minChanged(m); }
+    void notifyMax(qulonglong m) { emit maxChanged(m); }
+    void notifyDecimals(int) {}
+};
+
+template <> class dtkCoreParameterNumericObject<char> : public dtkCoreParameterNumericCharObject
+{
+public:
+     dtkCoreParameterNumericObject<char>(dtkCoreParameterNumeric<char> *p) : dtkCoreParameterNumericCharObject(p) {};
+    ~dtkCoreParameterNumericObject<char>(void) = default;
+
+    void notifyValue(char t) { emit valueChanged(t); }
+    void notifyMin(char m) { emit minChanged(m); }
+    void notifyMax(char m) { emit maxChanged(m); }
+    void notifyDecimals(int) {}
+};
+
+template <> class dtkCoreParameterNumericObject<uchar> : public dtkCoreParameterNumericUcharObject
+{
+public:
+     dtkCoreParameterNumericObject<uchar>(dtkCoreParameterNumeric<uchar> *p) : dtkCoreParameterNumericUcharObject(p) {};
+    ~dtkCoreParameterNumericObject<uchar>(void) = default;
+
+    void notifyValue(uchar t) { emit valueChanged(t); }
+    void notifyMin(uchar m) { emit minChanged(m); }
+    void notifyMax(uchar m) { emit maxChanged(m); }
+    void notifyDecimals(int) {}
+};
+
+template <> class dtkCoreParameterNumericObject<bool> : public dtkCoreParameterNumericBoolObject
+{
+public:
+     dtkCoreParameterNumericObject<bool>(dtkCoreParameterNumeric<bool> *p) : dtkCoreParameterNumericBoolObject(p) {};
+    ~dtkCoreParameterNumericObject<bool>(void) = default;
+
+    void notifyValue(bool t) { emit valueChanged(t); }
+    void notifyMin(bool) {}
+    void notifyMax(bool) {}
+    void notifyDecimals(int) {}
 };
 
 //

@@ -7,6 +7,8 @@
 
 #include <array>
 
+template <typename T> class dtkCoreParameterNumericObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterNumeric for arithmetic types
 // ///////////////////////////////////////////////////////////////////
@@ -25,8 +27,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterNumeric(void) = default;
-    ~dtkCoreParameterNumeric(void) = default;
+     dtkCoreParameterNumeric(void);
+    ~dtkCoreParameterNumeric(void);
 
     dtkCoreParameterNumeric(const T&);
     template <typename U, typename V = typename dtk::is_core_parameter<U>>
@@ -103,6 +105,9 @@ protected:
     T m_val = T(0);
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
+
+private:
+    dtkCoreParameterNumericObject<T> *m_object = nullptr;
 };
 
 template <typename T>

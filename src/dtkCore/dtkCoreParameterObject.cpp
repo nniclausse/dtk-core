@@ -44,5 +44,16 @@ dtkCoreParameter *dtkCoreParameterObject::parameter(void) const
     return m_parameter;
 }
 
+void dtkCoreParameterObject::notifyLabel(const QString& l)
+{
+    emit labelChanged(l);
+}
+
+void dtkCoreParameterObject::notifyDoc(const QString& d)
+{
+    emit docChanged(d);
+}
+
+
 //
 // dtkCoreParameterObject.cpp ends here

@@ -32,6 +32,9 @@ signals:
 public:
     virtual dtkCoreParameter *parameter(void) const;
 
+    void notifyLabel(const QString&);
+    void notifyDoc(const QString&);
+
 private:
     dtkCoreParameter *m_parameter = nullptr;
 };

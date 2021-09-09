@@ -102,8 +102,8 @@ public:
 
 #pragma mark - Connection management
 
-    void block(bool);
-    void sync(void);
+    Q_DECL_DEPRECATED void block(bool);
+    Q_DECL_DEPRECATED void sync(void);
     template <typename F> QMetaObject::Connection connect(F);
     void disconnect(void);
     void disconnect(QMetaObject::Connection);

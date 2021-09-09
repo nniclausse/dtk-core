@@ -59,46 +59,92 @@ dtkCoreParameterNumeric<double> *dtkCoreParameterNumericRealObject::parameter(vo
 
 //
 
-dtkCoreParameterNumericIntegerObject::dtkCoreParameterNumericIntegerObject(dtkCoreParameterNumeric<qlonglong> *p) : dtkCoreParameterObject(p), m_param(p)
+dtkCoreParameterNumericIntObject::dtkCoreParameterNumericIntObject(dtkCoreParameterNumeric<qlonglong> *p) : dtkCoreParameterObject(p), m_param(p)
 {
 }
 
-dtkCoreParameterNumericIntegerObject::~dtkCoreParameterNumericIntegerObject(void)
+dtkCoreParameterNumericIntObject::~dtkCoreParameterNumericIntObject(void)
 {
     m_param = nullptr;
 }
 
-void dtkCoreParameterNumericIntegerObject::setValue(qlonglong v)
+void dtkCoreParameterNumericIntObject::setValue(qlonglong v)
 {
     m_param->setValue(v);
 }
 
-qlonglong dtkCoreParameterNumericIntegerObject::value(void) const
+qlonglong dtkCoreParameterNumericIntObject::value(void) const
 {
     return m_param->value();
 }
 
-void dtkCoreParameterNumericIntegerObject::setMax(qlonglong m)
+void dtkCoreParameterNumericIntObject::setMax(qlonglong m)
 {
     m_param->setMax(m);
 }
 
-qlonglong dtkCoreParameterNumericIntegerObject::max(void) const
+qlonglong dtkCoreParameterNumericIntObject::max(void) const
 {
     return m_param->max();
 }
 
-void dtkCoreParameterNumericIntegerObject::setMin(qlonglong m)
+void dtkCoreParameterNumericIntObject::setMin(qlonglong m)
 {
     m_param->setMin(m);
 }
 
-qlonglong dtkCoreParameterNumericIntegerObject::min(void) const
+qlonglong dtkCoreParameterNumericIntObject::min(void) const
 {
     return m_param->min();
 }
 
-dtkCoreParameterNumeric<qlonglong> *dtkCoreParameterNumericIntegerObject::parameter(void) const
+dtkCoreParameterNumeric<qlonglong> *dtkCoreParameterNumericIntObject::parameter(void) const
+{
+    return m_param;
+}
+
+//
+
+dtkCoreParameterNumericUintObject::dtkCoreParameterNumericUintObject(dtkCoreParameterNumeric<qulonglong> *p) : dtkCoreParameterObject(p), m_param(p)
+{
+}
+
+dtkCoreParameterNumericUintObject::~dtkCoreParameterNumericUintObject(void)
+{
+    m_param = nullptr;
+}
+
+void dtkCoreParameterNumericUintObject::setValue(qulonglong v)
+{
+    m_param->setValue(v);
+}
+
+qulonglong dtkCoreParameterNumericUintObject::value(void) const
+{
+    return m_param->value();
+}
+
+void dtkCoreParameterNumericUintObject::setMax(qulonglong m)
+{
+    m_param->setMax(m);
+}
+
+qulonglong dtkCoreParameterNumericUintObject::max(void) const
+{
+    return m_param->max();
+}
+
+void dtkCoreParameterNumericUintObject::setMin(qulonglong m)
+{
+    m_param->setMin(m);
+}
+
+qulonglong dtkCoreParameterNumericUintObject::min(void) const
+{
+    return m_param->min();
+}
+
+dtkCoreParameterNumeric<qulonglong> *dtkCoreParameterNumericUintObject::parameter(void) const
 {
     return m_param;
 }
