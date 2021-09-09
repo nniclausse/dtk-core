@@ -74,6 +74,7 @@ namespace dtk {
             }
             return parameters;
         }
+
         bool writeParameters(const dtkCoreParameters& map, const QString& filename)
         {
             QJsonObject parametersObject;
