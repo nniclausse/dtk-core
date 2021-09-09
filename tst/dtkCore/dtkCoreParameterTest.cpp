@@ -1080,6 +1080,33 @@ void dtkCoreParameterTestCase::testReadParameters(void)
     }
 }
 
+void dtkCoreParameterTestCase::testWriteParameters(void)
+{
+    QString json_file_input(QFINDTESTDATA("../resources/parameters_def.json"));
+    QTemporaryFile file;
+
+    {
+        if (file.open())
+        {
+            auto resin = dtk::core::readParameters(json_file_input);
+            auto resout = dtk::core::writeParameters(resin, file.fileName());
+            auto resinout = dtk::core::readParameters(file.fileName());
+
+            QCOMPARE(resout , true);
+
+            QCOMPARE(resin.count() , 6);
+            QCOMPARE(resin["toto"]->uid() , resinout["toto"]->uid());
+
+            QCOMPARE(resin["hyp"]->label() , resinout["hyp"]->label());
+            QCOMPARE(dtk::d_int(resin["hyp"]->variant()).value(), dtk::d_int(resinout["hyp"]->variant()).value());
+
+            QCOMPARE(resin["dif"]->documentation() , resinout["dif"]->documentation());
+            QCOMPARE(dtk::d_bool(resin["dif"]->variant()).value() , dtk::d_bool(resinout["dif"]->variant()).value());
+            QCOMPARE(dtk::d_real(resin["toto"]->variant()).value() , dtk::d_real(resinout["toto"]->variant()).value());
+        }
+    }
+}
+
 void dtkCoreParameterTestCase::testReadParametersResources(void)
 {
     QString json_file(QFINDTESTDATA(":/params.json"));
