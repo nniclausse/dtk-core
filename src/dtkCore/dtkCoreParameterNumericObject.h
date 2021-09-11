@@ -208,7 +208,17 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterNumericObject;
+template <typename T = void> class dtkCoreParameterNumericObject
+{
+public:
+     dtkCoreParameterNumericObject<T>(dtkCoreParameterNumeric<T> *) {}
+    ~dtkCoreParameterNumericObject<T>(void) = default;
+
+    void notifyValue(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyMin(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyMax(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyDecimals(int) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+};
 
 template <> class dtkCoreParameterNumericObject<double> : public dtkCoreParameterNumericRealObject
 {

@@ -33,7 +33,14 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterSimpleObject;
+template <typename T = void> class dtkCoreParameterSimpleObject
+{
+public:
+     dtkCoreParameterSimpleObject<T>(dtkCoreParameterSimple<T> *) {}
+    ~dtkCoreParameterSimpleObject<T>(void) = default;
+
+    void notifyValue(const T&) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+};
 
 template <> class DTKCORE_EXPORT dtkCoreParameterSimpleObject<QString> : public dtkCoreParameterStringObject
 {

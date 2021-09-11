@@ -5,6 +5,8 @@
 
 #include "dtkCoreParameter.h"
 
+template <typename T> class dtkCoreParameterRangeObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterRange declaration
 // ///////////////////////////////////////////////////////////////////
@@ -65,6 +67,8 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
@@ -72,6 +76,9 @@ private:
     std::array<T, 2> m_val = {T(0), T(0)};
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
+
+private:
+    dtkCoreParameterRangeObject<T> *m_object = nullptr;
 };
 
 template <typename T>

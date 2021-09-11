@@ -137,7 +137,15 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterInListObject;
+template <typename T = void> class dtkCoreParameterInListObject
+{
+public:
+     dtkCoreParameterInListObject<T>(dtkCoreParameterInList<T> *) {}
+    ~dtkCoreParameterInListObject<T>(void) = default;
+
+    void notifyList(const QList<T>&) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyIndex(int) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+};
 
 template <> class dtkCoreParameterInListObject<qlonglong> : public dtkCoreParameterInListIntObject
 {

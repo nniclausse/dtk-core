@@ -1,6 +1,8 @@
 // dtkCoreParameterRange.tpp
 //
 
+#include "dtkCoreParameterRangeObject.h"
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterRange implementation
 // ///////////////////////////////////////////////////////////////////
@@ -278,18 +280,6 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
 }
 
 template <typename T, typename E>
-inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void) const
-{
-    QVariantHash hash = base_type::toVariantHash();
-    hash.insert("values", QVariant::fromValue(m_val));
-    hash.insert("min", m_bounds[0]);
-    hash.insert("max", m_bounds[1]);
-    hash.insert("decimals", m_decimals);
-
-    return hash;
-}
-
-template <typename T, typename E>
 inline const std::array<T, 2>& dtkCoreParameterRange<T, E>::value(void) const
 {
     return m_val;
@@ -401,6 +391,24 @@ template <typename T, typename E>
 inline int dtkCoreParameterRange<T, E>::decimals(void) const
 {
     return m_decimals;
+}
+
+template <typename T, typename E>
+inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void) const
+{
+    QVariantHash hash = base_type::toVariantHash();
+    hash.insert("values", QVariant::fromValue(m_val));
+    hash.insert("min", m_bounds[0]);
+    hash.insert("max", m_bounds[1]);
+    hash.insert("decimals", m_decimals);
+
+    return hash;
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterObject *dtkCoreParameterRange<T, E>::object(void)
+{
+    return this->m_object;
 }
 
 template <typename T>
