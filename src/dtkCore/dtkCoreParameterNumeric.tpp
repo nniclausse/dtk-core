@@ -586,6 +586,12 @@ inline int dtkCoreParameterNumeric<T, E>::decimals(void) const
     return this->m_decimals;
 }
 
+template <typename T, typename E>
+inline dtkCoreParameterObject *dtkCoreParameterNumeric<T, E>::object(void)
+{
+    return this->m_object;
+}
+
 template <typename T>
 inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterNumeric<T>& p)
 {

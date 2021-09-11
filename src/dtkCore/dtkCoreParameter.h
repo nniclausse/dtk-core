@@ -11,6 +11,7 @@
 #include <QtCore>
 
 class dtkCoreParameter;
+class dtkCoreParameterObject;
 
 // ///////////////////////////////////////////////////////////////////
 // MACRO TO REGISTER PARAMETER TO QMETATYPE SYSTEM
@@ -100,10 +101,14 @@ public:
     virtual QVariant variant(void) const = 0;
     virtual QVariantHash toVariantHash(void) const = 0;
 
+#pragma mark - QObject binding
+
+    virtual dtkCoreParameterObject *object(void) { return nullptr; }
+
 #pragma mark - Connection management
 
-    Q_DECL_DEPRECATED void block(bool);
-    Q_DECL_DEPRECATED void sync(void);
+    void block(bool);
+    void sync(void);
     template <typename F> QMetaObject::Connection connect(F);
     void disconnect(void);
     void disconnect(QMetaObject::Connection);

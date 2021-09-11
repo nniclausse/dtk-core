@@ -5,6 +5,8 @@
 
 #include "dtkCoreParameter.h"
 
+template <typename T> class dtkCoreParameterSimpleObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version
 // ///////////////////////////////////////////////////////////////////
@@ -46,11 +48,16 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     T m_value = T();
+
+private:
+    dtkCoreParameterSimpleObject<T> *m_object = nullptr;
 };
 
 template <typename T>

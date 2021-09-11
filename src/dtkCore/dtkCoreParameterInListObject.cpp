@@ -3,45 +3,45 @@
 
 #include "dtkCoreParameterInListObject.h"
 
-dtkCoreParameterInListIntegerObject::dtkCoreParameterInListIntegerObject(dtkCoreParameterInList<qlonglong> *p) : dtkCoreParameterObject(p), m_param(p)
+dtkCoreParameterInListIntObject::dtkCoreParameterInListIntObject(dtkCoreParameterInList<qlonglong> *p) : dtkCoreParameterObject(p), m_param(p)
 {
 }
 
-dtkCoreParameterInListIntegerObject::~dtkCoreParameterInListIntegerObject(void)
+dtkCoreParameterInListIntObject::~dtkCoreParameterInListIntObject(void)
 {
     m_param = nullptr;
 }
 
-void dtkCoreParameterInListIntegerObject::setList(const QList<qlonglong>& l)
+void dtkCoreParameterInListIntObject::setList(const QList<qlonglong>& l)
 {
     if (l != m_param->values()) {
         m_param->setValues(l);
     }
 }
 
-QList<qlonglong> dtkCoreParameterInListIntegerObject::list(void) const
+QList<qlonglong> dtkCoreParameterInListIntObject::list(void) const
 {
     return m_param->values();
 }
 
-void dtkCoreParameterInListIntegerObject::setIndex(int i)
+void dtkCoreParameterInListIntObject::setIndex(int i)
 {
     if (i != m_param->valueIndex()) {
         m_param->setValueIndex(i);
     }
 }
 
-int dtkCoreParameterInListIntegerObject::index(void) const
+int dtkCoreParameterInListIntObject::index(void) const
 {
     return m_param->valueIndex();
 }
 
-qlonglong dtkCoreParameterInListIntegerObject::value(void) const
+qlonglong dtkCoreParameterInListIntObject::value(void) const
 {
     return m_param->value();
 }
 
-dtkCoreParameterInList<qlonglong> *dtkCoreParameterInListIntegerObject::parameter(void) const
+dtkCoreParameterInList<qlonglong> *dtkCoreParameterInListIntObject::parameter(void) const
 {
     return m_param;
 }
@@ -177,51 +177,6 @@ uchar dtkCoreParameterInListUcharObject::value(void) const
 }
 
 dtkCoreParameterInList<uchar> *dtkCoreParameterInListUcharObject::parameter(void) const
-{
-    return m_param;
-}
-
-//
-
-dtkCoreParameterInListStringObject::dtkCoreParameterInListStringObject(dtkCoreParameterInList<QString> *p) : dtkCoreParameterObject(p), m_param(p)
-{
-}
-
-dtkCoreParameterInListStringObject::~dtkCoreParameterInListStringObject(void)
-{
-    m_param = nullptr;
-}
-
-void dtkCoreParameterInListStringObject::setList(const QList<QString>& l)
-{
-    if (l != m_param->values()) {
-        m_param->setValues(l);
-    }
-}
-
-QList<QString> dtkCoreParameterInListStringObject::list(void) const
-{
-    return m_param->values();
-}
-
-void dtkCoreParameterInListStringObject::setIndex(int i)
-{
-    if (i != m_param->valueIndex()) {
-        m_param->setValueIndex(i);
-    }
-}
-
-int dtkCoreParameterInListStringObject::index(void) const
-{
-    return m_param->valueIndex();
-}
-
-QString dtkCoreParameterInListStringObject::value(void) const
-{
-    return m_param->value();
-}
-
-dtkCoreParameterInList<QString> *dtkCoreParameterInListStringObject::parameter(void) const
 {
     return m_param;
 }

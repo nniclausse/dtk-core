@@ -216,10 +216,10 @@ public:
      dtkCoreParameterNumericObject<double>(dtkCoreParameterNumeric<double> *p) : dtkCoreParameterNumericRealObject(p) {};
     ~dtkCoreParameterNumericObject<double>(void) = default;
 
-        void notifyValue(double t) { emit valueChanged(t); }
-        void notifyMin(double m) { emit minChanged(m); }
-        void notifyMax(double m) { emit maxChanged(m); }
-        void notifyDecimals(int d) { emit decimalsChanged(d); }
+    void notifyValue(double t) { emit valueChanged(t); }
+    void notifyMin(double m) { emit minChanged(m); }
+    void notifyMax(double m) { emit maxChanged(m); }
+    void notifyDecimals(int d) { emit decimalsChanged(d); }
 };
 
 template <> class dtkCoreParameterNumericObject<qlonglong> : public dtkCoreParameterNumericIntObject

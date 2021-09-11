@@ -98,6 +98,8 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 protected:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;

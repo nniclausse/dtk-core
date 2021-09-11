@@ -30,6 +30,7 @@ public:
 
 DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
 DTK_DEFINE_PARAMETER(dtkCoreParameterSimple<std::string>, simple_string)
+DTK_PARAMETER_SIMPLE_OBJECT(std::string, StdString)
 
 // ///////////////////////////////////////////////////////////////////
 

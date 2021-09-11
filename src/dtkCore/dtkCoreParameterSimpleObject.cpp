@@ -12,7 +12,7 @@ dtkCoreParameterStringObject::~dtkCoreParameterStringObject(void)
     m_param = nullptr;
 }
 
-void dtkCoreParameterStringObject::setValue(QString v)
+void dtkCoreParameterStringObject::setValue(const QString& v)
 {
     m_param->setValue(v);
 }

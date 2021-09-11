@@ -1,6 +1,8 @@
 // dtkCoreParameterSimple.tpp
 //
 
+#include "dtkCoreParameterSimpleObject.h"
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version implementation
 // ///////////////////////////////////////////////////////////////////
@@ -148,6 +150,12 @@ template <typename T, typename Enable>
 inline T dtkCoreParameterSimple<T, Enable>::value(void) const
 {
     return m_value;
+}
+
+template <typename T, typename Enable>
+inline dtkCoreParameterObject *dtkCoreParameterSimple<T, Enable>::object(void)
+{
+    return m_object;
 }
 
 template <typename T>
