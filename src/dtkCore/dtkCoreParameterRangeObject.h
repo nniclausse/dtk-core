@@ -40,7 +40,7 @@ signals:
     void decimalsChanged(int);
 
 public:
-    dtkCoreParameterRange<double> *parameter(void) const override;
+    dtkCoreParameterRange<double> *parameter(void) override;
 
 private:
     dtkCoreParameterRange<double> *m_param = nullptr;
@@ -74,7 +74,7 @@ signals:
     void minChanged(qlonglong);
 
 public:
-    dtkCoreParameterRange<qlonglong> *parameter(void) const override;
+    dtkCoreParameterRange<qlonglong> *parameter(void) override;
 
 private:
     dtkCoreParameterRange<qlonglong> *m_param = nullptr;
@@ -108,7 +108,7 @@ signals:
     void minChanged(qulonglong);
 
 public:
-    dtkCoreParameterRange<qulonglong> *parameter(void) const override;
+    dtkCoreParameterRange<qulonglong> *parameter(void) override;
 
 private:
     dtkCoreParameterRange<qulonglong> *m_param = nullptr;
@@ -142,7 +142,7 @@ signals:
     void minChanged(char);
 
 public:
-    dtkCoreParameterRange<char> *parameter(void) const override;
+    dtkCoreParameterRange<char> *parameter(void) override;
 
 private:
     dtkCoreParameterRange<char> *m_param = nullptr;
@@ -176,7 +176,7 @@ signals:
     void minChanged(uchar);
 
 public:
-    dtkCoreParameterRange<uchar> *parameter(void) const override;
+    dtkCoreParameterRange<uchar> *parameter(void) override;
 
 private:
     dtkCoreParameterRange<uchar> *m_param = nullptr;

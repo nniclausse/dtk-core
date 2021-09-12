@@ -30,7 +30,7 @@ signals:
     void docChanged(const QString&);
 
 public:
-    virtual dtkCoreParameter *parameter(void) const;
+    virtual dtkCoreParameter *parameter(void);
 
     void notifyLabel(const QString&);
     void notifyDoc(const QString&);

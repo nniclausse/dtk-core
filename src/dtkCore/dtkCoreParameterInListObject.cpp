@@ -41,7 +41,7 @@ qlonglong dtkCoreParameterInListIntObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterInList<qlonglong> *dtkCoreParameterInListIntObject::parameter(void) const
+dtkCoreParameterInList<qlonglong> *dtkCoreParameterInListIntObject::parameter(void)
 {
     return m_param;
 }
@@ -86,7 +86,7 @@ double dtkCoreParameterInListRealObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterInList<double> *dtkCoreParameterInListRealObject::parameter(void) const
+dtkCoreParameterInList<double> *dtkCoreParameterInListRealObject::parameter(void)
 {
     return m_param;
 }
@@ -131,7 +131,7 @@ char dtkCoreParameterInListCharObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterInList<char> *dtkCoreParameterInListCharObject::parameter(void) const
+dtkCoreParameterInList<char> *dtkCoreParameterInListCharObject::parameter(void)
 {
     return m_param;
 }
@@ -176,7 +176,7 @@ uchar dtkCoreParameterInListUcharObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterInList<uchar> *dtkCoreParameterInListUcharObject::parameter(void) const
+dtkCoreParameterInList<uchar> *dtkCoreParameterInListUcharObject::parameter(void)
 {
     return m_param;
 }

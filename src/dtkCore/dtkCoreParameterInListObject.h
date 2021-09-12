@@ -33,7 +33,7 @@ signals:
     void indexChanged(int);
 
 public:
-    dtkCoreParameterInList<qlonglong> *parameter(void) const override;
+    dtkCoreParameterInList<qlonglong> *parameter(void) override;
 
 private:
     dtkCoreParameterInList<qlonglong> *m_param = nullptr;
@@ -65,7 +65,7 @@ signals:
     void indexChanged(int);
 
 public:
-    dtkCoreParameterInList<double> *parameter(void) const override;
+    dtkCoreParameterInList<double> *parameter(void) override;
 
 private:
     dtkCoreParameterInList<double> *m_param = nullptr;
@@ -97,7 +97,7 @@ signals:
     void indexChanged(int);
 
 public:
-    dtkCoreParameterInList<char> *parameter(void) const override;
+    dtkCoreParameterInList<char> *parameter(void) override;
 
 private:
     dtkCoreParameterInList<char> *m_param = nullptr;
@@ -129,7 +129,7 @@ signals:
     void indexChanged(int);
 
 public:
-    dtkCoreParameterInList<uchar> *parameter(void) const override;
+    dtkCoreParameterInList<uchar> *parameter(void) override;
 
 private:
     dtkCoreParameterInList<uchar> *m_param = nullptr;
@@ -210,7 +210,7 @@ public:                                                                 \
     void setIndex(int i) { if (i != m_param->valueIndex()) m_param->setValueIndex(i); } \
     int index(void) const { return m_param->valueIndex(); }             \
     type value(void) const { return m_param->value(); }                 \
-    dtkCoreParameterInList<type> *parameter(void) const override { return m_param; } \
+    dtkCoreParameterInList<type> *parameter(void) override { return m_param; } \
                                                                         \
 Q_SIGNALS:                                                              \
     void listChanged(const QList<type>&);                               \

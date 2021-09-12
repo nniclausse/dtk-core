@@ -39,7 +39,7 @@ QString dtkCoreParameterObject::doc(void) const
     return m_parameter->documentation();
 }
 
-dtkCoreParameter *dtkCoreParameterObject::parameter(void) const
+dtkCoreParameter *dtkCoreParameterObject::parameter(void)
 {
     return m_parameter;
 }

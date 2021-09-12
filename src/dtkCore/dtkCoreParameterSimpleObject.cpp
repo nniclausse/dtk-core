@@ -22,7 +22,7 @@ QString dtkCoreParameterStringObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterSimple<QString> *dtkCoreParameterStringObject::parameter(void) const
+dtkCoreParameterSimple<QString> *dtkCoreParameterStringObject::parameter(void)
 {
     return m_param;
 }

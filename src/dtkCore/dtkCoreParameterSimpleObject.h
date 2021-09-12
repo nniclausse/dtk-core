@@ -25,7 +25,7 @@ signals:
     void valueChanged(const QString&);
 
 public:
-    dtkCoreParameterSimple<QString> *parameter(void) const override;
+    dtkCoreParameterSimple<QString> *parameter(void) override;
 
 private:
     dtkCoreParameterSimple<QString> *m_param = nullptr;
@@ -63,7 +63,7 @@ public:                                                                  \
     ~dtkCoreParameter##name##Object(void) { m_param = nullptr; }        \
     void setValue(const type& v) { m_param->setValue(v); }              \
     type value(void) const { return m_param->value(); }                 \
-    dtkCoreParameterSimple<type> *parameter(void) const override { return m_param; } \
+    dtkCoreParameterSimple<type> *parameter(void) override { return m_param; } \
                                                                         \
 Q_SIGNALS:                                                              \
     void valueChanged(const type&);                                     \

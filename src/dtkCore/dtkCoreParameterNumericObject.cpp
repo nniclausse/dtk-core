@@ -52,7 +52,7 @@ int dtkCoreParameterNumericRealObject::decimals(void) const
     return m_param->decimals();
 }
 
-dtkCoreParameterNumeric<double> *dtkCoreParameterNumericRealObject::parameter(void) const
+dtkCoreParameterNumeric<double> *dtkCoreParameterNumericRealObject::parameter(void)
 {
     return m_param;
 }
@@ -98,7 +98,7 @@ qlonglong dtkCoreParameterNumericIntObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterNumeric<qlonglong> *dtkCoreParameterNumericIntObject::parameter(void) const
+dtkCoreParameterNumeric<qlonglong> *dtkCoreParameterNumericIntObject::parameter(void)
 {
     return m_param;
 }
@@ -144,7 +144,7 @@ qulonglong dtkCoreParameterNumericUintObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterNumeric<qulonglong> *dtkCoreParameterNumericUintObject::parameter(void) const
+dtkCoreParameterNumeric<qulonglong> *dtkCoreParameterNumericUintObject::parameter(void)
 {
     return m_param;
 }
@@ -190,7 +190,7 @@ char dtkCoreParameterNumericCharObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterNumeric<char> *dtkCoreParameterNumericCharObject::parameter(void) const
+dtkCoreParameterNumeric<char> *dtkCoreParameterNumericCharObject::parameter(void)
 {
     return m_param;
 }
@@ -236,7 +236,7 @@ uchar dtkCoreParameterNumericUcharObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterNumeric<uchar> *dtkCoreParameterNumericUcharObject::parameter(void) const
+dtkCoreParameterNumeric<uchar> *dtkCoreParameterNumericUcharObject::parameter(void)
 {
     return m_param;
 }
@@ -262,7 +262,7 @@ bool dtkCoreParameterNumericBoolObject::value(void) const
     return m_param->value();
 }
 
-dtkCoreParameterNumeric<bool> *dtkCoreParameterNumericBoolObject::parameter(void) const
+dtkCoreParameterNumeric<bool> *dtkCoreParameterNumericBoolObject::parameter(void)
 {
     return m_param;
 }

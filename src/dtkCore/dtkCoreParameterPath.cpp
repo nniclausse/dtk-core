@@ -92,8 +92,7 @@ dtkCoreParameterPath& dtkCoreParameterPath::operator = (const dtkCoreParameterPa
 
 void dtkCoreParameterPath::setValue(const QString& path)
 {
-    m_path = path;
-    this->sync();
+    this->setPath(path);
 }
 
 void dtkCoreParameterPath::setValue(const QVariant& v)
@@ -130,6 +129,12 @@ QVariantHash dtkCoreParameterPath::toVariantHash(void) const
     hash.insert("path", m_path);
 
     return hash;
+}
+
+void dtkCoreParameterPath::setPath(const QString& path)
+{
+    m_path = path;
+    this->sync();
 }
 
 void dtkCoreParameterPath::setFilters(const QStringList& filters)

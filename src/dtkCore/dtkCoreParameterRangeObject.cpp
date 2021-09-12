@@ -54,7 +54,7 @@ int dtkCoreParameterRangeRealObject::decimals(void) const
     return m_param->decimals();
 }
 
-dtkCoreParameterRange<double> *dtkCoreParameterRangeRealObject::parameter(void) const
+dtkCoreParameterRange<double> *dtkCoreParameterRangeRealObject::parameter(void)
 {
     return m_param;
 }
@@ -101,7 +101,7 @@ qlonglong dtkCoreParameterRangeIntObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterRange<qlonglong> *dtkCoreParameterRangeIntObject::parameter(void) const
+dtkCoreParameterRange<qlonglong> *dtkCoreParameterRangeIntObject::parameter(void)
 {
     return m_param;
 }
@@ -148,7 +148,7 @@ qulonglong dtkCoreParameterRangeUintObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterRange<qulonglong> *dtkCoreParameterRangeUintObject::parameter(void) const
+dtkCoreParameterRange<qulonglong> *dtkCoreParameterRangeUintObject::parameter(void)
 {
     return m_param;
 }
@@ -195,7 +195,7 @@ char dtkCoreParameterRangeCharObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterRange<char> *dtkCoreParameterRangeCharObject::parameter(void) const
+dtkCoreParameterRange<char> *dtkCoreParameterRangeCharObject::parameter(void)
 {
     return m_param;
 }
@@ -242,7 +242,7 @@ uchar dtkCoreParameterRangeUcharObject::min(void) const
     return m_param->min();
 }
 
-dtkCoreParameterRange<uchar> *dtkCoreParameterRangeUcharObject::parameter(void) const
+dtkCoreParameterRange<uchar> *dtkCoreParameterRangeUcharObject::parameter(void)
 {
     return m_param;
 }

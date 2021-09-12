@@ -31,10 +31,11 @@ public:
     dtkCoreParameterPath& operator = (const QVariant&);
     dtkCoreParameterPath& operator = (const dtkCoreParameterPath&);
 
-    void setValue(const QString&);
+    void setValue(const QString& path);
     void setValue(const QVariant&) override;
     QVariantHash toVariantHash(void) const override;
 
+    void setPath(const QString&);
     void setFilters(const QStringList&);
 
     QString path(void) const;
