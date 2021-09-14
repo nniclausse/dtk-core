@@ -122,15 +122,6 @@ void dtkCoreParameterPath::setValue(const QVariant& v)
     this->sync();
 }
 
-QVariantHash dtkCoreParameterPath::toVariantHash(void) const
-{
-    QVariantHash hash = base_type::toVariantHash();
-    hash.insert("filters", m_filters);
-    hash.insert("path", m_path);
-
-    return hash;
-}
-
 void dtkCoreParameterPath::setPath(const QString& path)
 {
     m_path = path;
@@ -162,6 +153,20 @@ QString dtkCoreParameterPath::baseName(void) const
 {
     QFileInfo pathinfo = QFileInfo(m_path);
     return pathinfo.baseName();
+}
+
+QVariantHash dtkCoreParameterPath::toVariantHash(void) const
+{
+    QVariantHash hash = base_type::toVariantHash();
+    hash.insert("filters", m_filters);
+    hash.insert("path", m_path);
+
+    return hash;
+}
+
+dtkCoreParameterObject *dtkCoreParameterPath::object(void)
+{
+    return m_object;
 }
 
 QDataStream& operator << (QDataStream& s, const dtkCoreParameterPath& p)

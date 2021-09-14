@@ -47,7 +47,10 @@ public:
     void setValues(const QStringList&);
     void setValue(const QStringList&);
     void setValue(const QVariant&);
+
     QVariantHash toVariantHash(void) const override;
+
+    dtkCoreParameterObject *object(void) override;
 
 private:
     using dtkCoreParameter::m_label;
@@ -55,6 +58,9 @@ private:
 
     QStringList m_value;
     QStringList m_values;
+
+private:
+    dtkCoreParameterInListStringListObject *m_object = nullptr;
 };
 
 DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterInListStringList&);

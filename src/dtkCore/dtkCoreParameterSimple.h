@@ -25,8 +25,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterSimple(void) = default;
-    ~dtkCoreParameterSimple(void) = default;
+     dtkCoreParameterSimple(void);
+    ~dtkCoreParameterSimple(void);
 
     dtkCoreParameterSimple(const dtkCoreParameter *);
     dtkCoreParameterSimple(const QVariant&);

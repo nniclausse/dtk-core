@@ -33,7 +33,6 @@ public:
 
     void setValue(const QString& path);
     void setValue(const QVariant&) override;
-    QVariantHash toVariantHash(void) const override;
 
     void setPath(const QString&);
     void setFilters(const QStringList&);
@@ -44,12 +43,19 @@ public:
     QString dirName(void) const;
     QString baseName(void) const;
 
+    QVariantHash toVariantHash(void) const override;
+
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     QString m_path;
     QStringList m_filters;
+
+private:
+    dtkCoreParameterPathObject *m_object = nullptr;
 };
 
 // ///////////////////////////////////////////////////////////////////

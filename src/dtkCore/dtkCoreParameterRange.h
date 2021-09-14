@@ -38,6 +38,7 @@ public:
 #ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
 #endif
+
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
     dtkCoreParameterRange& operator = (std::initializer_list<T>);
     dtkCoreParameterRange& operator = (const QVariant&);
