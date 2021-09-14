@@ -30,7 +30,7 @@ void dtkCoreParameterInListStringListObject::setValue(const QStringList& v)
 
 QStringList dtkCoreParameterInListStringListObject::list(void) const
 {
-    m_param->values();
+    return m_param->values();
 }
 
 void dtkCoreParameterInListStringListObject::setList(const QStringList& l)

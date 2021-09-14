@@ -52,7 +52,7 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
-    dtkCoreParameterObject *object(void) override;
+    //dtkCoreParameterObject *object(void) override;
 
 private:
     using dtkCoreParameter::m_label;
