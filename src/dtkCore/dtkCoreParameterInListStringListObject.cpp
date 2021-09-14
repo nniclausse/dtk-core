@@ -13,7 +13,7 @@ dtkCoreParameterInListStringListObject::dtkCoreParameterInListStringListObject(d
 
 }
 
-dtkCoreParameterInListStringListObject::~dtkCoreParameterInListStringList(void)
+dtkCoreParameterInListStringListObject::~dtkCoreParameterInListStringListObject(void)
 {
     m_param = nullptr;
 }

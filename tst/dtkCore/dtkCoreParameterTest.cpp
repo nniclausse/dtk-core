@@ -13,6 +13,14 @@
 #include <dtkCore/dtkCoreParameterRange>
 #include <dtkCore/dtkCoreParameterSimple>
 
+#include <dtkCore/dtkCoreParameterObject>
+#include <dtkCore/dtkCoreParameterInListObject>
+//#include <dtkCore/dtkCoreParameterInListStringListObject>
+#include <dtkCore/dtkCoreParameterNumericObject>
+#include <dtkCore/dtkCoreParameterPathObject>
+#include <dtkCore/dtkCoreParameterRangeObject>
+#include <dtkCore/dtkCoreParameterSimpleObject>
+
 #include <ciso646>
 
 class dtkCoreParameterTestCasePrivate
@@ -31,6 +39,9 @@ public:
 DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
 DTK_DEFINE_PARAMETER(dtkCoreParameterSimple<std::string>, simple_string)
 DTK_PARAMETER_SIMPLE_OBJECT(std::string, StdString)
+
+
+
 
 // ///////////////////////////////////////////////////////////////////
 

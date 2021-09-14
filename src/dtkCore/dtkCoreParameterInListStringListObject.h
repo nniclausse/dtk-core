@@ -22,7 +22,7 @@ class DTKCORE_EXPORT dtkCoreParameterInListStringListObject : public dtkCorePara
 
 public:
     dtkCoreParameterInListStringListObject(dtkCoreParameterInListStringList *);
-    ~dtkCoreParameterInListStringList(void);
+    ~dtkCoreParameterInListStringListObject(void);
 
     QStringList value(void) const;
     void setValue(const QStringList&);

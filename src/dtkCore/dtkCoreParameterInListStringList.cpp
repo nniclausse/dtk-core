@@ -3,6 +3,7 @@
 
 #include "dtkCoreParameterInListStringList.h"
 
+#include "dtkCoreParameterInListStringListObject.h"
 
 dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QStringList& v) : dtkCoreParameterBase<dtkCoreParameterInListStringList>()
 {

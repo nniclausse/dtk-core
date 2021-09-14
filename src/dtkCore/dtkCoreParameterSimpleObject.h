@@ -54,12 +54,12 @@ public:
 // MACRO TO ADD TYPE OF SIMPLE PARAMETER OBJECT
 
 #define DTK_PARAMETER_SIMPLE_OBJECT(type, name) \
-    class DTKCORE_EXPORT dtkCoreParameter##name##Object : public dtkCoreParameterObject { \
+class DTKCORE_EXPORT dtkCoreParameter##name##Object : public dtkCoreParameterObject { \
     Q_OBJECT                                                             \
     Q_PROPERTY(type value READ value WRITE setValue NOTIFY valueChanged) \
                                                                          \
 public:                                                                  \
-     dtkCoreParameter##name##Object(dtkCoreParameterSimple<type> *p) : dtkCoreParameterObject(p) {} \
+     dtkCoreParameter##name##Object(dtkCoreParameterSimple<type> *p) : dtkCoreParameterObject(p), m_param(p) {} \
     ~dtkCoreParameter##name##Object(void) { m_param = nullptr; }        \
     void setValue(const type& v) { m_param->setValue(v); }              \
     type value(void) const { return m_param->value(); }                 \
