@@ -26,8 +26,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterRange(void) = default;
-    ~dtkCoreParameterRange(void) = default;
+     dtkCoreParameterRange(void);
+    ~dtkCoreParameterRange(void);
 
     dtkCoreParameterRange(const std::array<T, 2>&);
     dtkCoreParameterRange(std::initializer_list<T>);
