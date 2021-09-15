@@ -203,7 +203,7 @@ class DTKCORE_EXPORT dtkCoreParameterInList##name##Object : public dtkCoreParame
     Q_PROPERTY(type value READ value)                                   \
                                                                         \
 public:                                                                 \
-     dtkCoreParameterInList##name##Object(dtkCoreParameterInList<type> *p) : dtkCoreParameterObject(p) {} \
+     dtkCoreParameterInList##name##Object(dtkCoreParameterInList<type> *p) : dtkCoreParameterObject(p), m_param(p) {} \
     ~dtkCoreParameterInList##name##Object(void) { m_param = nullptr; }  \
     void setList(const QList<type>& l) { m_param-> setValues(l); }      \
     QList<type> list(void) const { return m_param->values(); }          \
