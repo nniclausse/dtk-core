@@ -8,7 +8,7 @@
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
 // ///////////////////////////////////////////////////////////////////
-
+template <typename T> class dtkCoreParameterInListObject;
 template <typename T>
 class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
@@ -23,8 +23,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterInList(void) = default;
-    ~dtkCoreParameterInList(void) = default;
+     dtkCoreParameterInList(void);
+    ~dtkCoreParameterInList(void);
 
     dtkCoreParameterInList(const T&);
     dtkCoreParameterInList(const QVariant&);
@@ -51,12 +51,17 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     QList<T> m_values;
     int m_value_index = -1;
+
+private:
+    dtkCoreParameterInListObject<T> *m_object = nullptr;
 };
 
 template <typename T>

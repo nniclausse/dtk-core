@@ -1,13 +1,28 @@
 // dtkCoreParameterInList.tpp
 //
 
+#include "dtkCoreParameterInListObject.h"
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterInList implementation
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T>
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList() : dtkCoreParameterBase<dtkCoreParameterInList>()
+{
+    m_object = new dtkCoreParameterInListObject<T>(this);
+}
+
+template <typename T>
+inline dtkCoreParameterInList<T>::~dtkCoreParameterInList()
+{
+    delete m_object;
+}
+
+template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
+    m_object = new dtkCoreParameterInListObject<T>(this);
     m_values << t;
     m_value_index = 0;
 }
@@ -15,6 +30,7 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCorePa
 template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
+    m_object = new dtkCoreParameterInListObject<T>(this);
     if (v.canConvert<dtkCoreParameterInList<T>>()) {
         auto o(v.value<dtkCoreParameterInList<T>>());
         *this = o;
@@ -28,12 +44,13 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dt
 template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterInList& o) : dtkCoreParameterBase<dtkCoreParameterInList>(o), m_values(o.m_values), m_value_index(o.m_value_index)
 {
-
+    m_object = new dtkCoreParameterInListObject<T>(this);
 }
 
 template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values)
 {
+    m_object = new dtkCoreParameterInListObject<T>(this);
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     m_value_index = m_values.indexOf(t);
 }
@@ -41,6 +58,7 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, c
 template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(index)
 {
+    m_object = new dtkCoreParameterInListObject<T>(this);
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
     Q_ASSERT_X(((index > -1) && (index < values.size())), Q_FUNC_INFO, "Input index is out of range");
 }
@@ -48,6 +66,7 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, i
 template <typename T>
 inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(0)
 {
+    m_object = new dtkCoreParameterInListObject<T>(this);
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
 }
 
@@ -61,6 +80,7 @@ inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const T
 
     } else {
         m_value_index = index;
+        m_object->notifyIndex(index);
         this->sync();
     }
     return *this;
@@ -84,6 +104,10 @@ inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const Q
         for (auto item : list) {
             m_values << item.value<T>();
         }
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyList(m_values);
+        m_object->notifyIndex(m_value_index);
 
     } else if (v.canConvert<T>()) {
         int index = m_values.indexOf(v.value<T>());
@@ -94,6 +118,7 @@ inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const Q
 
         } else {
             m_value_index = index;
+            m_object->notifyIndex(m_value_index);
         }
 
     } else {
@@ -117,6 +142,10 @@ inline dtkCoreParameterInList<T>& dtkCoreParameterInList<T>::operator = (const d
         m_values = o.m_values;
         m_value_index = o.m_value_index;
         this->sync();
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyList(m_values);
+        m_object->notifyIndex(m_value_index);
     }
     return *this;
 }
@@ -136,6 +165,7 @@ inline void dtkCoreParameterInList<T>::setValueIndex(int index)
 
     } else {
         m_value_index = index;
+        m_object->notifyIndex(m_value_index);
         this->sync();
     }
 }
@@ -150,6 +180,7 @@ inline void dtkCoreParameterInList<T>::setValue(const T& t)
 
     } else {
         m_value_index = index;
+        m_object->notifyIndex(m_value_index);
         this->sync();
     }
 }
@@ -159,6 +190,8 @@ inline void dtkCoreParameterInList<T>::setValues(const QList<T>& l)
 {
     m_values = l;
     m_value_index = 0;
+    m_object->notifyList(m_values);
+    m_object->notifyIndex(m_value_index);
     this->sync();
 }
 
@@ -180,6 +213,10 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
         for(auto item : list) {
             m_values << item.value<T>();
         }
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyList(m_values);
+        m_object->notifyIndex(m_value_index);
 
     } else if (v.canConvert<T>()) {
         int index = m_values.indexOf(v.value<T>());
@@ -190,6 +227,7 @@ inline void dtkCoreParameterInList<T>::setValue(const QVariant& v)
 
         } else {
             m_value_index = index;
+            m_object->notifyIndex(m_value_index);
         }
 
     } else {
@@ -217,6 +255,12 @@ inline QVariantHash dtkCoreParameterInList<T>::toVariantHash(void) const
     hash.insert("values", ll);
 
     return hash;
+}
+
+template <typename T>
+inline dtkCoreParameterObject * dtkCoreParameterInList<T>::object(void)
+{
+    return this->m_object;
 }
 
 
