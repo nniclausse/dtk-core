@@ -225,7 +225,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
 }
 
 template <typename T, typename E>
-inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
+inline void dtkCoreParameterRange<T, E>::setRange(const std::array<T, 2>& t)
 {
     if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
         m_val = t;
@@ -239,7 +239,7 @@ inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
 }
 
 template <typename T, typename E>
-inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
+inline void dtkCoreParameterRange<T, E>::setRange(std::initializer_list<T> args)
 {
     if (args.size() != 2) {
         dtkWarn() << Q_FUNC_INFO << "Wrong number of input values:" << args.size() << "instead of" << 2 << ". Nothing is done";
@@ -259,6 +259,24 @@ inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
             this->syncFail();
         }
     }
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setRange(const T& t1, const T& t2)
+{
+    this->setRange({t1, t2});
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValue(const std::array<T, 2>& t)
+{
+    this->setRange(t);
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValue(std::initializer_list<T> args)
+{
+    this->setRange(args);
 }
 
 template <typename T, typename E>
