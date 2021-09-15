@@ -20,8 +20,8 @@ public:
     using self_type = dtkCoreParameterPath;
     using base_type = dtkCoreParameterBase<self_type>;
 
-     dtkCoreParameterPath(void) = default;
-    ~dtkCoreParameterPath(void) = default;
+     dtkCoreParameterPath(void);
+    ~dtkCoreParameterPath(void);
 
     dtkCoreParameterPath(const dtkCoreParameter *);
     dtkCoreParameterPath(const QVariant&);

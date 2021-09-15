@@ -44,13 +44,17 @@ public:
     dtkCoreParameterRange& operator = (const QVariant&);
     dtkCoreParameterRange& operator = (const dtkCoreParameterRange&);
 
+    void setRange(const std::array<T, 2>&);
+    void setRange(std::initializer_list<T>);
+    void setRange(const T&, const T&);
+
     void setValue(const std::array<T, 2>&);
     void setValue(std::initializer_list<T>);
     void setValue(const QVariant&) override;
 
     const std::array<T, 2>& value(void) const;
 
-    value_type  operator[](int index) const;
+    value_type operator[](int index) const;
 
     T min(void) const;
     T max(void) const;

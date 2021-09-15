@@ -9,8 +9,19 @@
 // dtkCoreParameterPath implementation
 // ///////////////////////////////////////////////////////////////////
 
+dtkCoreParameterPath::dtkCoreParameterPath(void) : dtkCoreParameterBase<dtkCoreParameterPath>()
+{
+    m_object = new dtkCoreParameterPathObject(this);
+}
+
+dtkCoreParameterPath::~dtkCoreParameterPath(void)
+{
+    delete m_object;
+}
+
 dtkCoreParameterPath::dtkCoreParameterPath(const dtkCoreParameter *p) : dtkCoreParameterBase<dtkCoreParameterPath>()
 {
+    m_object = new dtkCoreParameterPathObject(this);
     if (!p) {
         dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
         return;
@@ -20,6 +31,7 @@ dtkCoreParameterPath::dtkCoreParameterPath(const dtkCoreParameter *p) : dtkCoreP
 
 dtkCoreParameterPath::dtkCoreParameterPath(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterPath>()
 {
+    m_object = new dtkCoreParameterPathObject(this);
     if (v.canConvert<dtkCoreParameterPath>()) {
         auto o(v.value<dtkCoreParameterPath>());
         *this = o;
@@ -38,14 +50,14 @@ dtkCoreParameterPath::dtkCoreParameterPath(const dtkCoreParameterPath& o) : dtkC
                                                                             m_path(o.m_path),
                                                                             m_filters(o.m_filters)
 {
-
+    m_object = new dtkCoreParameterPathObject(this);
 }
 
 dtkCoreParameterPath::dtkCoreParameterPath(const QString& label, const QString& path, const QStringList& filters, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterPath>(label, doc),
                                                                                                                                         m_path(path),
                                                                                                                                         m_filters(filters)
 {
-
+    m_object = new dtkCoreParameterPathObject(this);
 }
 
 dtkCoreParameterPath& dtkCoreParameterPath::operator = (const dtkCoreParameter *p)
@@ -71,8 +83,15 @@ dtkCoreParameterPath& dtkCoreParameterPath::operator = (const QVariant& v)
         m_path = map["path"].toString();
         m_filters = map["filters"].toStringList();
 
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyPath(m_path);
+        m_object->notifyFilters(m_filters);
+
     } else if (v.canConvert<QString>()) {
         m_path = v.toString();
+        m_object->notifyPath(m_path);
+
     } else {
         return *this;
     }
@@ -87,6 +106,10 @@ dtkCoreParameterPath& dtkCoreParameterPath::operator = (const dtkCoreParameterPa
         m_doc = o.m_doc;
         m_path = o.m_path;
         m_filters = o.m_filters;
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyPath(m_path);
+        m_object->notifyFilters(m_filters);
         this->sync();
     }
     return *this;
@@ -111,8 +134,15 @@ void dtkCoreParameterPath::setValue(const QVariant& v)
         m_path = map["path"].toString();
         m_filters = map["filters"].toStringList();
 
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyPath(m_path);
+        m_object->notifyFilters(m_filters);
+
     } else if (v.canConvert<QString>()) {
         m_path = v.toString();
+        m_object->notifyPath(m_path);
+
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
@@ -127,12 +157,14 @@ void dtkCoreParameterPath::setValue(const QVariant& v)
 void dtkCoreParameterPath::setPath(const QString& path)
 {
     m_path = path;
+    m_object->notifyPath(m_path);
     this->sync();
 }
 
 void dtkCoreParameterPath::setFilters(const QStringList& filters)
 {
     m_filters = filters;
+    m_object->notifyFilters(m_filters);
 }
 
 QString dtkCoreParameterPath::path(void) const
