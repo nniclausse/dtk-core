@@ -182,4 +182,49 @@ dtkCoreParameterInList<uchar> *dtkCoreParameterInListUcharObject::parameter(void
 }
 
 //
+
+dtkCoreParameterInListStringObject::dtkCoreParameterInListStringObject(dtkCoreParameterInList<QString> *p) : dtkCoreParameterObject(p), m_param(p)
+{
+}
+
+dtkCoreParameterInListStringObject::~dtkCoreParameterInListStringObject(void)
+{
+    m_param = nullptr;
+}
+
+void dtkCoreParameterInListStringObject::setList(const QList<QString>& l)
+{
+    if (l != m_param->values()) {
+        m_param->setValues(l);
+    }
+}
+
+QList<QString> dtkCoreParameterInListStringObject::list(void) const
+{
+    return m_param->values();
+}
+
+void dtkCoreParameterInListStringObject::setIndex(int i)
+{
+    if (i != m_param->valueIndex()) {
+        m_param->setValueIndex(i);
+    }
+}
+
+int dtkCoreParameterInListStringObject::index(void) const
+{
+    return m_param->valueIndex();
+}
+
+QString dtkCoreParameterInListStringObject::value(void) const
+{
+    return m_param->value();
+}
+
+dtkCoreParameterInList<QString> *dtkCoreParameterInListStringObject::parameter(void)
+{
+    return m_param;
+}
+
+//
 // dtkCoreParameterInListObject.cpp ends here

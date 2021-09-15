@@ -137,10 +137,42 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterInListObject
+class DTKCORE_EXPORT dtkCoreParameterInListStringObject : public dtkCoreParameterObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QList<QString> list READ list WRITE setList NOTIFY listChanged)
+    Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged)
+    Q_PROPERTY(QString value READ value)
+
+public:
+     dtkCoreParameterInListStringObject(dtkCoreParameterInList<QString> *);
+    ~dtkCoreParameterInListStringObject(void);
+
+    void setList(const QList<QString>&);
+    QList<QString> list(void) const;
+
+    void setIndex(int);
+    int index(void) const;
+
+    QString value(void) const;
+
+signals:
+    void listChanged(const QList<QString>&);
+    void indexChanged(int);
+
+public:
+    dtkCoreParameterInList<QString> *parameter(void) override;
+
+private:
+    dtkCoreParameterInList<QString> *m_param = nullptr;
+};
+
+//
+
+template <typename T = void> class dtkCoreParameterInListObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterInListObject<T>(dtkCoreParameterInList<T> *) {}
+     dtkCoreParameterInListObject<T>(dtkCoreParameterInList<T> *p) : dtkCoreParameterObject(p) {}
     ~dtkCoreParameterInListObject<T>(void) = default;
 
     void notifyList(const QList<T>&) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
@@ -193,46 +225,17 @@ public:
     void notifyIndex(int id) { emit indexChanged(id); }
 };
 
-// MACRO TO ADD TYPE OF INLIST PARAMETER OBJECT
+//
 
-#define DTK_PARAMETER_INLIST_OBJECT(type, name)                         \
-class DTKCORE_EXPORT dtkCoreParameterInList##name##Object : public dtkCoreParameterObject { \
-    Q_OBJECT                                                            \
-    Q_PROPERTY(QList<type> list READ list WRITE setList NOTIFY listChanged) \
-    Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged) \
-    Q_PROPERTY(type value READ value)                                   \
-                                                                        \
-public:                                                                 \
-     dtkCoreParameterInList##name##Object(dtkCoreParameterInList<type> *p) : dtkCoreParameterObject(p), m_param(p) {} \
-    ~dtkCoreParameterInList##name##Object(void) { m_param = nullptr; }  \
-    void setList(const QList<type>& l) { m_param-> setValues(l); }      \
-    QList<type> list(void) const { return m_param->values(); }          \
-    void setIndex(int i) { if (i != m_param->valueIndex()) m_param->setValueIndex(i); } \
-    int index(void) const { return m_param->valueIndex(); }             \
-    type value(void) const { return m_param->value(); }                 \
-    dtkCoreParameterInList<type> *parameter(void) override { return m_param; } \
-                                                                        \
-Q_SIGNALS:                                                              \
-    void listChanged(const QList<type>&);                               \
-    void indexChanged(int);                                             \
-                                                                        \
-private:                                                                \
-    dtkCoreParameterInList<type> *m_param = nullptr;                    \
-};                                                                      \
-                                                                        \
-template <> class DTKCORE_EXPORT dtkCoreParameterInListObject<type> : public dtkCoreParameterInList##name##Object \
-{                                                                       \
-public:                                                                 \
-      dtkCoreParameterInListObject<type>(dtkCoreParameterInList<type> *p) : dtkCoreParameterInList##name##Object(p) {}\
-     ~dtkCoreParameterInListObject<type>(void) = default;               \
-                                                                        \
-     void notifyList(const QList<type>& l) { emit listChanged(l); }     \
-     void notifyIndex(int i) { emit indexChanged(i); }                  \
+template <> class dtkCoreParameterInListObject<QString> : public dtkCoreParameterInListStringObject
+{
+public:
+     dtkCoreParameterInListObject<QString>(dtkCoreParameterInList<QString> *p) : dtkCoreParameterInListStringObject(p) {};
+    ~dtkCoreParameterInListObject<QString>(void) = default;
+
+    void notifyList(const QList<QString>& l) { emit listChanged(l); }
+    void notifyIndex(int id) { emit indexChanged(id); }
 };
-
-// DEFINE THE OBJECT PARAMETER INLIST FOR QSTRING USING THE PREVIOUS MACRO
-
-DTK_PARAMETER_INLIST_OBJECT(QString, String)
 
 //
 // dtkCoreParameterInListObject.h ends here

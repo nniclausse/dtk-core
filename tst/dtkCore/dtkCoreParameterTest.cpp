@@ -38,35 +38,6 @@ public:
 
 DTK_DECLARE_PARAMETER(dtkCoreParameterSimple<std::string>)
 DTK_DEFINE_PARAMETER(dtkCoreParameterSimple<std::string>, simple_string)
-//DTK_PARAMETER_SIMPLE_OBJECT(std::string, StdString)
-class DTKCORE_EXPORT dtkCoreParameterStdStringObject : public dtkCoreParameterObject {
-    Q_OBJECT
-    Q_PROPERTY(std::string value READ value WRITE setValue NOTIFY valueChanged)
-
-public:
-     dtkCoreParameterStdStringObject(dtkCoreParameterSimple<std::string> *p) : dtkCoreParameterObject(p), m_param(p) {}
-    ~dtkCoreParameterStdStringObject(void) { m_param = nullptr; }
-    void setValue(const std::string& v) { m_param->setValue(v); }
-    std::string value(void) const { return m_param->value(); }
-    dtkCoreParameterSimple<std::string> *parameter(void) override { return m_param; }
-
-Q_SIGNALS:
-    void valueChanged(const std::string&);
-
-private:
-    dtkCoreParameterSimple<std::string> *m_param = nullptr;
-};
-
-template <> class DTKCORE_EXPORT dtkCoreParameterSimpleObject<std::string> : public dtkCoreParameterStdStringObject
-{
-public:
-     dtkCoreParameterSimpleObject<std::string>(dtkCoreParameterSimple<std::string> *p) : dtkCoreParameterStdStringObject(p) {}\
-     ~dtkCoreParameterSimpleObject<std::string>(void) = default;
-
-     void notifyValue(const std::string& v) { emit valueChanged(v); }
-};
-
-
 
 // ///////////////////////////////////////////////////////////////////
 
@@ -1201,8 +1172,6 @@ void dtkCoreParameterTestCase::cleanup(void)
 }
 
 DTKCORETEST_MAIN_NOGUI(dtkCoreParameterTest, dtkCoreParameterTestCase);
-
-#include "dtkCoreParameterTest.moc"
 
 //
 // dtkCoreParameterTest.cpp ends here
