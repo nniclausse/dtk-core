@@ -26,8 +26,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterInListStringList(void) = default;
-    ~dtkCoreParameterInListStringList(void) = default;
+     dtkCoreParameterInListStringList(void);
+    ~dtkCoreParameterInListStringList(void);
 
     dtkCoreParameterInListStringList(const QStringList&);
     dtkCoreParameterInListStringList(const QVariant&);
@@ -41,25 +41,28 @@ public:
 
     int size(void) const;
     QStringList value(void) const;
-    QStringList values(void) const;
+    QStringList list(void) const;
 
     void addValue(const QString&);
     void removeValue(const QString&);
 
-    void setValues(const QStringList&);
     void setValue(const QStringList&);
-    void setValue(const QVariant&);
+    void setValue(const QVariant&) override;
+    void setList(const QStringList&);
 
     QVariantHash toVariantHash(void) const override;
 
-    //dtkCoreParameterObject *object(void) override;
+    dtkCoreParameterObject *object(void) override;
+
+    Q_DECL_DEPRECATED QStringList values(void) const;
+    Q_DECL_DEPRECATED void setValues(const QStringList&);
 
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     QStringList m_value;
-    QStringList m_values;
+    QStringList m_list;
 
 private:
     dtkCoreParameterInListStringListObject *m_object = nullptr;
