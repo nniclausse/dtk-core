@@ -11,6 +11,7 @@
 #include <QtCore>
 
 class dtkCoreParameter;
+class dtkCoreParameterObject;
 
 // ///////////////////////////////////////////////////////////////////
 // MACRO TO REGISTER PARAMETER TO QMETATYPE SYSTEM
@@ -102,6 +103,10 @@ public:
     virtual void setValue(const QVariant&) = 0;
     virtual QVariant variant(void) const = 0;
     virtual QVariantHash toVariantHash(void) const = 0;
+
+#pragma mark - QObject binding
+
+    virtual dtkCoreParameterObject *object(void) { return nullptr; }
 
 #pragma mark - Connection management
 

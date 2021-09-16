@@ -13,6 +13,14 @@
 #include <dtkCore/dtkCoreParameterRange>
 #include <dtkCore/dtkCoreParameterSimple>
 
+#include <dtkCore/dtkCoreParameterObject>
+#include <dtkCore/dtkCoreParameterInListObject>
+#include <dtkCore/dtkCoreParameterInListStringListObject>
+#include <dtkCore/dtkCoreParameterNumericObject>
+#include <dtkCore/dtkCoreParameterPathObject>
+#include <dtkCore/dtkCoreParameterRangeObject>
+#include <dtkCore/dtkCoreParameterSimpleObject>
+
 #include <ciso646>
 
 class dtkCoreParameterTestCasePrivate
@@ -984,16 +992,16 @@ void dtkCoreParameterTestCase::testStringList(void)
     QVERIFY(param_list.label() == "name");
 
     QCOMPARE(param_list.value().size(), 2);
-    QCOMPARE(param_list.values().size(), 4);
+    QCOMPARE(param_list.list().size(), 4);
 
     param_list.addValue("zz");
     QCOMPARE(param_list.value().size(), 2);
-    QCOMPARE(param_list.values().size(), 5);
+    QCOMPARE(param_list.list().size(), 5);
 
 
     param_list.removeValue("aa");
     QCOMPARE(param_list.value().size(), 1);
-    QCOMPARE(param_list.values().size(), 4);
+    QCOMPARE(param_list.list().size(), 4);
 
 }
 

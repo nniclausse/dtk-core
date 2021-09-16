@@ -5,6 +5,8 @@
 
 #include "dtkCoreParameter.h"
 
+template <typename T> class dtkCoreParameterRangeObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterRange declaration
 // ///////////////////////////////////////////////////////////////////
@@ -24,8 +26,8 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterRange(void) = default;
-    ~dtkCoreParameterRange(void) = default;
+     dtkCoreParameterRange(void);
+    ~dtkCoreParameterRange(void);
 
     dtkCoreParameterRange(const std::array<T, 2>&);
     dtkCoreParameterRange(std::initializer_list<T>);
@@ -36,10 +38,15 @@ public:
 #ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
 #endif
+
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
     dtkCoreParameterRange& operator = (std::initializer_list<T>);
     dtkCoreParameterRange& operator = (const QVariant&);
     dtkCoreParameterRange& operator = (const dtkCoreParameterRange&);
+
+    void setRange(const std::array<T, 2>&);
+    void setRange(std::initializer_list<T>);
+    void setRange(const T&, const T&);
 
     void setValue(const std::array<T, 2>&);
     void setValue(std::initializer_list<T>);
@@ -47,7 +54,7 @@ public:
 
     const std::array<T, 2>& value(void) const;
 
-    value_type  operator[](int index) const;
+    value_type operator[](int index) const;
 
     T min(void) const;
     T max(void) const;
@@ -65,6 +72,8 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
@@ -72,6 +81,9 @@ private:
     std::array<T, 2> m_val = {T(0), T(0)};
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
+
+private:
+    dtkCoreParameterRangeObject<T> *m_object = nullptr;
 };
 
 template <typename T>
