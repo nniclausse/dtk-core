@@ -208,10 +208,10 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterNumericObject
+template <typename T = void> class dtkCoreParameterNumericObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterNumericObject<T>(dtkCoreParameterNumeric<T> *) {}
+     dtkCoreParameterNumericObject<T>(dtkCoreParameterNumeric<T> *p) : dtkCoreParameterObject(p) {}
     ~dtkCoreParameterNumericObject<T>(void) = default;
 
     void notifyValue(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }

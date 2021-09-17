@@ -184,10 +184,10 @@ private:
 
 //
 
-template <typename T = void> class dtkCoreParameterRangeObject
+template <typename T = void> class dtkCoreParameterRangeObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterRangeObject(dtkCoreParameterRange<T> *) {}
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<T> *p) : dtkCoreParameterObject(p) {}
     ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRange(const std::array<T, 2>& ) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }

@@ -80,6 +80,8 @@ namespace dtk {
     using d_inliststring = dtkCoreParameterInList<QString>;
     using d_inlistreal = dtkCoreParameterInList<double>;
     using d_inlistint = dtkCoreParameterInList<qlonglong>;
+    using d_inlistchar = dtkCoreParameterInList<char>;
+    using d_inlistuchar = dtkCoreParameterInList<uchar>;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -89,6 +91,8 @@ namespace dtk {
 DTK_DECLARE_PARAMETER(dtk::d_inliststring);
 DTK_DECLARE_PARAMETER(dtk::d_inlistreal);
 DTK_DECLARE_PARAMETER(dtk::d_inlistint);
+DTK_DECLARE_PARAMETER(dtk::d_inlistchar);
+DTK_DECLARE_PARAMETER(dtk::d_inlistuchar);
 
 // ///////////////////////////////////////////////////////////////////
 
