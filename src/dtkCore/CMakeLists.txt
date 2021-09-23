@@ -75,7 +75,7 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreParameterSimpleObject
   dtkCoreParameterSimpleObject.h
   dtkCoreParameterCollection
-  dtkCoreParameterCollection.cpp
+  dtkCoreParameterCollection.h
   dtkCorePlugin
   dtkCorePlugin.h
   dtkCorePluginBase
