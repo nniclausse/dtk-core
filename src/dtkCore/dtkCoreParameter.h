@@ -90,6 +90,7 @@ public:
     ~dtkCoreParameter(void) = default;
 
     virtual QString typeName(void) const = 0;
+    virtual int typeId(void) const = 0;
 
     void setUid(const QString&);
     const QString& uid(void) const;
@@ -159,6 +160,7 @@ public:
 
 public:
     QString typeName(void) const override;
+    int typeId(void) const override;
 
     QVariant variant(void) const final;
     void copyAndShare(dtkCoreParameter *) final;

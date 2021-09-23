@@ -112,6 +112,12 @@ inline QString dtkCoreParameterBase<Derive>::typeName(void) const
 }
 
 template <typename Derive>
+inline int dtkCoreParameterBase<Derive>::typeId(void) const
+{
+    return qMetaTypeId<Derive>();
+}
+
+template <typename Derive>
 inline QVariant dtkCoreParameterBase<Derive>::variant(void) const
 {
     bool old = this->m_enable_share_connection;
