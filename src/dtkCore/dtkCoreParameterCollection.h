@@ -57,7 +57,7 @@ inline dtkCoreParameterCollection::dtkCoreParameterCollection(InputIterator firs
 
 }
 
-template <typename T, typename E = dtk::is_core_parameter<T>>
+template <typename T, typename E>
 inline const T& dtkCoreParameterCollection::parameter(const key_type& key) const
 {
     static T default_p = T();
@@ -75,7 +75,7 @@ inline const T& dtkCoreParameterCollection::parameter(const key_type& key) const
     return default_p;
 }
 
-template <typename T, typename E = dtk::is_core_parameter<T>>
+template <typename T, typename E>
 inline T& dtkCoreParameterCollection::parameter(const key_type& key)
 {
     auto&& p = base_type::operator[](key);
