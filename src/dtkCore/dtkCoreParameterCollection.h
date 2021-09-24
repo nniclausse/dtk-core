@@ -7,9 +7,9 @@
 
 #include "dtkCoreParameter.h"
 
-class DTKCORE_EXPORT dtkCoreParameterCollection : public QHash<QString, dtkCoreParameter *>
+class DTKCORE_EXPORT dtkCoreParameterCollection : public QMap<QString, dtkCoreParameter *>
 {
-    using base_type = QHash<QString, dtkCoreParameter *>;
+    using base_type = QMap<QString, dtkCoreParameter *>;
     using self_type = dtkCoreParameterCollection;
 
 public:
@@ -33,9 +33,6 @@ public:
      dtkCoreParameterCollection(const dtkCoreParameterCollection&);
      dtkCoreParameterCollection(dtkCoreParameterCollection&&);
      dtkCoreParameterCollection(const dtkCoreParameters&);
-     dtkCoreParameterCollection(dtkCoreParameters&&);
-     template <typename InputIterator>
-     dtkCoreParameterCollection(InputIterator first, InputIterator last);
     ~dtkCoreParameterCollection(void) = default;
 
     dtkCoreParameterCollection& operator = (const dtkCoreParameterCollection&);
@@ -54,12 +51,6 @@ public:
 Q_DECLARE_METATYPE(dtkCoreParameterCollection);
 
 // ///////////////////////////////////////////////////////////////////
-
-template <typename InputIterator>
-inline dtkCoreParameterCollection::dtkCoreParameterCollection(InputIterator first, InputIterator last) : base_type(first, last)
-{
-
-}
 
 template <typename T, typename E>
 inline const T& dtkCoreParameterCollection::parameter(const key_type& key) const

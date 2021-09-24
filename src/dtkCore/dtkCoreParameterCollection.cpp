@@ -18,14 +18,11 @@ dtkCoreParameterCollection::dtkCoreParameterCollection(dtkCoreParameterCollectio
 
 }
 
-dtkCoreParameterCollection::dtkCoreParameterCollection(const dtkCoreParameters& o) : base_type(o)
+dtkCoreParameterCollection::dtkCoreParameterCollection(const dtkCoreParameters& o) : base_type()
 {
-
-}
-
-dtkCoreParameterCollection::dtkCoreParameterCollection(dtkCoreParameters&& o) : base_type(o)
-{
-
+    for (auto it = o.cbegin(); it != o.cend(); ++it) {
+        this->insert(it.key(), it.value());
+    }
 }
 
 dtkCoreParameterCollection& dtkCoreParameterCollection::operator = (const dtkCoreParameterCollection& o)
@@ -36,7 +33,8 @@ dtkCoreParameterCollection& dtkCoreParameterCollection::operator = (const dtkCor
 
 dtkCoreParameterCollection& dtkCoreParameterCollection::operator = (const dtkCoreParameters& o)
 {
-    base_type::operator=(o);
+    self_type s(o);
+    this->swap(s);
     return *this;
 }
 
