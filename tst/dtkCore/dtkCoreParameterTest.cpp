@@ -13,6 +13,8 @@
 #include <dtkCore/dtkCoreParameterRange>
 #include <dtkCore/dtkCoreParameterSimple>
 
+#include <dtkCore/dtkCoreParameterCollection>
+
 #include <dtkCore/dtkCoreParameterObject>
 #include <dtkCore/dtkCoreParameterInListObject>
 #include <dtkCore/dtkCoreParameterInListStringListObject>
@@ -1185,6 +1187,70 @@ void dtkCoreParameterTestCase::testToVariantHash(void)
         QVERIFY(&target_inlist);
         QCOMPARE(source.values(), target_inlist.values());
         QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
+    }
+}
+
+void dtkCoreParameterTestCase::testCollection(void)
+{
+    QString json_file(QFINDTESTDATA("../resources/parameters_def.json"));
+    auto res = dtk::core::readParameters(json_file);
+
+    // Copy Ctor and getter
+    {
+        dtkCoreParameterCollection collection(res);
+        QCOMPARE(collection.size(), res.size());
+
+        auto&& m_path = collection.parameter<dtk::d_path>("model/settings");
+        auto&& p_path = dynamic_cast<dtk::d_path*>(res["model/settings"]);
+
+        QCOMPARE(m_path.label(), p_path->label());
+        QCOMPARE(m_path.documentation(), p_path->documentation());
+        QCOMPARE(m_path.path(), p_path->path());
+        QCOMPARE(m_path.dirName(), p_path->dirName());
+        QCOMPARE(m_path.baseName(), p_path->baseName());
+        QCOMPARE(m_path.filters(), p_path->filters());
+
+        auto&& m_real = collection.parameter<dtk::d_real>("toto");
+        auto&& p_real = dynamic_cast<dtk::d_real*>(res["toto"]);
+
+        QCOMPARE(m_real.label(), p_real->label());
+        QCOMPARE(m_real.documentation(), p_real->documentation());
+        QCOMPARE(m_real.value(), p_real->value());
+        QCOMPARE(m_real.min(), p_real->min());
+        QCOMPARE(m_real.max(), p_real->max());
+        QCOMPARE(m_real.decimals(), p_real->decimals());
+    }
+
+    // Setter and iterator
+    {
+        dtkCoreParameterCollection collection;
+        for (auto it = res.cbegin(); it != res.cend(); ++it) {
+            collection[it.key()] = it.value();
+        }
+        for (auto it = collection.cbegin(); it != collection.cend(); ++it) {
+            QVERIFY(res.contains(it.key()));
+            QCOMPARE(res[it.key()], it.value());
+        }
+    }
+
+    // Bad acess check default parameter value
+    {
+        dtkCoreParameterCollection collection(res);
+        // Wrong name
+        auto&& p = collection.parameter<dtk::d_path>("model/setting");
+        QVERIFY(p.label().isEmpty());
+        QVERIFY(p.documentation().isEmpty());
+        QVERIFY(p.filters().size() == 0);
+        QVERIFY(p.path().isEmpty());
+        // wrong type
+        dtk::d_real rr;
+        auto&& r = collection.parameter<dtk::d_real>("model/settings");
+        QVERIFY(r.label().isEmpty());
+        QVERIFY(r.documentation().isEmpty());
+        QVERIFY(r.value() == rr.value());
+        QVERIFY(r.min() == rr.min());
+        QVERIFY(r.max() == rr.max());
+        QVERIFY(r.decimals() == rr.decimals());
     }
 }
 

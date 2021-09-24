@@ -51,6 +51,10 @@ public:
     QVariantMap asVariantMap(void) const;
 };
 
+Q_DECLARE_METATYPE(dtkCoreParameterCollection);
+
+// ///////////////////////////////////////////////////////////////////
+
 template <typename InputIterator>
 inline dtkCoreParameterCollection::dtkCoreParameterCollection(InputIterator first, InputIterator last) : base_type(first, last)
 {
@@ -66,10 +70,10 @@ inline const T& dtkCoreParameterCollection::parameter(const key_type& key) const
         if (qMetaTypeId<T>() == p->typeId()) {
             return *reinterpret_cast<T *>(p);
         } else {
-            qDebug() << Q_FUNC_INFO
-                     << "Unable to cast into type" << QMetaType::typeName(qMetaTypeId<T>())
-                     << "from type" << p->typeName()
-                     << ". Default param is returned.";
+            dtkWarn() << Q_FUNC_INFO
+                      << "Unable to cast into type" << QMetaType::typeName(qMetaTypeId<T>())
+                      << "from type" << p->typeName()
+                      << ". Default param is returned.";
         }
     }
     return default_p;
@@ -78,17 +82,19 @@ inline const T& dtkCoreParameterCollection::parameter(const key_type& key) const
 template <typename T, typename E>
 inline T& dtkCoreParameterCollection::parameter(const key_type& key)
 {
-    auto&& p = base_type::operator[](key);
-    if (qMetaTypeId<T>() == p->typeId()) {
-        return *reinterpret_cast<T *>(p);
-    } else {
-        qDebug() << Q_FUNC_INFO
-                 << "Unable to cast into type" << QMetaType::typeName(qMetaTypeId<T>())
-                 << "from type" << p->typeName()
-                 << ". Default param is returned.";
-        static T default_p = T();
-        return default_p;
+    static T default_p = T();
+    if (this->find(key) != this->end()) {
+        auto&& p = base_type::operator[](key);
+        if (qMetaTypeId<T>() == p->typeId()) {
+            return *reinterpret_cast<T *>(p);
+        } else {
+            dtkWarn() << Q_FUNC_INFO
+                      << "Unable to cast into type" << QMetaType::typeName(qMetaTypeId<T>())
+                      << "from type" << p->typeName()
+                      << ". Default param is returned.";
+        }
     }
+    return default_p;
 }
 
 //
