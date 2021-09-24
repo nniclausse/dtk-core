@@ -43,7 +43,7 @@ QVariant dtkCoreParameterCollection::variant(const key_type& key) const
     return base_type::operator[](key)->variant();
 }
 
-QVariantMap dtkCoreParameterCollection::asVariantMap(void) const
+QVariantMap dtkCoreParameterCollection::toVariantMap(void) const
 {
     QVariantMap target_map;
     for (auto it = base_type::cbegin(); it != base_type::cend(); ++it) {

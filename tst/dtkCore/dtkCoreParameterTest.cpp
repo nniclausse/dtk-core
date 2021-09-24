@@ -1252,6 +1252,24 @@ void dtkCoreParameterTestCase::testCollection(void)
         QVERIFY(r.max() == rr.max());
         QVERIFY(r.decimals() == rr.decimals());
     }
+
+    // Assigment operator and Variant
+    {
+        dtkCoreParameterCollection collection;
+        collection = res;
+        dtk::d_int& ii = *(static_cast<dtk::d_int*>(res["hyp"]));
+        auto v = collection.variant("hyp");
+        QVERIFY(v.isValid());
+        QVERIFY(v.userType() == qMetaTypeId<dtk::d_int>());
+        QCOMPARE(v.value<dtk::d_int>(), ii);
+
+        auto vmap = collection.toVariantMap();
+        auto it = collection.begin();
+        for (auto vit = vmap.begin(); vit != vmap.end(); ++vit, ++it) {
+            QCOMPARE(vit.key(), it.key());
+            QCOMPARE(vit.value().userType(), it.value()->typeId());
+        }
+    }
 }
 
 void dtkCoreParameterTestCase::cleanupTestCase(void)

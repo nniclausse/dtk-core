@@ -45,7 +45,7 @@ public:
 
     QVariant variant(const key_type&) const;
 
-    QVariantMap asVariantMap(void) const;
+    QVariantMap toVariantMap(void) const;
 };
 
 Q_DECLARE_METATYPE(dtkCoreParameterCollection);
