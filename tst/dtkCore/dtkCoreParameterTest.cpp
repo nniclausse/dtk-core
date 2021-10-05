@@ -746,8 +746,10 @@ void dtkCoreParameterTestCase::testConnection(void)
     dtk::d_real pr("pr", 0.0, -10.0, 10.0);
     dtk::d_real default_value("default_value", 0.0, -10.0, 10.0);
     dtk::d_real bad_value(12345.6789);
+    dtk::d_real pr_share(12345.6789);
     QVariant variant_good = QVariant(3.14);
     QVariant variant_bad  = QVariant(31415.957);
+
 
     int signal_count = 0;
     int error_count = 0;
@@ -760,6 +762,22 @@ void dtkCoreParameterTestCase::testConnection(void)
                  signal_count++;
              };
     pr.connect(f);
+
+    auto g = [=, &signal_count] (QVariant v) {
+                 QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                 qDebug() << "from g";
+             };
+    auto h = [=, &signal_count] (QVariant v) {
+                 QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                 qDebug() << "from h";
+             };
+
+    // should not crash if no connection is set
+    pr_share.shareValue(42.);
+    pr_share.connect(g);
+    pr_share.connect(h);
+    pr_share.shareValue(std::sqrt(2));
+    pr_share.disconnect();
 
     // catch invalid values setting
     pr.connectFail( [=, &error_count] () { ++error_count; } );

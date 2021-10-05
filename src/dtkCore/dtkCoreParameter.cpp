@@ -219,6 +219,10 @@ void dtkCoreParameter::disconnectFail(void)
 
 void dtkCoreParameter::shareValue(QVariant v)
 {
+    if (!this->m_connection) {
+        this->setValue(v);
+        return;
+    }
     for (dtkCoreParameter *p: this->m_connection->param_list) {
         p->setValue(v);
     }
