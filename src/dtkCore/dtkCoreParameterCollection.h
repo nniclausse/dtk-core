@@ -5,6 +5,8 @@
 
 #include <dtkCoreExport>
 
+#include <QJSValue>
+
 #include "dtkCoreParameter.h"
 
 class DTKCORE_EXPORT dtkCoreParameterCollection : public QMap<QString, dtkCoreParameter *>
@@ -28,7 +30,7 @@ public:
     using const_key_value_iterator = base_type::const_key_value_iterator;
 
 public:
-     dtkCoreParameterCollection(void) = default;
+     dtkCoreParameterCollection(void);
      dtkCoreParameterCollection(std::initializer_list<std::pair<key_type, value_type>> list);
      dtkCoreParameterCollection(const dtkCoreParameterCollection&);
      dtkCoreParameterCollection(dtkCoreParameterCollection&&);
@@ -43,9 +45,14 @@ public:
     template <typename T, typename E = dtk::is_core_parameter<T>>
     T& parameter(const key_type&);
 
+    QJSValue toJSValue(QObject *) const;
+
     QVariant variant(const key_type&) const;
 
     QVariantMap toVariantMap(void) const;
+
+private:
+    class dtkCoreParameterCollectionPrivate *d;
 };
 
 Q_DECLARE_METATYPE(dtkCoreParameterCollection);

@@ -23,6 +23,8 @@
 #include <dtkCore/dtkCoreParameterRangeObject>
 #include <dtkCore/dtkCoreParameterSimpleObject>
 
+#include <QtQml>
+
 #include <ciso646>
 
 class dtkCoreParameterTestCasePrivate
@@ -1269,6 +1271,12 @@ void dtkCoreParameterTestCase::testCollection(void)
             QCOMPARE(vit.key(), it.key());
             QCOMPARE(vit.value().userType(), it.value()->typeId());
         }
+
+        QQmlEngine *engine = new QQmlEngine();
+        QJSValue jsvalue = collection.toJSValue(engine);
+        QJSValue jsv;
+        QVERIFY(jsvalue.hasProperty("hyp"));
+
     }
 }
 

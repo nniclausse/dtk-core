@@ -158,6 +158,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 #endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Qml)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>
