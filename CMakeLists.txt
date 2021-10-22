@@ -129,7 +129,7 @@ include(GenerateExportHeader)
 ## Dependencies - external
 ## #################################################################
 
-find_package(Qt5 REQUIRED COMPONENTS Core Test Widgets Gui)
+find_package(Qt5 REQUIRED COMPONENTS Core Qml Test Widgets Gui)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

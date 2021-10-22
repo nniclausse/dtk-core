@@ -74,6 +74,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreParameterRangeObject.h
   dtkCoreParameterSimpleObject
   dtkCoreParameterSimpleObject.h
+  dtkCoreParameterCollection
+  dtkCoreParameterCollection.h
   dtkCorePlugin
   dtkCorePlugin.h
   dtkCorePluginBase
@@ -119,6 +121,7 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreParameterNumericObject.cpp
   dtkCoreParameterRangeObject.cpp
   dtkCoreParameterSimpleObject.cpp
+  dtkCoreParameterCollection.cpp
   dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
@@ -155,6 +158,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 #endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Qml)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>

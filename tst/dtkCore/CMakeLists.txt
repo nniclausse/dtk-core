@@ -72,6 +72,7 @@ target_link_libraries(${PROJECT_NAME} dtkCoreLayerTest)
 target_link_libraries(${PROJECT_NAME} dtkCoreConceptFooPlugin)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+target_link_libraries(${PROJECT_NAME} Qt5::Qml)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)
 
 ## ###################################################################

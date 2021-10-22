@@ -38,6 +38,7 @@ private slots:
     void testReadParametersResources(void);
     void testWriteParameters(void);
     void testToVariantHash(void);
+    void testCollection(void);
 
 private slots:
     void cleanupTestCase(void);
