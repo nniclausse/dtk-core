@@ -14,6 +14,7 @@ class DTKCORE_EXPORT dtkCoreParameterObject : public QObject
     Q_OBJECT
     Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
     Q_PROPERTY(QString doc READ doc WRITE setDoc NOTIFY docChanged)
+    Q_PROPERTY(QString type READ type)
 
 public:
      dtkCoreParameterObject(dtkCoreParameter *);
@@ -24,6 +25,8 @@ public:
 
     void setDoc(const QString&);
     QString doc(void) const;
+
+    QString type(void) const;
 
 signals:
     void labelChanged(const QString&);

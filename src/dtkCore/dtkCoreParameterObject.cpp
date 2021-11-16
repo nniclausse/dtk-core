@@ -39,6 +39,11 @@ QString dtkCoreParameterObject::doc(void) const
     return m_parameter->documentation();
 }
 
+QString dtkCoreParameterObject::type(void) const
+{
+    return m_parameter->typeName();
+}
+
 dtkCoreParameter *dtkCoreParameterObject::parameter(void)
 {
     return m_parameter;
