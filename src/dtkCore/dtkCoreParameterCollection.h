@@ -5,9 +5,9 @@
 
 #include <dtkCoreExport>
 
-#include <QJSValue>
-
 #include "dtkCoreParameter.h"
+
+class QJSValue;
 
 class DTKCORE_EXPORT dtkCoreParameterCollection : public QMap<QString, dtkCoreParameter *>
 {
