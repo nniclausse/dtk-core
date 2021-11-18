@@ -192,16 +192,16 @@ dtkCoreParameterInListStringObject::~dtkCoreParameterInListStringObject(void)
     m_param = nullptr;
 }
 
-void dtkCoreParameterInListStringObject::setList(const QList<QString>& l)
+void dtkCoreParameterInListStringObject::setList(const QStringList& l)
 {
     if (l != m_param->values()) {
         m_param->setValues(l);
     }
 }
 
-QList<QString> dtkCoreParameterInListStringObject::list(void) const
+QStringList dtkCoreParameterInListStringObject::list(void) const
 {
-    return m_param->values();
+    return QStringList(m_param->values());
 }
 
 void dtkCoreParameterInListStringObject::setIndex(int i)

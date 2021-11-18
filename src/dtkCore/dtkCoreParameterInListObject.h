@@ -140,7 +140,7 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterInListStringObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<QString> list READ list WRITE setList NOTIFY listChanged)
+    Q_PROPERTY(QStringList list READ list WRITE setList NOTIFY listChanged)
     Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged)
     Q_PROPERTY(QString value READ value)
 
@@ -148,8 +148,8 @@ public:
      dtkCoreParameterInListStringObject(dtkCoreParameterInList<QString> *);
     ~dtkCoreParameterInListStringObject(void);
 
-    void setList(const QList<QString>&);
-    QList<QString> list(void) const;
+    void setList(const QStringList&);
+    QStringList list(void) const;
 
     void setIndex(int);
     int index(void) const;
@@ -157,7 +157,7 @@ public:
     QString value(void) const;
 
 signals:
-    void listChanged(const QList<QString>&);
+    void listChanged(const QStringList&);
     void indexChanged(int);
 
 public:
@@ -233,7 +233,7 @@ public:
      dtkCoreParameterInListObject<QString>(dtkCoreParameterInList<QString> *p) : dtkCoreParameterInListStringObject(p) {};
     ~dtkCoreParameterInListObject<QString>(void) = default;
 
-    void notifyList(const QList<QString>& l) { emit listChanged(l); }
+    void notifyList(const QStringList& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }
 };
 
