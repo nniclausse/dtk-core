@@ -191,7 +191,7 @@ template <typename T> inline void dtkCorePluginManager<T>::setLayerVersion(const
 template <typename T> void dtkCorePluginManager<T>::initialize(const QString& path)
 {
 
-    for (QString path2 : path.split(":", QString::SkipEmptyParts)) {
+    for (QString path2 : path.split(":", Qt::SkipEmptyParts)) {
 
         if (path2.startsWith ("~/")) {
             path2.replace (0, 1, QDir::homePath());
