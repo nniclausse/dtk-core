@@ -77,6 +77,23 @@ DTKCORE_EXPORT QDataStream& operator>>(QDataStream&, std::string&);
 #include "dtkCoreMetaType.tpp"
 
 // ///////////////////////////////////////////////////////////////////
+// Helper funcion to load basic atomic int with respect to Qt Version
+// ///////////////////////////////////////////////////////////////////
+
+namespace dtk {
+    namespace detail {
+        template <typename T>
+        T loadBasicAtomicInteger(const QBasicAtomicInteger<T>& a) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+            return a.loadRelaxed();
+#else
+            return a.load();
+#endif
+        }
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////
 // Add std::array as sequential container
 // ///////////////////////////////////////////////////////////////////
 
@@ -91,7 +108,7 @@ struct QMetaTypeId<std::array<T,N>>
     static int qt_metatype_id()
     {
         static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
-        if (const int id = metatype_id.loadRelaxed())
+        if (const int id = ::dtk::detail::loadBasicAtomicInteger(metatype_id))
             return id;
         const char *tName = QMetaType::typeName(qMetaTypeId<T>());
         const char *nName = QMetaType::typeName(qMetaTypeId<std::size_t>());

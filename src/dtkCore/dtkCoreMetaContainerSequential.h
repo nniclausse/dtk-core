@@ -222,7 +222,7 @@ struct QMetaTypeId< CONTAINER_ARG<T> * >                                        
     static int qt_metatype_id()                                                   \
     {                                                                             \
         static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);       \
-        if (const int id = metatype_id.loadRelaxed())                                    \
+        if (const int id = ::dtk::detail::loadBasicAtomicInteger(metatype_id))    \
             return id;                                                            \
         const char *tName = QMetaType::typeName(qMetaTypeId<T>());                \
         Q_ASSERT(tName);                                                          \
@@ -267,7 +267,7 @@ template <> struct QMetaTypeId<QStringList *> {
     static int qt_metatype_id() {
         static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
 
-        if (const int id = metatype_id.loadRelaxed())
+        if (const int id = ::dtk::detail::loadBasicAtomicInteger(metatype_id))
             return id;
 
         QByteArray typeName("QStringList*", 12);
