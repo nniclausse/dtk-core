@@ -28,7 +28,6 @@ namespace dtk {
 
             template <typename C>
             using container_has_key_value_iterator = typename std::enable_if_t<has_container_key_value_iterator<C>::value, bool>;
-
         }
 
         template <typename C, typename E = detail::container_has_key_value_iterator<C>>
@@ -47,11 +46,9 @@ namespace dtk {
             auto cbegin(void) const { return m_data.constKeyValueBegin(); }
             auto cend(void) const { return m_data.constKeyValueEnd(); }
 
-
         private:
             C &m_data;
         };
-
     }
 }
 
