@@ -12,17 +12,21 @@
 class DTKCORE_EXPORT dtkCoreParameterRangeRealObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(std::array<double, 2> range READ range    WRITE setRange    NOTIFY rangeChanged)
-    Q_PROPERTY(double max                  READ max      WRITE setMax      NOTIFY maxChanged)
-    Q_PROPERTY(double min                  READ min      WRITE setMin      NOTIFY minChanged)
-    Q_PROPERTY(int decimals                READ decimals WRITE setDecimals NOTIFY decimalsChanged)
+    Q_PROPERTY(double rmax  READ rmax     WRITE setRmax     NOTIFY rmaxChanged)
+    Q_PROPERTY(double rmin  READ rmin     WRITE setRmin     NOTIFY rminChanged)
+    Q_PROPERTY(double max   READ max      WRITE setMax      NOTIFY maxChanged)
+    Q_PROPERTY(double min   READ min      WRITE setMin      NOTIFY minChanged)
+    Q_PROPERTY(int decimals READ decimals WRITE setDecimals NOTIFY decimalsChanged)
 
 public:
      dtkCoreParameterRangeRealObject(dtkCoreParameterRange<double> *);
     ~dtkCoreParameterRangeRealObject(void);
 
-    void setRange(const std::array<double, 2>&);
-    const std::array<double, 2>& range(void) const;
+    void setRmin(double);
+    double rmin(void) const;
+
+    void setRmax(double);
+    double rmax(void) const;
 
     void setMax(double);
     double max(void) const;
@@ -34,7 +38,8 @@ public:
     int decimals(void) const;
 
 signals:
-    void rangeChanged(const std::array<double, 2>&);
+    void rmaxChanged(double);
+    void rminChanged(double);
     void maxChanged(double);
     void minChanged(double);
     void decimalsChanged(int);
@@ -51,16 +56,20 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeIntObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(std::array<qlonglong, 2> range READ range WRITE setRange NOTIFY rangeChanged)
-    Q_PROPERTY(qlonglong max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(qlonglong min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(qlonglong rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(qlonglong rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(qlonglong max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(qlonglong min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeIntObject(dtkCoreParameterRange<qlonglong> *);
     ~dtkCoreParameterRangeIntObject(void);
 
-    void setRange(const std::array<qlonglong, 2>&);
-    const std::array<qlonglong, 2>& range(void) const;
+    void setRmin(qlonglong);
+    qlonglong rmin(void) const;
+
+    void setRmax(qlonglong);
+    qlonglong rmax(void) const;
 
     void setMax(qlonglong);
     qlonglong max(void) const;
@@ -69,7 +78,8 @@ public:
     qlonglong min(void) const;
 
 signals:
-    void rangeChanged(const std::array<qlonglong, 2>&);
+    void rmaxChanged(qlonglong);
+    void rminChanged(qlonglong);
     void maxChanged(qlonglong);
     void minChanged(qlonglong);
 
@@ -85,16 +95,20 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeUintObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(std::array<qulonglong, 2> range READ range WRITE setRange NOTIFY rangeChanged)
-    Q_PROPERTY(qulonglong max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(qulonglong min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(qulonglong rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(qulonglong rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(qulonglong max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(qulonglong min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeUintObject(dtkCoreParameterRange<qulonglong> *);
     ~dtkCoreParameterRangeUintObject(void);
 
-    void setRange(const std::array<qulonglong, 2>&);
-    const std::array<qulonglong, 2>& range(void) const;
+    void setRmin(qulonglong);
+    qulonglong rmin(void) const;
+
+    void setRmax(qulonglong);
+    qulonglong rmax(void) const;
 
     void setMax(qulonglong);
     qulonglong max(void) const;
@@ -103,7 +117,8 @@ public:
     qulonglong min(void) const;
 
 signals:
-    void rangeChanged(const std::array<qulonglong, 2>&);
+    void rmaxChanged(qulonglong);
+    void rminChanged(qulonglong);
     void maxChanged(qulonglong);
     void minChanged(qulonglong);
 
@@ -119,16 +134,20 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeCharObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(std::array<char, 2> range READ range WRITE setRange NOTIFY rangeChanged)
-    Q_PROPERTY(char max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(char min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(char rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(char rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(char max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(char min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeCharObject(dtkCoreParameterRange<char> *);
     ~dtkCoreParameterRangeCharObject(void);
 
-    void setRange(const std::array<char, 2>&);
-    const std::array<char, 2>& range(void) const;
+    void setRmin(char);
+    char rmin(void) const;
+
+    void setRmax(char);
+    char rmax(void) const;
 
     void setMax(char);
     char max(void) const;
@@ -137,7 +156,8 @@ public:
     char min(void) const;
 
 signals:
-    void rangeChanged(const std::array<char, 2>&);
+    void rmaxChanged(char);
+    void rminChanged(char);
     void maxChanged(char);
     void minChanged(char);
 
@@ -153,16 +173,20 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeUcharObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(std::array<uchar, 2> range READ range WRITE setRange NOTIFY rangeChanged)
-    Q_PROPERTY(uchar max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(uchar min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(uchar rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(uchar rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(uchar max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(uchar min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeUcharObject(dtkCoreParameterRange<uchar> *);
     ~dtkCoreParameterRangeUcharObject(void);
 
-    void setRange(const std::array<uchar, 2>&);
-    const std::array<uchar, 2>& range(void) const;
+    void setRmin(uchar);
+    uchar rmin(void) const;
+
+    void setRmax(uchar);
+    uchar rmax(void) const;
 
     void setMax(uchar);
     uchar max(void) const;
@@ -171,7 +195,8 @@ public:
     uchar min(void) const;
 
 signals:
-    void rangeChanged(const std::array<uchar, 2>&);
+    void rmaxChanged(uchar);
+    void rminChanged(uchar);
     void maxChanged(uchar);
     void minChanged(uchar);
 
@@ -190,7 +215,8 @@ public:
      dtkCoreParameterRangeObject(dtkCoreParameterRange<T> *p) : dtkCoreParameterObject(p) {}
     ~dtkCoreParameterRangeObject(void) = default;
 
-    void notifyRange(const std::array<T, 2>& ) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyRmin(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
+    void notifyRmax(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
     void notifyMin(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
     void notifyMax(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
     void notifyDecimals(int) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
@@ -202,7 +228,8 @@ public:
      dtkCoreParameterRangeObject<double>(dtkCoreParameterRange<double> *p) : dtkCoreParameterRangeRealObject(p) {};
     ~dtkCoreParameterRangeObject<double>(void) = default;
 
-    void notifyRange(const std::array<double, 2>& r) { emit rangeChanged(r); }
+    void notifyRmin(double m) {emit rmaxChanged(m);}
+    void notifyRmax(double m) {emit rminChanged(m);}
     void notifyMin(double m) { emit minChanged(m); }
     void notifyMax(double m) { emit maxChanged(m); }
     void notifyDecimals(int d) { emit decimalsChanged(d); }
@@ -214,7 +241,8 @@ public:
      dtkCoreParameterRangeObject<qlonglong>(dtkCoreParameterRange<qlonglong> *p) : dtkCoreParameterRangeIntObject(p) {};
     ~dtkCoreParameterRangeObject<qlonglong>(void) = default;
 
-    void notifyRange(const std::array<qlonglong, 2>& r) { emit rangeChanged(r); }
+    void notifyRmin(qlonglong m) {emit rmaxChanged(m);}
+    void notifyRmax(qlonglong m) {emit rminChanged(m);}
     void notifyMin(qlonglong m) { emit minChanged(m); }
     void notifyMax(qlonglong m) { emit maxChanged(m); }
     void notifyDecimals(int) {}
@@ -226,7 +254,8 @@ public:
      dtkCoreParameterRangeObject<qulonglong>(dtkCoreParameterRange<qulonglong> *p) : dtkCoreParameterRangeUintObject(p) {};
     ~dtkCoreParameterRangeObject<qulonglong>(void) = default;
 
-    void notifyRange(const std::array<qulonglong, 2>& r) { emit rangeChanged(r); }
+    void notifyRmin(qulonglong m) {emit rmaxChanged(m);}
+    void notifyRmax(qulonglong m) {emit rminChanged(m);}
     void notifyMin(qulonglong m) { emit minChanged(m); }
     void notifyMax(qulonglong m) { emit maxChanged(m); }
     void notifyDecimals(int) {}
@@ -238,7 +267,8 @@ public:
      dtkCoreParameterRangeObject<char>(dtkCoreParameterRange<char> *p) : dtkCoreParameterRangeCharObject(p) {};
     ~dtkCoreParameterRangeObject<char>(void) = default;
 
-    void notifyRange(const std::array<char, 2>& r) { emit rangeChanged(r); }
+    void notifyRmin(char m) {emit rmaxChanged(m);}
+    void notifyRmax(char m) {emit rminChanged(m);}
     void notifyMin(char m) { emit minChanged(m); }
     void notifyMax(char m) { emit maxChanged(m); }
     void notifyDecimals(int) {}
@@ -250,7 +280,8 @@ public:
      dtkCoreParameterRangeObject<uchar>(dtkCoreParameterRange<uchar> *p) : dtkCoreParameterRangeUcharObject(p) {};
     ~dtkCoreParameterRangeObject<uchar>(void) = default;
 
-    void notifyRange(const std::array<uchar, 2>& r) { emit rangeChanged(r); }
+    void notifyRmin(uchar m) {emit rmaxChanged(m);}
+    void notifyRmax(uchar m) {emit rminChanged(m);}
     void notifyMin(uchar m) { emit minChanged(m); }
     void notifyMax(uchar m) { emit maxChanged(m); }
     void notifyDecimals(int) {}

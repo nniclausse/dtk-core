@@ -18,8 +18,8 @@ class DTKCORE_EXPORT dtkCoreParameterPathObject : public dtkCoreParameterObject
     Q_OBJECT
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
     Q_PROPERTY(QStringList filters READ filters WRITE setFilters NOTIFY filtersChanged)
-    Q_PROPERTY(QString dirName READ dirName)
-    Q_PROPERTY(QString baseName READ baseName)
+    Q_PROPERTY(QString dirName READ dirName CONSTANT)
+    Q_PROPERTY(QString baseName READ baseName CONSTANT)
 
 public:
      dtkCoreParameterPathObject(dtkCoreParameterPath *);

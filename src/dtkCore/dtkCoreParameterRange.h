@@ -56,6 +56,9 @@ public:
 
     value_type operator[](int index) const;
 
+    void setValueMax(const T&);
+    void setValueMin(const T&);
+
     T min(void) const;
     T max(void) const;
 
