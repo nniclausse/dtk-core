@@ -17,6 +17,8 @@ private slots:
 
 private slots:
     void testMap(void);
+    void testHash(void);
+    void testParameterCollection(void);
 
 private slots:
     void cleanupTestCase(void);
