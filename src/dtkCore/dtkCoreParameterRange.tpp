@@ -113,7 +113,8 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
     if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
         m_val = t;
         this->sync();
-        m_object->notifyRange(m_val);
+        m_object->notifyRmin(m_val[0]);
+        m_object->notifyRmax(m_val[1]);
 
     } else {
         dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -136,7 +137,8 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (std
             m_val[0] = v_min;
             m_val[1] = v_max;
             this->sync();
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
 
         } else {
             dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -176,7 +178,8 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         if (min <= v_min && v_min <= v_max && v_max <= max) {
             m_bounds = {min, max};
             m_val = {v_min, v_max};
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
             m_object->notifyMin(min);
             m_object->notifyMax(max);
 
@@ -190,7 +193,8 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         auto t = v.value<std::array<T, 2>>();
          if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
             m_val = t;
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
 
          } else {
              dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordred or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -215,7 +219,8 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
 
         m_object->notifyLabel(m_label);
         m_object->notifyDoc(m_doc);
-        m_object->notifyRange(m_val);
+        m_object->notifyRmin(m_val[0]);
+        m_object->notifyRmax(m_val[1]);
         m_object->notifyMin(m_bounds[0]);
         m_object->notifyMax(m_bounds[1]);
         m_object->notifyDecimals(m_decimals);
@@ -230,7 +235,8 @@ inline void dtkCoreParameterRange<T, E>::setRange(const std::array<T, 2>& t)
     if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
         m_val = t;
         this->sync();
-        m_object->notifyRange(m_val);
+        m_object->notifyRmin(m_val[0]);
+        m_object->notifyRmax(m_val[1]);
 
     } else {
         dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -252,7 +258,8 @@ inline void dtkCoreParameterRange<T, E>::setRange(std::initializer_list<T> args)
             m_val[0] = v_min;
             m_val[1] = v_max;
             this->sync();
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
 
         } else {
             dtkWarn() << Q_FUNC_INFO << "Input values not setted because they are not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -314,7 +321,8 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
             m_bounds = {min, max};
             m_val = {v_min, v_max};
 
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
             m_object->notifyMin(m_bounds[0]);
             m_object->notifyMax(m_bounds[1]);
 
@@ -328,7 +336,8 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
         auto t = v.value<std::array<T, 2>>();
          if (m_bounds[0] <= t[0] && t[0] <= t[1] && t[1] <= m_bounds[1]) {
             m_val = t;
-            m_object->notifyRange(m_val);
+            m_object->notifyRmin(m_val[0]);
+            m_object->notifyRmax(m_val[1]);
 
          } else {
              dtkWarn() << Q_FUNC_INFO << "Values (" << t[0] << "," << t[1] << ") not setted because not correctly ordred or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
@@ -349,6 +358,35 @@ template <typename T, typename E>
 inline auto dtkCoreParameterRange<T, E>::operator[](int id) const -> value_type
 {
     return m_val[id];
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValueMax(const T& vmax)
+{
+    if(vmax <= m_bounds[1] && vmax >= m_bounds[0] && vmax >= m_val[0]) {
+        m_val[1] = vmax;
+        this->sync();
+        m_object->notifyRmax(m_val[1]);
+    }
+    else {
+        dtkWarn() << Q_FUNC_INFO << "Value max (" << vmax << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
+}
+
+template <typename T, typename E>
+inline void dtkCoreParameterRange<T, E>::setValueMin(const T& vmin)
+{
+    //dtkWarn() << Q_FUNC_INFO << "value is " << vmin;
+    if(vmin >= m_bounds[0] && vmin <= m_bounds[1] && vmin <= m_val[1]) {
+        m_val[0] = vmin;
+        this->sync();
+        m_object->notifyRmin(m_val[0]);
+    }
+    else {
+        dtkWarn() << Q_FUNC_INFO << "Value min (" << vmin << ") not setted because not correctly ordered or out of bounds [" << m_bounds[0] << "," << m_bounds[1] << "]";
+        this->syncFail();
+    }
 }
 
 template <typename T, typename E>
@@ -381,8 +419,10 @@ inline void dtkCoreParameterRange<T, E>::setMin(const T& min)
         m_val[0] = min;
         if (m_val[0] > m_val[1]) {
             m_val[1] = m_val[0];
+            m_object->notifyRmax(m_val[1]);
+
         }
-        m_object->notifyRange(m_val);
+        m_object->notifyRmin(m_val[0]);
     }
     this->sync();
 }
@@ -405,8 +445,9 @@ inline void dtkCoreParameterRange<T, E>::setMax(const T& max)
         m_val[1] = max;
         if (m_val[1] < m_val[0]) {
             m_val[0] = m_val[1];
+            m_object->notifyRmin(m_val[0]);
         }
-        m_object->notifyRange(m_val);
+        m_object->notifyRmax(m_val[1]);
     }
     this->sync();
 }
@@ -441,7 +482,8 @@ inline void dtkCoreParameterRange<T, E>::setBounds(const std::array<T, 2>& b)
             m_val[0] = m_val[1];
         }
     }
-    m_object->notifyRange(m_val);
+    m_object->notifyRmin(m_val[0]);
+    m_object->notifyRmax(m_val[1]);
     this->sync();
 }
 

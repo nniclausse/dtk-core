@@ -1006,6 +1006,24 @@ void dtkCoreParameterTestCase::testRange(void)
     range_r2.setValue({a, b});
     QCOMPARE(range_r2[0], a);
     QCOMPARE(range_r2[1], b);
+
+    dtk::d_range_real rr("range", {0.2, 5.5}, 0.0, 10., "I am a range real parameter");
+
+    QCOMPARE(rr.value()[0], 0.2);
+    QCOMPARE(rr.value()[1], 5.5);
+
+    rr.setValueMin(2.0);
+    QCOMPARE(rr.value()[0], 2.0);
+
+    rr.setValueMax(6.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
+    rr.setValueMax(11.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
+    rr.setValueMax(1.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
 }
 
 void dtkCoreParameterTestCase::testStringList(void)
