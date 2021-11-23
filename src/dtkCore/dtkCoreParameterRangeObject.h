@@ -12,11 +12,11 @@
 class DTKCORE_EXPORT dtkCoreParameterRangeRealObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(double rmax                 READ rmax      WRITE setRmax      NOTIFY rmaxChanged)
-    Q_PROPERTY(double rmin                 READ rmin      WRITE setRmin      NOTIFY rminChanged)
-    Q_PROPERTY(double max                  READ max      WRITE setMax      NOTIFY maxChanged)
-    Q_PROPERTY(double min                  READ min      WRITE setMin      NOTIFY minChanged)
-    Q_PROPERTY(int decimals                READ decimals WRITE setDecimals NOTIFY decimalsChanged)
+    Q_PROPERTY(double rmax  READ rmax     WRITE setRmax     NOTIFY rmaxChanged)
+    Q_PROPERTY(double rmin  READ rmin     WRITE setRmin     NOTIFY rminChanged)
+    Q_PROPERTY(double max   READ max      WRITE setMax      NOTIFY maxChanged)
+    Q_PROPERTY(double min   READ min      WRITE setMin      NOTIFY minChanged)
+    Q_PROPERTY(int decimals READ decimals WRITE setDecimals NOTIFY decimalsChanged)
 
 public:
      dtkCoreParameterRangeRealObject(dtkCoreParameterRange<double> *);
@@ -56,10 +56,10 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeIntObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(qlonglong rmax                 READ rmax      WRITE setRmax      NOTIFY rmaxChanged)
-    Q_PROPERTY(qlonglong rmin                 READ rmin      WRITE setRmin      NOTIFY rminChanged)
-    Q_PROPERTY(qlonglong max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(qlonglong min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(qlonglong rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(qlonglong rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(qlonglong max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(qlonglong min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeIntObject(dtkCoreParameterRange<qlonglong> *);
@@ -95,10 +95,10 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeUintObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(qulonglong rmax                 READ rmax      WRITE setRmax      NOTIFY rmaxChanged)
-    Q_PROPERTY(qulonglong rmin                 READ rmin      WRITE setRmin      NOTIFY rminChanged)
-    Q_PROPERTY(qulonglong max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(qulonglong min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(qulonglong rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(qulonglong rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(qulonglong max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(qulonglong min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeUintObject(dtkCoreParameterRange<qulonglong> *);
@@ -134,10 +134,10 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeCharObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(char rmax                 READ rmax      WRITE setRmax      NOTIFY rmaxChanged)
-    Q_PROPERTY(char rmin                 READ rmin      WRITE setRmin      NOTIFY rminChanged)
-    Q_PROPERTY(char max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(char min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(char rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(char rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(char max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(char min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeCharObject(dtkCoreParameterRange<char> *);
@@ -173,10 +173,10 @@ private:
 class DTKCORE_EXPORT dtkCoreParameterRangeUcharObject : public dtkCoreParameterObject
 {
     Q_OBJECT
-    Q_PROPERTY(uchar rmax                 READ rmax      WRITE setRmax      NOTIFY rmaxChanged)
-    Q_PROPERTY(uchar rmin                 READ rmin      WRITE setRmin      NOTIFY rminChanged)
-    Q_PROPERTY(uchar max                  READ max   WRITE setMax   NOTIFY maxChanged)
-    Q_PROPERTY(uchar min                  READ min   WRITE setMin   NOTIFY minChanged)
+    Q_PROPERTY(uchar rmax READ rmax WRITE setRmax NOTIFY rmaxChanged)
+    Q_PROPERTY(uchar rmin READ rmin WRITE setRmin NOTIFY rminChanged)
+    Q_PROPERTY(uchar max  READ max  WRITE setMax  NOTIFY maxChanged)
+    Q_PROPERTY(uchar min  READ min  WRITE setMin  NOTIFY minChanged)
 
 public:
      dtkCoreParameterRangeUcharObject(dtkCoreParameterRange<uchar> *);
