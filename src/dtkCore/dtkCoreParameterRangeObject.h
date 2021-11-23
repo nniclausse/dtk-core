@@ -22,9 +22,6 @@ public:
      dtkCoreParameterRangeRealObject(dtkCoreParameterRange<double> *);
     ~dtkCoreParameterRangeRealObject(void);
 
-    void setRange(const std::array<double, 2>&);
-    const std::array<double, 2>& range(void) const;
-
     void setRmin(double);
     double rmin(void) const;
 
@@ -68,9 +65,6 @@ public:
      dtkCoreParameterRangeIntObject(dtkCoreParameterRange<qlonglong> *);
     ~dtkCoreParameterRangeIntObject(void);
 
-    void setRange(const std::array<qlonglong, 2>&);
-    const std::array<qlonglong, 2>& range(void) const;
-
     void setRmin(qlonglong);
     qlonglong rmin(void) const;
 
@@ -109,9 +103,6 @@ class DTKCORE_EXPORT dtkCoreParameterRangeUintObject : public dtkCoreParameterOb
 public:
      dtkCoreParameterRangeUintObject(dtkCoreParameterRange<qulonglong> *);
     ~dtkCoreParameterRangeUintObject(void);
-
-    void setRange(const std::array<qulonglong, 2>&);
-    const std::array<qulonglong, 2>& range(void) const;
 
     void setRmin(qulonglong);
     qulonglong rmin(void) const;
@@ -152,9 +143,6 @@ public:
      dtkCoreParameterRangeCharObject(dtkCoreParameterRange<char> *);
     ~dtkCoreParameterRangeCharObject(void);
 
-    void setRange(const std::array<char, 2>&);
-    const std::array<char, 2>& range(void) const;
-
     void setRmin(char);
     char rmin(void) const;
 
@@ -193,9 +181,6 @@ class DTKCORE_EXPORT dtkCoreParameterRangeUcharObject : public dtkCoreParameterO
 public:
      dtkCoreParameterRangeUcharObject(dtkCoreParameterRange<uchar> *);
     ~dtkCoreParameterRangeUcharObject(void);
-
-    void setRange(const std::array<uchar, 2>&);
-    const std::array<uchar, 2>& range(void) const;
 
     void setRmin(uchar);
     uchar rmin(void) const;

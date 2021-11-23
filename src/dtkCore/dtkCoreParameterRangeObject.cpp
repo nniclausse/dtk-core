@@ -14,16 +14,6 @@ dtkCoreParameterRangeRealObject::~dtkCoreParameterRangeRealObject(void)
     m_param = nullptr;
 }
 
-void dtkCoreParameterRangeRealObject::setRange(const std::array<double, 2>& r)
-{
-    m_param->setValue(r);
-}
-
-const std::array<double, 2>& dtkCoreParameterRangeRealObject::range(void) const
-{
-    return m_param->value();
-}
-
 void dtkCoreParameterRangeRealObject::setRmax(double m)
 {
     m_param->setValueMax(m);
@@ -92,16 +82,6 @@ dtkCoreParameterRangeIntObject::~dtkCoreParameterRangeIntObject(void)
     m_param = nullptr;
 }
 
-void dtkCoreParameterRangeIntObject::setRange(const std::array<qlonglong, 2>& r)
-{
-    m_param->setValue(r);
-}
-
-const std::array<qlonglong, 2>& dtkCoreParameterRangeIntObject::range(void) const
-{
-    return m_param->value();
-}
-
 void dtkCoreParameterRangeIntObject::setRmax(qlonglong m)
 {
     m_param->setValueMax(m);
@@ -158,16 +138,6 @@ dtkCoreParameterRangeUintObject::dtkCoreParameterRangeUintObject(dtkCoreParamete
 dtkCoreParameterRangeUintObject::~dtkCoreParameterRangeUintObject(void)
 {
     m_param = nullptr;
-}
-
-void dtkCoreParameterRangeUintObject::setRange(const std::array<qulonglong, 2>& r)
-{
-    m_param->setValue(r);
-}
-
-const std::array<qulonglong, 2>& dtkCoreParameterRangeUintObject::range(void) const
-{
-    return m_param->value();
 }
 
 void dtkCoreParameterRangeUintObject::setRmax(qulonglong m)
@@ -227,16 +197,6 @@ dtkCoreParameterRangeCharObject::~dtkCoreParameterRangeCharObject(void)
     m_param = nullptr;
 }
 
-void dtkCoreParameterRangeCharObject::setRange(const std::array<char, 2>& r)
-{
-    m_param->setValue(r);
-}
-
-const std::array<char, 2>& dtkCoreParameterRangeCharObject::range(void) const
-{
-    return m_param->value();
-}
-
 void dtkCoreParameterRangeCharObject::setRmax(char m)
 {
     m_param->setValueMax(m);
@@ -292,16 +252,6 @@ dtkCoreParameterRangeUcharObject::dtkCoreParameterRangeUcharObject(dtkCoreParame
 dtkCoreParameterRangeUcharObject::~dtkCoreParameterRangeUcharObject(void)
 {
     m_param = nullptr;
-}
-
-void dtkCoreParameterRangeUcharObject::setRange(const std::array<uchar, 2>& r)
-{
-    m_param->setValue(r);
-}
-
-const std::array<uchar, 2>& dtkCoreParameterRangeUcharObject::range(void) const
-{
-    return m_param->value();
 }
 
 void dtkCoreParameterRangeUcharObject::setRmax(uchar m)
