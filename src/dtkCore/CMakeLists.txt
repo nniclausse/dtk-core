@@ -24,6 +24,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreApplication_p.h
   dtkCoreApplication
   dtkCoreApplication.h
+  dtkCoreAsKeyValueRange
+  dtkCoreAsKeyValueRange.h
   dtkCoreIOCompressor
   dtkCoreIOCompressor.h
   dtkCoreLayerManager
