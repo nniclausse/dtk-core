@@ -505,7 +505,8 @@ template <typename T, typename E>
 inline QVariantHash dtkCoreParameterRange<T, E>::toVariantHash(void) const
 {
     QVariantHash hash = base_type::toVariantHash();
-    hash.insert("values", QVariant::fromValue(m_val));
+    QList<QVariant> ll = {QVariant(m_val[0]), QVariant(m_val[1])};
+    hash.insert("values", ll);
     hash.insert("min", m_bounds[0]);
     hash.insert("max", m_bounds[1]);
     hash.insert("decimals", m_decimals);
