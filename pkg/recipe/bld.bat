@@ -5,7 +5,7 @@ cd build
 
 set BUILD_CONFIG=Release
 
-cmake .. -G  ^
+cmake ..  ^
     -Wno-dev ^
     -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
     -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
