@@ -28,11 +28,11 @@ public:
      dtkCoreParameterSimple(void);
     ~dtkCoreParameterSimple(void);
 
-    dtkCoreParameterSimple(const dtkCoreParameter *);
-    dtkCoreParameterSimple(const QVariant&);
-    dtkCoreParameterSimple(const dtkCoreParameterSimple&);
+    dtkCoreParameterSimple(const dtkCoreParameter *other);
+    dtkCoreParameterSimple(const QVariant &variant);
+    dtkCoreParameterSimple(const dtkCoreParameterSimple &other);
 
-    dtkCoreParameterSimple(const QString&, const T&, const QString& = QString());
+    dtkCoreParameterSimple(const QString &label, const T &value, const QString &doc = QString());
 
     dtkCoreParameterSimple& operator = (const T&);
     dtkCoreParameterSimple& operator = (const dtkCoreParameter *);

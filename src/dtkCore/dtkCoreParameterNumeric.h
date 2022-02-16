@@ -30,16 +30,20 @@ public:
      dtkCoreParameterNumeric(void);
     ~dtkCoreParameterNumeric(void);
 
-    dtkCoreParameterNumeric(const T&);
+    dtkCoreParameterNumeric(const T &value);
     template <typename U, typename V = typename dtk::is_core_parameter<U>>
     dtkCoreParameterNumeric(const U *);
-    dtkCoreParameterNumeric(const QVariant&);
-    dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
+    dtkCoreParameterNumeric(const QVariant &variant);
+    dtkCoreParameterNumeric(const dtkCoreParameterNumeric &other);
 
-    dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const QString &doc = QString());
 #ifndef SWIG
-    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
-    template <typename U = T, typename = std::enable_if_t<std::is_same<U, bool>::value>>     dtkCoreParameterNumeric(const QString&, const T&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals, const QString &doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_same<U, bool>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const QString &doc = QString());
 #endif
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
     template <typename U> dtk::is_core_parameter<U, dtkCoreParameterNumeric&> operator = (const U *);

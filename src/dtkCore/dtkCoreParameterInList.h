@@ -26,13 +26,15 @@ public:
      dtkCoreParameterInList(void);
     ~dtkCoreParameterInList(void);
 
-    dtkCoreParameterInList(const T&);
-    dtkCoreParameterInList(const QVariant&);
+    dtkCoreParameterInList(const T &value);
+    dtkCoreParameterInList(const QVariant &variant);
     dtkCoreParameterInList(const dtkCoreParameterInList&);
 
-    dtkCoreParameterInList(const QString&, const T&, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(const QString&, int, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(const QString&, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QString &label, const T &value, const QList<T> &available_values,
+                           const QString &doc = QString());
+    dtkCoreParameterInList(const QString &label, int value_index, const QList<T> &available_values,
+                           const QString &doc = QString());
+    dtkCoreParameterInList(const QString &label, const QList<T> &available_values, const QString &doc = QString());
 
     dtkCoreParameterInList& operator = (const T&);
     dtkCoreParameterInList& operator = (const QVariant&);

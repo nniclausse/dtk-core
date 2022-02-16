@@ -20,7 +20,7 @@ inline dtkCoreParameterInList<T>::~dtkCoreParameterInList()
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCoreParameterBase<dtkCoreParameterInList>()
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T &t) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
     m_object = new dtkCoreParameterInListObject<T>(this);
     m_values << t;
@@ -28,7 +28,7 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const T& t) : dtkCorePa
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterInList>()
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QVariant &v) : dtkCoreParameterBase<dtkCoreParameterInList>()
 {
     m_object = new dtkCoreParameterInListObject<T>(this);
     if (v.canConvert<dtkCoreParameterInList<T>>()) {
@@ -48,7 +48,9 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const dtkCoreParameterI
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, const T& t, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString &label, const T &t, const QList<T> &values,
+                                                         const QString &doc)
+        : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values)
 {
     m_object = new dtkCoreParameterInListObject<T>(this);
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");
@@ -56,7 +58,9 @@ inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, c
 }
 
 template <typename T>
-inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString& label, int index, const QList<T>& values, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(index)
+inline dtkCoreParameterInList<T>::dtkCoreParameterInList(const QString &label, int index, const QList<T> &values,
+                                                         const QString &doc)
+        : dtkCoreParameterBase<dtkCoreParameterInList>(label, doc), m_values(values), m_value_index(index)
 {
     m_object = new dtkCoreParameterInListObject<T>(this);
     Q_ASSERT_X(!m_values.empty(), Q_FUNC_INFO, "Input list cannot be empty");

@@ -20,7 +20,8 @@ inline dtkCoreParameterNumeric<T, E>::~dtkCoreParameterNumeric(void)
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const T& t) : dtkCoreParameterBase<dtkCoreParameterNumeric>(), m_val(t)
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const T &t)
+        : dtkCoreParameterBase<dtkCoreParameterNumeric>(), m_val(t)
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
@@ -37,7 +38,7 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const U *p) : dtkC
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QVariant &v) : dtkCoreParameterBase<dtkCoreParameterNumeric>()
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
     if (v.canConvert<dtkCoreParameterNumeric>()) {
@@ -49,25 +50,33 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QVariant& v)
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const dtkCoreParameterNumeric& o) : dtkCoreParameterBase<dtkCoreParameterNumeric>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const dtkCoreParameterNumeric &o)
+        : dtkCoreParameterBase<dtkCoreParameterNumeric>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({min, max})
+inline
+dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString &label, const T &t, const T &min, const T &max,
+                                                       const QString &doc)
+        : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({min, max})
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
 
 template <typename T, typename E> template <typename U, typename>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t)
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString &label, const T &t, const QString &doc)
+        : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t)
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
 
 template <typename T, typename E> template <typename U, typename>
-inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
+inline
+dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString &label, const T &t, const T &minimum, const T &maximum,
+                                                       const int &decimals,
+                                                       const QString &doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({minimum, maximum}), m_decimals(decimals)
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
@@ -654,7 +663,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<char>& 
     int dec; s >> dec;
     QString doc; s >> doc;
 
-    p = dtkCoreParameterNumeric<char>(label, (char)val, (char)min, (char)max, doc);
+    p = dtkCoreParameterNumeric<char>(label, (char) val, (char) min, (char) max, doc);
     return s;
 }
 
