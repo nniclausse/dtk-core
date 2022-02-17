@@ -16,32 +16,37 @@ dtkCoreParameterInListStringList::~dtkCoreParameterInListStringList(void)
     delete m_object;
 }
 
-dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QStringList& v) : dtkCoreParameterBase<dtkCoreParameterInListStringList>()
+dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QStringList &selected_values)
+        : dtkCoreParameterBase<dtkCoreParameterInListStringList>()
 {
     m_object = new dtkCoreParameterInListStringListObject(this);
-    m_value = v;
-    m_list = v;
+    m_value = selected_values;
+    m_list = selected_values;
 }
 
-dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterInListStringList>()
+dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QVariant &variant) : dtkCoreParameterBase<dtkCoreParameterInListStringList>()
 {
     m_object = new dtkCoreParameterInListStringListObject(this);
-    if (v.canConvert<dtkCoreParameterInListStringList>()) {
-        auto o(v.value<dtkCoreParameterInListStringList>());
+    if (variant.canConvert<dtkCoreParameterInListStringList>()) {
+        auto o(variant.value<dtkCoreParameterInListStringList>());
         *this = o;
 
-    } else if (v.canConvert<QStringList>()) {
-        m_list = v.value<QStringList>();
+    } else if (variant.canConvert<QStringList>()) {
+        m_list = variant.value<QStringList>();
         m_value = QStringList();
     }
 }
 
-dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList& o) : dtkCoreParameterBase<dtkCoreParameterInListStringList>(o), m_value(o.m_value), m_list(o.m_list)
+dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList &other)
+        : dtkCoreParameterBase<dtkCoreParameterInListStringList>(other), m_value(other.m_value), m_list(other.m_list)
 {
     m_object = new dtkCoreParameterInListStringListObject(this);
 }
 
-dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QString& label, const QStringList& v, const QStringList& list, const QString& doc)  : dtkCoreParameterBase<dtkCoreParameterInListStringList>(label, doc), m_value(v), m_list(list)
+dtkCoreParameterInListStringList::dtkCoreParameterInListStringList(const QString &label,
+                                                                   const QStringList &selected_values,
+                                                                   const QStringList &available_values,
+                                                                   const QString &doc) : dtkCoreParameterBase<dtkCoreParameterInListStringList>(label, doc), m_value(selected_values), m_list(available_values)
 {
     m_object = new dtkCoreParameterInListStringListObject(this);
 }

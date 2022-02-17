@@ -29,11 +29,12 @@ public:
      dtkCoreParameterInListStringList(void);
     ~dtkCoreParameterInListStringList(void);
 
-    dtkCoreParameterInListStringList(const QStringList&);
-    dtkCoreParameterInListStringList(const QVariant&);
-    dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList&);
+    dtkCoreParameterInListStringList(const QStringList &selected_values);
+    dtkCoreParameterInListStringList(const QVariant &variant);
+    dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList &other);
 
-    dtkCoreParameterInListStringList(const QString&, const QStringList&, const QStringList&, const QString& = QString());
+    dtkCoreParameterInListStringList(const QString &label, const QStringList &selected_values,
+                                     const QStringList &available_values, const QString &doc = QString());
 
     dtkCoreParameterInListStringList& operator = (const QStringList&);
     dtkCoreParameterInListStringList& operator = (const QVariant&);

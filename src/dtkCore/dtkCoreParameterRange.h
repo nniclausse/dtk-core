@@ -29,14 +29,17 @@ public:
      dtkCoreParameterRange(void);
     ~dtkCoreParameterRange(void);
 
-    dtkCoreParameterRange(const std::array<T, 2>&);
-    dtkCoreParameterRange(std::initializer_list<T>);
-    dtkCoreParameterRange(const QVariant&);
-    dtkCoreParameterRange(const dtkCoreParameterRange&);
+    dtkCoreParameterRange(const std::array<T, 2> &values);
+    dtkCoreParameterRange(std::initializer_list<T> values);
+    dtkCoreParameterRange(const QVariant &variant);
+    dtkCoreParameterRange(const dtkCoreParameterRange &other);
 
-    dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const QString& doc = QString());
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
+                          const QString &doc = QString());
 #ifndef SWIG
-    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterRange(const QString&, const std::array<T, 2>&, const T&, const T&, const int&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
+                          const int &nb_decimals, const QString &doc = QString());
 #endif
 
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
