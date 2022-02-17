@@ -31,7 +31,7 @@ inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCorePa
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant &v) : dtkCoreParameterBase<dtkCoreParameterSimple>()
+inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterSimple>()
 {
     m_object = new dtkCoreParameterSimpleObject<T>(this);
     if (v.canConvert<dtkCoreParameterSimple>()) {
@@ -44,15 +44,13 @@ inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant 
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCoreParameterSimple &o)
-        : dtkCoreParameterBase<dtkCoreParameterSimple>(o), m_value(o.m_value)
+inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCoreParameterSimple& o) : dtkCoreParameterBase<dtkCoreParameterSimple>(o), m_value(o.m_value)
 {
     m_object = new dtkCoreParameterSimpleObject<T>(this);
 }
 
 template <typename T, typename Enable>
-inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QString &label, const T &t, const QString &doc)
-        : dtkCoreParameterBase<dtkCoreParameterSimple>(label, doc), m_value(t)
+inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QString& label, const T& t, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterSimple>(label, doc), m_value(t)
 {
     m_object = new dtkCoreParameterSimpleObject<T>(this);
 }

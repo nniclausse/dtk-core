@@ -20,7 +20,7 @@ inline dtkCoreParameterRange<T, E>::~dtkCoreParameterRange(void)
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2> &t) : dtkCoreParameterBase<dtkCoreParameterRange>()
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const std::array<T, 2>& t) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
     if (t[0] <= t[1]) {
@@ -52,7 +52,7 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(std::initializer_list<
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QVariant &v) : dtkCoreParameterBase<dtkCoreParameterRange>()
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterRange>()
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
     if (v.canConvert<dtkCoreParameterRange>()) {
@@ -75,16 +75,13 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QVariant &v) : d
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const dtkCoreParameterRange &o)
-        : dtkCoreParameterBase<dtkCoreParameterRange>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const dtkCoreParameterRange& o) : dtkCoreParameterBase<dtkCoreParameterRange>(o), m_val(o.m_val), m_bounds(o.m_bounds), m_decimals(o.m_decimals)
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
 }
 
 template <typename T, typename E>
-inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString &label, const std::array<T, 2> &t, const T &min,
-                                                          const T &max,
-                                                          const QString &doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
     if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
@@ -596,7 +593,7 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<char>& p)
 
     std::array<char, 2> val = {(char)v_min, (char)v_max};
 
-    p = dtkCoreParameterRange<char>(label, val, (char) min, (char) max, doc);
+    p = dtkCoreParameterRange<char>(label, val, (char)min, (char)max, doc);
     return s;
 }
 
