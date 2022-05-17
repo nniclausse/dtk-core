@@ -225,8 +225,8 @@ public:
 template <> class dtkCoreParameterRangeObject<double> : public dtkCoreParameterRangeRealObject
 {
 public:
-     dtkCoreParameterRangeObject<double>(dtkCoreParameterRange<double> *p) : dtkCoreParameterRangeRealObject(p) {};
-    ~dtkCoreParameterRangeObject<double>(void) = default;
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<double> *p) : dtkCoreParameterRangeRealObject(p) {};
+    ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRmin(double m) {emit rmaxChanged(m);}
     void notifyRmax(double m) {emit rminChanged(m);}
@@ -238,8 +238,8 @@ public:
 template <> class dtkCoreParameterRangeObject<qlonglong> : public dtkCoreParameterRangeIntObject
 {
 public:
-     dtkCoreParameterRangeObject<qlonglong>(dtkCoreParameterRange<qlonglong> *p) : dtkCoreParameterRangeIntObject(p) {};
-    ~dtkCoreParameterRangeObject<qlonglong>(void) = default;
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<qlonglong> *p) : dtkCoreParameterRangeIntObject(p) {};
+    ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRmin(qlonglong m) {emit rmaxChanged(m);}
     void notifyRmax(qlonglong m) {emit rminChanged(m);}
@@ -251,8 +251,8 @@ public:
 template <> class dtkCoreParameterRangeObject<qulonglong> : public dtkCoreParameterRangeUintObject
 {
 public:
-     dtkCoreParameterRangeObject<qulonglong>(dtkCoreParameterRange<qulonglong> *p) : dtkCoreParameterRangeUintObject(p) {};
-    ~dtkCoreParameterRangeObject<qulonglong>(void) = default;
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<qulonglong> *p) : dtkCoreParameterRangeUintObject(p) {};
+    ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRmin(qulonglong m) {emit rmaxChanged(m);}
     void notifyRmax(qulonglong m) {emit rminChanged(m);}
@@ -264,8 +264,8 @@ public:
 template <> class dtkCoreParameterRangeObject<char> : public dtkCoreParameterRangeCharObject
 {
 public:
-     dtkCoreParameterRangeObject<char>(dtkCoreParameterRange<char> *p) : dtkCoreParameterRangeCharObject(p) {};
-    ~dtkCoreParameterRangeObject<char>(void) = default;
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<char> *p) : dtkCoreParameterRangeCharObject(p) {};
+    ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRmin(char m) {emit rmaxChanged(m);}
     void notifyRmax(char m) {emit rminChanged(m);}
@@ -277,8 +277,8 @@ public:
 template <> class dtkCoreParameterRangeObject<uchar> : public dtkCoreParameterRangeUcharObject
 {
 public:
-     dtkCoreParameterRangeObject<uchar>(dtkCoreParameterRange<uchar> *p) : dtkCoreParameterRangeUcharObject(p) {};
-    ~dtkCoreParameterRangeObject<uchar>(void) = default;
+     dtkCoreParameterRangeObject(dtkCoreParameterRange<uchar> *p) : dtkCoreParameterRangeUcharObject(p) {};
+    ~dtkCoreParameterRangeObject(void) = default;
 
     void notifyRmin(uchar m) {emit rmaxChanged(m);}
     void notifyRmax(uchar m) {emit rminChanged(m);}
