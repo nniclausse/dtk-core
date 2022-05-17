@@ -45,7 +45,7 @@ template <typename T> inline bool dtkCorePluginManagerPrivate<T>::checkConcept(c
     QString conceptName = QMetaType::typeName(qMetaTypeId<T *>());
     conceptName.remove("Plugin*");
 
-    QString pluginConcept = dtk::pluginManagerHandler().concept(path);
+    QString pluginConcept = dtk::pluginManagerHandler().dtkConcept(path);
 
     if (conceptName != pluginConcept) {
         if (this->verboseLoading) {
