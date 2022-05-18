@@ -172,8 +172,8 @@ private:
 template <typename T = void> class dtkCoreParameterInListObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterInListObject<T>(dtkCoreParameterInList<T> *p) : dtkCoreParameterObject(p) {}
-    ~dtkCoreParameterInListObject<T>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<T> *p) : dtkCoreParameterObject(p) {}
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QList<T>&) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
     void notifyIndex(int) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
@@ -182,8 +182,8 @@ public:
 template <> class dtkCoreParameterInListObject<qlonglong> : public dtkCoreParameterInListIntObject
 {
 public:
-     dtkCoreParameterInListObject<qlonglong>(dtkCoreParameterInList<qlonglong> *p) : dtkCoreParameterInListIntObject(p) {};
-    ~dtkCoreParameterInListObject<qlonglong>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<qlonglong> *p) : dtkCoreParameterInListIntObject(p) {};
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QList<qlonglong>& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }
@@ -194,8 +194,8 @@ public:
 template <> class dtkCoreParameterInListObject<double> : public dtkCoreParameterInListRealObject
 {
 public:
-     dtkCoreParameterInListObject<double>(dtkCoreParameterInList<double> *p) : dtkCoreParameterInListRealObject(p) {};
-    ~dtkCoreParameterInListObject<double>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<double> *p) : dtkCoreParameterInListRealObject(p) {};
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QList<double>& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }
@@ -206,8 +206,8 @@ public:
 template <> class dtkCoreParameterInListObject<char> : public dtkCoreParameterInListCharObject
 {
 public:
-     dtkCoreParameterInListObject<char>(dtkCoreParameterInList<char> *p) : dtkCoreParameterInListCharObject(p) {};
-    ~dtkCoreParameterInListObject<char>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<char> *p) : dtkCoreParameterInListCharObject(p) {};
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QList<char>& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }
@@ -218,8 +218,8 @@ public:
 template <> class dtkCoreParameterInListObject<uchar> : public dtkCoreParameterInListUcharObject
 {
 public:
-     dtkCoreParameterInListObject<uchar>(dtkCoreParameterInList<uchar> *p) : dtkCoreParameterInListUcharObject(p) {};
-    ~dtkCoreParameterInListObject<uchar>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<uchar> *p) : dtkCoreParameterInListUcharObject(p) {};
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QList<uchar>& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }
@@ -230,8 +230,8 @@ public:
 template <> class dtkCoreParameterInListObject<QString> : public dtkCoreParameterInListStringObject
 {
 public:
-     dtkCoreParameterInListObject<QString>(dtkCoreParameterInList<QString> *p) : dtkCoreParameterInListStringObject(p) {};
-    ~dtkCoreParameterInListObject<QString>(void) = default;
+     dtkCoreParameterInListObject(dtkCoreParameterInList<QString> *p) : dtkCoreParameterInListStringObject(p) {};
+    ~dtkCoreParameterInListObject(void) = default;
 
     void notifyList(const QStringList& l) { emit listChanged(l); }
     void notifyIndex(int id) { emit indexChanged(id); }

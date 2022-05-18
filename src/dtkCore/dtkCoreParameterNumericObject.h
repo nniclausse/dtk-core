@@ -211,8 +211,8 @@ private:
 template <typename T = void> class dtkCoreParameterNumericObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterNumericObject<T>(dtkCoreParameterNumeric<T> *p) : dtkCoreParameterObject(p) {}
-    ~dtkCoreParameterNumericObject<T>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<T> *p) : dtkCoreParameterObject(p) {}
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
     void notifyMin(T) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
@@ -223,8 +223,8 @@ public:
 template <> class dtkCoreParameterNumericObject<double> : public dtkCoreParameterNumericRealObject
 {
 public:
-     dtkCoreParameterNumericObject<double>(dtkCoreParameterNumeric<double> *p) : dtkCoreParameterNumericRealObject(p) {};
-    ~dtkCoreParameterNumericObject<double>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<double> *p) : dtkCoreParameterNumericRealObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(double t) { emit valueChanged(t); }
     void notifyMin(double m) { emit minChanged(m); }
@@ -235,8 +235,8 @@ public:
 template <> class dtkCoreParameterNumericObject<qlonglong> : public dtkCoreParameterNumericIntObject
 {
 public:
-     dtkCoreParameterNumericObject<qlonglong>(dtkCoreParameterNumeric<qlonglong> *p) : dtkCoreParameterNumericIntObject(p) {};
-    ~dtkCoreParameterNumericObject<qlonglong>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<qlonglong> *p) : dtkCoreParameterNumericIntObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(qlonglong t) { emit valueChanged(t); }
     void notifyMin(qlonglong m) { emit minChanged(m); }
@@ -247,8 +247,8 @@ public:
 template <> class dtkCoreParameterNumericObject<qulonglong> : public dtkCoreParameterNumericUintObject
 {
 public:
-     dtkCoreParameterNumericObject<qulonglong>(dtkCoreParameterNumeric<qulonglong> *p) : dtkCoreParameterNumericUintObject(p) {};
-    ~dtkCoreParameterNumericObject<qulonglong>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<qulonglong> *p) : dtkCoreParameterNumericUintObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(qulonglong t) { emit valueChanged(t); }
     void notifyMin(qulonglong m) { emit minChanged(m); }
@@ -259,8 +259,8 @@ public:
 template <> class dtkCoreParameterNumericObject<char> : public dtkCoreParameterNumericCharObject
 {
 public:
-     dtkCoreParameterNumericObject<char>(dtkCoreParameterNumeric<char> *p) : dtkCoreParameterNumericCharObject(p) {};
-    ~dtkCoreParameterNumericObject<char>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<char> *p) : dtkCoreParameterNumericCharObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(char t) { emit valueChanged(t); }
     void notifyMin(char m) { emit minChanged(m); }
@@ -271,8 +271,8 @@ public:
 template <> class dtkCoreParameterNumericObject<uchar> : public dtkCoreParameterNumericUcharObject
 {
 public:
-     dtkCoreParameterNumericObject<uchar>(dtkCoreParameterNumeric<uchar> *p) : dtkCoreParameterNumericUcharObject(p) {};
-    ~dtkCoreParameterNumericObject<uchar>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<uchar> *p) : dtkCoreParameterNumericUcharObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(uchar t) { emit valueChanged(t); }
     void notifyMin(uchar m) { emit minChanged(m); }
@@ -283,8 +283,8 @@ public:
 template <> class dtkCoreParameterNumericObject<bool> : public dtkCoreParameterNumericBoolObject
 {
 public:
-     dtkCoreParameterNumericObject<bool>(dtkCoreParameterNumeric<bool> *p) : dtkCoreParameterNumericBoolObject(p) {};
-    ~dtkCoreParameterNumericObject<bool>(void) = default;
+     dtkCoreParameterNumericObject(dtkCoreParameterNumeric<bool> *p) : dtkCoreParameterNumericBoolObject(p) {};
+    ~dtkCoreParameterNumericObject(void) = default;
 
     void notifyValue(bool t) { emit valueChanged(t); }
     void notifyMin(bool) {}

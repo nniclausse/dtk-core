@@ -29,7 +29,7 @@ public:
 public:
     QHash<QString, QString> names;
     QHash<QString, QString> versions;
-    QHash<QString, QString> concepts;
+    QHash<QString, QString> dtkConcepts;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ void dtkCorePluginManagerHandler::scan(const QString& path, bool verboseLoading)
 
     d->names.insert(path, loader->metaData().value("MetaData").toObject().value("name").toString());
     d->versions.insert(path, loader->metaData().value("MetaData").toObject().value("version").toString());
-    d->concepts.insert(path, loader->metaData().value("MetaData").toObject().value("concept").toString());
+    d->dtkConcepts.insert(path, loader->metaData().value("MetaData").toObject().value("dtkConcept").toString());
 
     d->dependencies.insert(path, loader->metaData().value("MetaData").toObject().value("dependencies").toArray().toVariantList());
     d->pluginsLayerVersion.insert(path, loader->metaData().value("MetaData").toObject().value("layerVersion").toString());
@@ -86,9 +86,9 @@ QString dtkCorePluginManagerHandler::version(const QString& path) const
     return d->versions.value(path);
 }
 
-QString dtkCorePluginManagerHandler::concept(const QString& path) const
+QString dtkCorePluginManagerHandler::dtkConcept(const QString& path) const
 {
-    return d->concepts.value(path);
+    return d->dtkConcepts.value(path);
 }
 
 QVariantList dtkCorePluginManagerHandler::dependencies(const QString& path) const
@@ -121,10 +121,10 @@ bool dtkCorePluginManagerHandler::hasVersion(const QString& version) const
     return false;
 }
 
-bool dtkCorePluginManagerHandler::hasConcept(const QString& concept) const
+bool dtkCorePluginManagerHandler::hasDtkConcept(const QString& dtkConcept) const
 {
-    for (const QString& c : d->concepts) {
-        if (c == concept) {
+    for (const QString& c : d->dtkConcepts) {
+        if (c == dtkConcept) {
             return true;
         }
     }
@@ -151,14 +151,14 @@ auto dtkCorePluginManagerHandler::versionsEnd(void) const -> const_iterator
     return d->versions.cend();
 }
 
-auto dtkCorePluginManagerHandler::conceptsBegin(void) const -> const_iterator
+auto dtkCorePluginManagerHandler::dtkConceptsBegin(void) const -> const_iterator
 {
-    return d->concepts.cbegin();
+    return d->dtkConcepts.cbegin();
 }
 
-auto dtkCorePluginManagerHandler::conceptsEnd(void) const -> const_iterator
+auto dtkCorePluginManagerHandler::dtkConceptsEnd(void) const -> const_iterator
 {
-    return d->concepts.cend();
+    return d->dtkConcepts.cend();
 }
 
 QStringList dtkCorePluginManagerHandler::pluginPaths(void) const
@@ -176,9 +176,9 @@ QStringList dtkCorePluginManagerHandler::versions(void) const
     return d->versions.values();
 }
 
-QStringList dtkCorePluginManagerHandler::concepts(void) const
+QStringList dtkCorePluginManagerHandler::dtkConcepts(void) const
 {
-    return d->concepts.values();
+    return d->dtkConcepts.values();
 }
 
 dtkCorePluginManagerHandler *dtkCorePluginManagerHandler::s_instance = nullptr;

@@ -59,10 +59,10 @@ void dtkCorePluginFactoryTestCase::init(void)
 
 void dtkCorePluginFactoryTestCase::testBasic(void)
 {
-    dtkAbstractCoreConcept *concept = d->factory.create("TOTO");
-    QVERIFY(concept);
+    dtkAbstractCoreConcept *dtkConcept = d->factory.create("TOTO");
+    QVERIFY(dtkConcept);
 
-    QVariant var = concept->output();
+    QVariant var = dtkConcept->output();
 
     dtkCoreConceptFooData data = var.value<dtkCoreConceptFooData>();
 

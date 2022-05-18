@@ -36,8 +36,8 @@ private:
 template <typename T = void> class dtkCoreParameterSimpleObject : public dtkCoreParameterObject
 {
 public:
-     dtkCoreParameterSimpleObject<T>(dtkCoreParameterSimple<T> *p) : dtkCoreParameterObject(p) {}
-    ~dtkCoreParameterSimpleObject<T>(void) = default;
+     dtkCoreParameterSimpleObject(dtkCoreParameterSimple<T> *p) : dtkCoreParameterObject(p) {}
+    ~dtkCoreParameterSimpleObject(void) = default;
 
     void notifyValue(const T&) { qDebug() << Q_FUNC_INFO << "Default impl nothing is done"; }
 };
@@ -45,8 +45,8 @@ public:
 template <> class DTKCORE_EXPORT dtkCoreParameterSimpleObject<QString> : public dtkCoreParameterStringObject
 {
 public:
-     dtkCoreParameterSimpleObject<QString>(dtkCoreParameterSimple<QString> *p) : dtkCoreParameterStringObject(p) {}
-    ~dtkCoreParameterSimpleObject<QString>(void) = default;
+     dtkCoreParameterSimpleObject(dtkCoreParameterSimple<QString> *p) : dtkCoreParameterStringObject(p) {}
+    ~dtkCoreParameterSimpleObject(void) = default;
 
     void notifyValue(const QString& s) { emit valueChanged(s); }
 };

@@ -83,7 +83,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 ## Build setup
 ## #################################################################
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(WIN32)
@@ -132,7 +132,6 @@ include(GenerateExportHeader)
 find_package(Qt5 REQUIRED COMPONENTS Core Qml Test Widgets Gui)
 
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(DTK_HAVE_ZLIB "NO")
 find_package(ZLIB QUIET)
