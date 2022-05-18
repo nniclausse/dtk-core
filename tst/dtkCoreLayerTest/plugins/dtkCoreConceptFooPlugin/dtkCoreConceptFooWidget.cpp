@@ -33,7 +33,7 @@ public:
 
 void dtkCoreConceptFooWidgetPrivate::connect(void)
 {
-    QObject::connect(this->id_sb, QOverload<int>::of(&QSpinBox::valueChanged), [=, this] (int v) {
+    QObject::connect(this->id_sb, QOverload<int>::of(&QSpinBox::valueChanged), [=] (int v) {
         QVariantHash params;
         params["id"] = v;
         this->dtkConcept->setParameters(params);
@@ -62,7 +62,7 @@ dtkCoreConceptFooWidget::dtkCoreConceptFooWidget(QWidget* parent) : QWidget(pare
     id_lo->addWidget(d->id_sb);
     main_lo->addLayout(id_lo);
 
-    d->connection = connect(&dtkCorePluginWidgetManager::instance(), &dtkCorePluginWidgetManager::added, [=, this] (const QVariant& v, QWidget *w) {
+    d->connection = connect(&dtkCorePluginWidgetManager::instance(), &dtkCorePluginWidgetManager::added, [=] (const QVariant& v, QWidget *w) {
 
             if (w != this) {
                 dtkTrace() << Q_FUNC_INFO << "Mismatch widget";
