@@ -27,6 +27,18 @@ QString dtkCoreParameterObject::label(void) const
     return m_parameter->label();
 }
 
+void dtkCoreParameterObject::setUnit(const QString& unit)
+{
+    if (unit != m_parameter->unit()) {
+        m_parameter->setUnit(unit);
+    }
+}
+
+QString dtkCoreParameterObject::unit(void) const
+{
+    return m_parameter->unit();
+}
+
 void dtkCoreParameterObject::setDoc(const QString& doc)
 {
     if (m_parameter->documentation() != doc) {
@@ -52,6 +64,11 @@ dtkCoreParameter *dtkCoreParameterObject::parameter(void)
 void dtkCoreParameterObject::notifyLabel(const QString& l)
 {
     emit labelChanged(l);
+}
+
+void dtkCoreParameterObject::notifyUnit(const QString& u)
+{
+    emit labelChanged(u);
 }
 
 void dtkCoreParameterObject::notifyDoc(const QString& d)

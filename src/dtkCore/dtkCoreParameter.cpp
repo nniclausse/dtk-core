@@ -113,12 +113,22 @@ namespace dtk {
 // dtkCoreParameter implementation
 // ///////////////////////////////////////////////////////////////////
 
+dtkCoreParameter::dtkCoreParameter(const QString& label) : m_label(label)
+{
+
+}
+
 dtkCoreParameter::dtkCoreParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
 {
 
 }
 
-dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
+dtkCoreParameter::dtkCoreParameter(const QString& label, const QString& doc, const QString& unit) : m_label(label), m_doc(doc), m_unit(unit)
+{
+
+}
+
+dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_label), m_doc(o.m_doc), m_unit(o.m_unit)
 {
     if (o.m_enable_share_connection) {
         m_connection = o.m_connection;
@@ -143,6 +153,16 @@ void dtkCoreParameter::setLabel(const QString& label)
 QString dtkCoreParameter::label(void) const
 {
     return this->m_label;
+}
+
+void dtkCoreParameter::setUnit(const QString& unit)
+{
+    this->m_unit = unit;
+}
+
+QString dtkCoreParameter::unit(void) const
+{
+    return this->m_unit;
 }
 
 void dtkCoreParameter::setDocumentation(const QString& doc)
