@@ -84,12 +84,13 @@ public:
     using connection = std::shared_ptr<dtkCoreParameterConnection>;
 
 public:
-     dtkCoreParameter(void) = default;
-     dtkCoreParameter(const QString& label);
-     dtkCoreParameter(const QString& label, const QString& doc);
-     dtkCoreParameter(const QString& label, const QString& doc, const QString& unit);
-     dtkCoreParameter(const dtkCoreParameter&);
-    ~dtkCoreParameter(void) = default;
+    dtkCoreParameter(void) = default;
+    dtkCoreParameter(const QString& label);
+    dtkCoreParameter(const QString& label, const QString& doc);
+    dtkCoreParameter(const QString& label, const QString& doc, const QString& unit);
+    dtkCoreParameter(const dtkCoreParameter&);
+
+    virtual ~dtkCoreParameter(void);
 
     virtual QString typeName(void) const = 0;
     virtual int typeId(void) const = 0;

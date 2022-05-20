@@ -135,6 +135,13 @@ dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_labe
     }
 }
 
+dtkCoreParameter::~dtkCoreParameter(void)
+{
+    if (m_connection) {
+        m_connection->param_list.removeAll(this);
+    }
+}
+
 void dtkCoreParameter::setUid(const QString& uid)
 {
     this->m_uid = uid;
