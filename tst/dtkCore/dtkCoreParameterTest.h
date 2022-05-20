@@ -20,6 +20,7 @@ private slots:
     void testCreation(void);
     void testLabel(void);
     void testDocumentation(void);
+    void testUnit(void);
     void testValue(void);
     void testBounds(void);
     void testDecimals(void);

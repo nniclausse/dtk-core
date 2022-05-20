@@ -143,6 +143,21 @@ void dtkCoreParameterTestCase::testDocumentation(void)
     QCOMPARE(pi.documentation(), doc);
 }
 
+void dtkCoreParameterTestCase::testUnit(void)
+{
+    QString unit("km/h");
+
+    dtk::d_real speed("speed", 1., -1, 1, "", unit);
+    QCOMPARE(speed.unit(), unit);
+    unit = "m/s";
+    speed.setUnit(unit);
+    QCOMPARE(speed.unit(), unit);
+
+    unit = "km/s";
+    dtk::d_range_real limits("limits", {80, 110}, 0, 130, "", "km/s");
+    QCOMPARE(limits.unit(), unit);
+}
+
 void dtkCoreParameterTestCase::testValue(void)
 {
     {
@@ -1098,7 +1113,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
 
     {
         auto res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count() , 6);
+        QCOMPARE(res.count() , 7);
 
         QCOMPARE(res["toto"]->uid() , QString("toto"));
 
@@ -1110,7 +1125,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value() , 3.1415);
 
         res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1120,6 +1135,9 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
+
+        auto speed = res["speed"];
+        QCOMPARE(speed->unit(), QString("m/s"));
     }
 
     {
@@ -1142,7 +1160,7 @@ void dtkCoreParameterTestCase::testWriteParameters(void)
 
             QCOMPARE(resout , true);
 
-            QCOMPARE(resin.count() , 6);
+            QCOMPARE(resin.count() , 7);
             QCOMPARE(resin["toto"]->uid() , resinout["toto"]->uid());
 
             QCOMPARE(resin["hyp"]->label() , resinout["hyp"]->label());
@@ -1151,6 +1169,7 @@ void dtkCoreParameterTestCase::testWriteParameters(void)
             QCOMPARE(resin["dif"]->documentation() , resinout["dif"]->documentation());
             QCOMPARE(dtk::d_bool(resin["dif"]->variant()).value() , dtk::d_bool(resinout["dif"]->variant()).value());
             QCOMPARE(dtk::d_real(resin["toto"]->variant()).value() , dtk::d_real(resinout["toto"]->variant()).value());
+            QCOMPARE(dtk::d_real(resin["speed"]->variant()).value() , dtk::d_real(resinout["speed"]->variant()).value());
         }
     }
 }
@@ -1161,7 +1180,7 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
 
     {
         auto res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1171,9 +1190,10 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
+        QCOMPARE(dtk::d_real(res["speed"]->variant()).value(), 300);
 
          res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1183,7 +1203,7 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
-
+        QCOMPARE(dtk::d_real(res["speed"]->variant()).value(), 300);
     }
 
 }
@@ -1248,8 +1268,8 @@ void dtkCoreParameterTestCase::testCollection(void)
         QCOMPARE(m_path.baseName(), p_path->baseName());
         QCOMPARE(m_path.filters(), p_path->filters());
 
-        auto&& m_real = collection.parameter<dtk::d_real>("toto");
-        auto&& p_real = dynamic_cast<dtk::d_real*>(res["toto"]);
+        auto&& m_real = collection.parameter<dtk::d_real>("speed");
+        auto&& p_real = dynamic_cast<dtk::d_real*>(res["speed"]);
 
         QCOMPARE(m_real.label(), p_real->label());
         QCOMPARE(m_real.documentation(), p_real->documentation());
@@ -1257,6 +1277,7 @@ void dtkCoreParameterTestCase::testCollection(void)
         QCOMPARE(m_real.min(), p_real->min());
         QCOMPARE(m_real.max(), p_real->max());
         QCOMPARE(m_real.decimals(), p_real->decimals());
+        QCOMPARE(m_real.unit(), p_real->unit());
     }
 
     // Setter and iterator
