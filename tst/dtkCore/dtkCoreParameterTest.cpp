@@ -115,7 +115,15 @@ void dtkCoreParameterTestCase::testCreation(void)
 
     {
         dtk::d_bool b("Specific Ctor", true, "Example of specific constructor for boolean");
-        qDebug() << Q_FUNC_INFO << b;
+        QCOMPARE(b.value(), true);
+    }
+
+    {
+        dtkCoreParameterPath *path = new dtkCoreParameterPath("test_file", QFINDTESTDATA("../resources/parameters_def.json"), {"*.json"}, "Test file defining some parameters");
+        QVariant v = path->variant();
+        delete path;
+        auto p = v.value<dtkCoreParameterPath>();
+        QCOMPARE(p.path(), QString(QFINDTESTDATA("../resources/parameters_def.json")));
     }
 }
 
