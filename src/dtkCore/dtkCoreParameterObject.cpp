@@ -68,7 +68,7 @@ void dtkCoreParameterObject::notifyLabel(const QString& l)
 
 void dtkCoreParameterObject::notifyUnit(const QString& u)
 {
-    emit labelChanged(u);
+    emit unitChanged(u);
 }
 
 void dtkCoreParameterObject::notifyDoc(const QString& d)
