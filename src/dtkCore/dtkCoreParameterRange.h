@@ -24,6 +24,8 @@ public:
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
     using dtkCoreParameter::setLabel;
+    using dtkCoreParameter::unit;
+    using dtkCoreParameter::setUnit;
 
 public:
      dtkCoreParameterRange(void);
@@ -34,12 +36,21 @@ public:
     dtkCoreParameterRange(const QVariant &variant);
     dtkCoreParameterRange(const dtkCoreParameterRange &other);
 
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum);
     dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
-                          const QString &doc = QString());
+                          const QString &doc);
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
+                          const QString &doc, const QString& unit);
 #ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
     dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
-                          const int &nb_decimals, const QString &doc = QString());
+                          const int &nb_decimals);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
+                          const int &nb_decimals, const QString &doc);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterRange(const QString &label, const std::array<T, 2> &values, const T &minimum, const T &maximum,
+                          const int &nb_decimals, const QString &doc, const QString& unit);
 #endif
 
     dtkCoreParameterRange& operator = (const std::array<T, 2>&);
@@ -82,6 +93,7 @@ public:
 
 private:
     using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_unit;
     using dtkCoreParameter::m_doc;
 
     std::array<T, 2> m_val = {T(0), T(0)};

@@ -55,7 +55,19 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const dtkCoreParam
 }
 
 template <typename T, typename E>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label), m_val(t), m_bounds({min, max})
+{
+    m_object = new dtkCoreParameterNumericObject<T>(this);
+}
+
+template <typename T, typename E>
 inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({min, max})
+{
+    m_object = new dtkCoreParameterNumericObject<T>(this);
+}
+
+template <typename T, typename E>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const QString& doc, const QString& unit) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc, unit), m_val(t), m_bounds({min, max})
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
@@ -67,7 +79,19 @@ inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& lab
 }
 
 template <typename T, typename E> template <typename U, typename>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const int& decimals) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label), m_val(t), m_bounds({min, max}), m_decimals(decimals)
+{
+    m_object = new dtkCoreParameterNumericObject<T>(this);
+}
+
+template <typename T, typename E> template <typename U, typename>
 inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc), m_val(t), m_bounds({min, max}), m_decimals(decimals)
+{
+    m_object = new dtkCoreParameterNumericObject<T>(this);
+}
+
+template <typename T, typename E> template <typename U, typename>
+inline dtkCoreParameterNumeric<T, E>::dtkCoreParameterNumeric(const QString& label, const T& t, const T& min, const T& max, const int& decimals, const QString& doc, const QString& unit) : dtkCoreParameterBase<dtkCoreParameterNumeric>(label, doc, unit), m_val(t), m_bounds({min, max}), m_decimals(decimals)
 {
     m_object = new dtkCoreParameterNumericObject<T>(this);
 }
@@ -101,6 +125,7 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const QVariant& v) -> dtk
         auto map = v.toHash();
 
         m_label = map["label"].toString();
+        m_unit = map["unit"].toString();
         m_doc = map["doc"].toString();
         m_val = map["value"].value<T>();
         if(map.contains("min")) m_bounds[0] = map["min"].value<T>();
@@ -113,6 +138,7 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const QVariant& v) -> dtk
             m_decimals = map["decimals"].value<int>();
         }
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
         m_object->notifyValue(m_val);
         m_object->notifyMin(m_bounds[0]);
@@ -149,11 +175,13 @@ inline auto dtkCoreParameterNumeric<T, E>::operator = (const dtkCoreParameterNum
 {
     if (this != &o) {
         m_label = o.m_label;
+        m_unit = o.m_unit;
         m_doc = o.m_doc;
         m_val = o.m_val;
         m_bounds = o.m_bounds;
         m_decimals = o.m_decimals;
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
         m_object->notifyValue(m_val);
         m_object->notifyMin(m_bounds[0]);
@@ -427,6 +455,7 @@ inline void dtkCoreParameterNumeric<T, E>::setValue(const QVariant& v)
         auto map = v.toHash();
 
         m_label = map["label"].toString();
+        m_unit = map["unit"].toString();
         m_doc = map["doc"].toString();
         m_val = map["value"].value<T>();
 
@@ -440,6 +469,7 @@ inline void dtkCoreParameterNumeric<T, E>::setValue(const QVariant& v)
             m_decimals = map["decimals"].value<int>();
         }
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
         m_object->notifyValue(m_val);
         m_object->notifyMin(m_bounds[0]);
@@ -600,6 +630,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterNumeric<T
     s << p.min();
     s << p.max();
     s << p.decimals();
+    s << p.unit();
     s << p.documentation();
 
     return s;
@@ -613,9 +644,10 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<T>& p)
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
-    p = dtkCoreParameterNumeric<T>(label, val, min, max, dec, doc);
+    p = dtkCoreParameterNumeric<T>(label, val, min, max, dec, doc, unit);
     return s;
 }
 
@@ -627,9 +659,10 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<T>& p)
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
-    p = dtkCoreParameterNumeric<T>(label, val, min, max, doc);
+    p = dtkCoreParameterNumeric<T>(label, val, min, max, doc, unit);
     return s;
 }
 
@@ -640,6 +673,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterNumeric<c
     s << (qint8)p.min();
     s << (qint8)p.max();
     s << p.decimals();
+    s << p.unit();
     s << p.documentation();
 
     return s;
@@ -652,9 +686,10 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterNumeric<char>& 
     qint8 min; s >> min;
     qint8 max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
-    p = dtkCoreParameterNumeric<char>(label, (char)val, (char)min, (char)max, doc);
+    p = dtkCoreParameterNumeric<char>(label, (char)val, (char)min, (char)max, doc, unit);
     return s;
 }
 
@@ -667,6 +702,7 @@ inline QDebug operator << (QDebug dbg, dtkCoreParameterNumeric<T> p)
                   << "value : " << p.value() << ", "
                   << "bounds : [" << p.bounds()[0] << ", " << p.bounds()[1] << "], "
                   << "decimals : " << p.decimals() << ", "
+                  << "unit : " << p.unit()
                   << "documentation : " << p.documentation()
                   << " }";
 

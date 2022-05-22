@@ -81,6 +81,19 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const dtkCoreParameter
 }
 
 template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max) : dtkCoreParameterBase<dtkCoreParameterRange>(label)
+{
+    m_object = new dtkCoreParameterRangeObject<T>(this);
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
+template <typename T, typename E>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
@@ -93,8 +106,49 @@ inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, 
     }
 }
 
+template <typename T, typename E>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const QString& doc, const QString& unit) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc, unit)
+{
+    m_object = new dtkCoreParameterRangeObject<T>(this);
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
+template <typename T, typename E> template <typename U, typename>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const int& decimals) : dtkCoreParameterBase<dtkCoreParameterRange>(label)
+{
+    m_object = new dtkCoreParameterRangeObject<T>(this);
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+        m_decimals = decimals;
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
 template <typename T, typename E> template <typename U, typename>
 inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const int& decimals, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc)
+{
+    m_object = new dtkCoreParameterRangeObject<T>(this);
+    if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
+        m_val = t;
+        m_bounds = {min , max};
+        m_decimals = decimals;
+
+    } else {
+        dtkWarn() << Q_FUNC_INFO << "Input values and bounds are not correctly ordered. Nothing is done.";
+    }
+}
+
+template <typename T, typename E> template <typename U, typename>
+inline dtkCoreParameterRange<T, E>::dtkCoreParameterRange(const QString& label, const std::array<T, 2>& t, const T& min, const T& max, const int& decimals, const QString& doc, const QString& unit) : dtkCoreParameterBase<dtkCoreParameterRange>(label, doc, unit)
 {
     m_object = new dtkCoreParameterRangeObject<T>(this);
     if (min <= t[0] && t[0] <= t[1] && t[1] <= max) {
@@ -159,6 +213,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         auto map = v.toHash();
 
         m_label = map["label"].toString();
+        m_unit = map["unit"].toString();
         m_doc = map["doc"].toString();
 
         T min, max;
@@ -173,6 +228,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         auto v_max = list[1].value<T>();
 
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
 
         if (min <= v_min && v_min <= v_max && v_max <= max) {
@@ -211,6 +267,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
 {
     if (this != &o) {
         m_label = o.m_label;
+        m_unit = o.m_unit;
         m_doc = o.m_doc;
         m_val = o.m_val;
         m_bounds = o.m_bounds;
@@ -218,6 +275,7 @@ inline dtkCoreParameterRange<T, E>& dtkCoreParameterRange<T, E>::operator = (con
         this->sync();
 
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
         m_object->notifyRmin(m_val[0]);
         m_object->notifyRmax(m_val[1]);
@@ -296,9 +354,11 @@ inline void dtkCoreParameterRange<T, E>::setValue(const QVariant& v)
         auto map = v.toHash();
 
         m_label = map["label"].toString();
+        m_unit = map["unit"].toString();
         m_doc = map["doc"].toString();
 
         m_object->notifyLabel(m_label);
+        m_object->notifyUnit(m_unit);
         m_object->notifyDoc(m_doc);
 
         T min, max;
@@ -529,6 +589,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterRange<T>&
     s << p.min();
     s << p.max();
     s << p.decimals();
+    s << p.unit();
     s << p.documentation();
 
     return s;
@@ -543,11 +604,12 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
     std::array<T, 2> val = {v_min, v_max};
 
-    p = dtkCoreParameterRange<T>(label, val, min, max, dec, doc);
+    p = dtkCoreParameterRange<T>(label, val, min, max, dec, doc, unit);
     return s;
 }
 
@@ -560,11 +622,12 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<T>& p)
     T min; s >> min;
     T max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
     std::array<T, 2> val = {v_min, v_max};
 
-    p = dtkCoreParameterRange<T>(label, val, min, max, doc);
+    p = dtkCoreParameterRange<T>(label, val, min, max, doc, unit);
     return s;
 }
 
@@ -576,6 +639,7 @@ inline QDataStream& operator << (QDataStream& s, const dtkCoreParameterRange<cha
     s << (qint8)p.min();
     s << (qint8)p.max();
     s << p.decimals();
+    s << p.unit();
     s << p.documentation();
 
     return s;
@@ -589,11 +653,12 @@ inline QDataStream& operator >> (QDataStream& s, dtkCoreParameterRange<char>& p)
     qint8 min; s >> min;
     qint8 max; s >> max;
     int dec; s >> dec;
+    QString unit; s >> unit;
     QString doc; s >> doc;
 
     std::array<char, 2> val = {(char)v_min, (char)v_max};
 
-    p = dtkCoreParameterRange<char>(label, val, (char)min, (char)max, doc);
+    p = dtkCoreParameterRange<char>(label, val, (char)min, (char)max, doc, unit);
     return s;
 }
 
@@ -610,6 +675,7 @@ inline QDebug operator << (QDebug dbg, dtkCoreParameterRange<T> p)
                   << p.min() << ","
                   << p.max() << "], "
                   << "decimals" << p.decimals() << ", "
+                  << "unit" << p.unit() << ", "
                   << "documentation : " << p.documentation()
                   << " }";
 

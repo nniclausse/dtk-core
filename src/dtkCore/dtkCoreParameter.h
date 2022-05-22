@@ -84,10 +84,13 @@ public:
     using connection = std::shared_ptr<dtkCoreParameterConnection>;
 
 public:
-     dtkCoreParameter(void) = default;
-     dtkCoreParameter(const QString&, const QString& = QString());
-     dtkCoreParameter(const dtkCoreParameter&);
-    ~dtkCoreParameter(void) = default;
+    dtkCoreParameter(void) = default;
+    dtkCoreParameter(const QString& label);
+    dtkCoreParameter(const QString& label, const QString& doc);
+    dtkCoreParameter(const QString& label, const QString& doc, const QString& unit);
+    dtkCoreParameter(const dtkCoreParameter&);
+
+    virtual ~dtkCoreParameter(void);
 
     virtual QString typeName(void) const = 0;
     virtual int typeId(void) const = 0;
@@ -97,6 +100,9 @@ public:
 
     void setLabel(const QString&);
     QString label(void) const;
+
+    void setUnit(const QString&);
+    QString unit(void) const;
 
     void setDocumentation(const QString&);
     QString documentation(void) const;
@@ -138,6 +144,7 @@ protected:
     QString m_uid;
     QString m_label;
     QString m_doc;
+    QString m_unit;
     connection m_connection;
 
     mutable bool m_enable_share_connection = true;
@@ -154,7 +161,9 @@ class dtkCoreParameterBase : public dtkCoreParameter
 {
 public:
      dtkCoreParameterBase(void) = default;
-     dtkCoreParameterBase(const QString&, const QString& = QString());
+     dtkCoreParameterBase(const QString& label);
+     dtkCoreParameterBase(const QString& label, const QString& doc);
+     dtkCoreParameterBase(const QString& label, const QString& doc, const QString& unit);
      dtkCoreParameterBase(const dtkCoreParameterBase&);
     ~dtkCoreParameterBase(void) = default;
 

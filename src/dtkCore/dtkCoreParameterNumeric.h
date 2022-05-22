@@ -25,6 +25,8 @@ public:
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
     using dtkCoreParameter::setLabel;
+    using dtkCoreParameter::unit;
+    using dtkCoreParameter::setUnit;
 
 public:
      dtkCoreParameterNumeric(void);
@@ -36,12 +38,22 @@ public:
     dtkCoreParameterNumeric(const QVariant &variant);
     dtkCoreParameterNumeric(const dtkCoreParameterNumeric &other);
 
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum);
     dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
-                            const QString &doc = QString());
+                            const QString &doc);
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const QString &doc, const QString& unit);
 #ifndef SWIG
     template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
     dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
-                            const int &nb_decimals, const QString &doc = QString());
+                            const int &nb_decimals);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals, const QString &doc);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals, const QString &doc, const QString& unit);
+
     template <typename U = T, typename = std::enable_if_t<std::is_same<U, bool>::value>>
     dtkCoreParameterNumeric(const QString &label, const T &value, const QString &doc = QString());
 #endif
@@ -106,6 +118,7 @@ public:
 
 protected:
     using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_unit;
     using dtkCoreParameter::m_doc;
 
     T m_val = T(0);
