@@ -94,7 +94,19 @@ inline int dtkCoreParameter::registerToMetaType(void)
 // ///////////////////////////////////////////////////////////////////
 
 template <typename Derive>
+inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label) : dtkCoreParameter(label)
+{
+
+}
+
+template <typename Derive>
 inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label, const QString& doc) : dtkCoreParameter(label, doc)
+{
+
+}
+
+template <typename Derive>
+inline dtkCoreParameterBase<Derive>::dtkCoreParameterBase(const QString& label, const QString& doc, const QString& unit) : dtkCoreParameter(label, doc, unit)
 {
 
 }
@@ -109,6 +121,12 @@ template <typename Derive>
 inline QString dtkCoreParameterBase<Derive>::typeName(void) const
 {
     return QMetaType::typeName(qMetaTypeId<Derive>());
+}
+
+template <typename Derive>
+inline int dtkCoreParameterBase<Derive>::typeId(void) const
+{
+    return qMetaTypeId<Derive>();
 }
 
 template <typename Derive>
@@ -178,6 +196,7 @@ inline QVariantHash dtkCoreParameterBase<Derive>::toVariantHash(void) const
     auto type_name = QMetaType::typeName(qMetaTypeId<Derive>());
     hash.insert("type", type_name);
     hash.insert("label", m_label);
+    hash.insert("unit", m_unit);
     hash.insert("doc", m_doc);
     return hash;
 }

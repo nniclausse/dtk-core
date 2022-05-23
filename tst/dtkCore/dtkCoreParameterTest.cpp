@@ -13,6 +13,18 @@
 #include <dtkCore/dtkCoreParameterRange>
 #include <dtkCore/dtkCoreParameterSimple>
 
+#include <dtkCore/dtkCoreParameterCollection>
+
+#include <dtkCore/dtkCoreParameterObject>
+#include <dtkCore/dtkCoreParameterInListObject>
+#include <dtkCore/dtkCoreParameterInListStringListObject>
+#include <dtkCore/dtkCoreParameterNumericObject>
+#include <dtkCore/dtkCoreParameterPathObject>
+#include <dtkCore/dtkCoreParameterRangeObject>
+#include <dtkCore/dtkCoreParameterSimpleObject>
+
+#include <QtQml>
+
 #include <ciso646>
 
 class dtkCoreParameterTestCasePrivate
@@ -103,7 +115,15 @@ void dtkCoreParameterTestCase::testCreation(void)
 
     {
         dtk::d_bool b("Specific Ctor", true, "Example of specific constructor for boolean");
-        qDebug() << Q_FUNC_INFO << b;
+        QCOMPARE(b.value(), true);
+    }
+
+    {
+        dtkCoreParameterPath *path = new dtkCoreParameterPath("test_file", QFINDTESTDATA("../resources/parameters_def.json"), {"*.json"}, "Test file defining some parameters");
+        QVariant v = path->variant();
+        delete path;
+        auto p = v.value<dtkCoreParameterPath>();
+        QCOMPARE(p.path(), QString(QFINDTESTDATA("../resources/parameters_def.json")));
     }
 }
 
@@ -129,6 +149,21 @@ void dtkCoreParameterTestCase::testDocumentation(void)
     dtk::d_int pi;
     pi.setDocumentation(doc);
     QCOMPARE(pi.documentation(), doc);
+}
+
+void dtkCoreParameterTestCase::testUnit(void)
+{
+    QString unit("km/h");
+
+    dtk::d_real speed("speed", 1., -1, 1, "", unit);
+    QCOMPARE(speed.unit(), unit);
+    unit = "m/s";
+    speed.setUnit(unit);
+    QCOMPARE(speed.unit(), unit);
+
+    unit = "km/s";
+    dtk::d_range_real limits("limits", {80, 110}, 0, 130, "", "km/s");
+    QCOMPARE(limits.unit(), unit);
 }
 
 void dtkCoreParameterTestCase::testValue(void)
@@ -738,8 +773,10 @@ void dtkCoreParameterTestCase::testConnection(void)
     dtk::d_real pr("pr", 0.0, -10.0, 10.0);
     dtk::d_real default_value("default_value", 0.0, -10.0, 10.0);
     dtk::d_real bad_value(12345.6789);
+    dtk::d_real pr_share(12345.6789);
     QVariant variant_good = QVariant(3.14);
     QVariant variant_bad  = QVariant(31415.957);
+
 
     int signal_count = 0;
     int error_count = 0;
@@ -752,6 +789,22 @@ void dtkCoreParameterTestCase::testConnection(void)
                  signal_count++;
              };
     pr.connect(f);
+
+    auto g = [=, &signal_count] (QVariant v) {
+                 QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                 qDebug() << "from g";
+             };
+    auto h = [=, &signal_count] (QVariant v) {
+                 QCOMPARE(v.value<dtk::d_real>().value(), std::sqrt(2));
+                 qDebug() << "from h";
+             };
+
+    // should not crash if no connection is set
+    pr_share.shareValue(42.);
+    pr_share.connect(g);
+    pr_share.connect(h);
+    pr_share.shareValue(std::sqrt(2));
+    pr_share.disconnect();
 
     // catch invalid values setting
     pr.connectFail( [=, &error_count] () { ++error_count; } );
@@ -976,6 +1029,24 @@ void dtkCoreParameterTestCase::testRange(void)
     range_r2.setValue({a, b});
     QCOMPARE(range_r2[0], a);
     QCOMPARE(range_r2[1], b);
+
+    dtk::d_range_real rr("range", {0.2, 5.5}, 0.0, 10., "I am a range real parameter");
+
+    QCOMPARE(rr.value()[0], 0.2);
+    QCOMPARE(rr.value()[1], 5.5);
+
+    rr.setValueMin(2.0);
+    QCOMPARE(rr.value()[0], 2.0);
+
+    rr.setValueMax(6.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
+    rr.setValueMax(11.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
+    rr.setValueMax(1.0);
+    QCOMPARE(rr.value()[1], 6.0);
+
 }
 
 void dtkCoreParameterTestCase::testStringList(void)
@@ -984,16 +1055,16 @@ void dtkCoreParameterTestCase::testStringList(void)
     QVERIFY(param_list.label() == "name");
 
     QCOMPARE(param_list.value().size(), 2);
-    QCOMPARE(param_list.values().size(), 4);
+    QCOMPARE(param_list.list().size(), 4);
 
     param_list.addValue("zz");
     QCOMPARE(param_list.value().size(), 2);
-    QCOMPARE(param_list.values().size(), 5);
+    QCOMPARE(param_list.list().size(), 5);
 
 
     param_list.removeValue("aa");
     QCOMPARE(param_list.value().size(), 1);
-    QCOMPARE(param_list.values().size(), 4);
+    QCOMPARE(param_list.list().size(), 4);
 
 }
 
@@ -1050,7 +1121,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
 
     {
         auto res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count() , 6);
+        QCOMPARE(res.count() , 7);
 
         QCOMPARE(res["toto"]->uid() , QString("toto"));
 
@@ -1062,7 +1133,7 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value() , 3.1415);
 
         res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1072,11 +1143,42 @@ void dtkCoreParameterTestCase::testReadParameters(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
+
+        auto speed = res["speed"];
+        QCOMPARE(speed->unit(), QString("m/s"));
     }
 
     {
         auto resbad = dtk::core::readParameters(json_bad_file);
         QCOMPARE(resbad.count() , 0);
+    }
+}
+
+void dtkCoreParameterTestCase::testWriteParameters(void)
+{
+    QString json_file_input(QFINDTESTDATA("../resources/parameters_def.json"));
+    QTemporaryFile file;
+
+    {
+        if (file.open())
+        {
+            auto resin = dtk::core::readParameters(json_file_input);
+            auto resout = dtk::core::writeParameters(resin, file.fileName());
+            auto resinout = dtk::core::readParameters(file.fileName());
+
+            QCOMPARE(resout , true);
+
+            QCOMPARE(resin.count() , 7);
+            QCOMPARE(resin["toto"]->uid() , resinout["toto"]->uid());
+
+            QCOMPARE(resin["hyp"]->label() , resinout["hyp"]->label());
+            QCOMPARE(dtk::d_int(resin["hyp"]->variant()).value(), dtk::d_int(resinout["hyp"]->variant()).value());
+
+            QCOMPARE(resin["dif"]->documentation() , resinout["dif"]->documentation());
+            QCOMPARE(dtk::d_bool(resin["dif"]->variant()).value() , dtk::d_bool(resinout["dif"]->variant()).value());
+            QCOMPARE(dtk::d_real(resin["toto"]->variant()).value() , dtk::d_real(resinout["toto"]->variant()).value());
+            QCOMPARE(dtk::d_real(resin["speed"]->variant()).value() , dtk::d_real(resinout["speed"]->variant()).value());
+        }
     }
 }
 
@@ -1086,7 +1188,7 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
 
     {
         auto res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1096,9 +1198,10 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
+        QCOMPARE(dtk::d_real(res["speed"]->variant()).value(), 300);
 
          res = dtk::core::readParameters(json_file);
-        QCOMPARE(res.count(), 6);
+        QCOMPARE(res.count(), 7);
 
         QCOMPARE(res["toto"]->uid(), QString("toto"));
 
@@ -1108,7 +1211,7 @@ void dtkCoreParameterTestCase::testReadParametersResources(void)
         QCOMPARE(res["dif"]->documentation(), QString("diffusion Flag"));
         QCOMPARE(dtk::d_bool(res["dif"]->variant()).value(), false);
         QCOMPARE(dtk::d_real(res["toto"]->variant()).value(), 3.1415);
-
+        QCOMPARE(dtk::d_real(res["speed"]->variant()).value(), 300);
     }
 
 }
@@ -1150,6 +1253,95 @@ void dtkCoreParameterTestCase::testToVariantHash(void)
         QVERIFY(&target_inlist);
         QCOMPARE(source.values(), target_inlist.values());
         QCOMPARE(source.valueIndex(), target_inlist.valueIndex());
+    }
+}
+
+void dtkCoreParameterTestCase::testCollection(void)
+{
+    QString json_file(QFINDTESTDATA("../resources/parameters_def.json"));
+    auto res = dtk::core::readParameters(json_file);
+
+    // Copy Ctor and getter
+    {
+        dtkCoreParameterCollection collection(res);
+        QCOMPARE(collection.size(), res.size());
+
+        auto&& m_path = collection.parameter<dtk::d_path>("model/settings");
+        auto&& p_path = dynamic_cast<dtk::d_path*>(res["model/settings"]);
+
+        QCOMPARE(m_path.label(), p_path->label());
+        QCOMPARE(m_path.documentation(), p_path->documentation());
+        QCOMPARE(m_path.path(), p_path->path());
+        QCOMPARE(m_path.dirName(), p_path->dirName());
+        QCOMPARE(m_path.baseName(), p_path->baseName());
+        QCOMPARE(m_path.filters(), p_path->filters());
+
+        auto&& m_real = collection.parameter<dtk::d_real>("speed");
+        auto&& p_real = dynamic_cast<dtk::d_real*>(res["speed"]);
+
+        QCOMPARE(m_real.label(), p_real->label());
+        QCOMPARE(m_real.documentation(), p_real->documentation());
+        QCOMPARE(m_real.value(), p_real->value());
+        QCOMPARE(m_real.min(), p_real->min());
+        QCOMPARE(m_real.max(), p_real->max());
+        QCOMPARE(m_real.decimals(), p_real->decimals());
+        QCOMPARE(m_real.unit(), p_real->unit());
+    }
+
+    // Setter and iterator
+    {
+        dtkCoreParameterCollection collection;
+        for (auto it = res.cbegin(); it != res.cend(); ++it) {
+            collection[it.key()] = it.value();
+        }
+        for (auto it = collection.cbegin(); it != collection.cend(); ++it) {
+            QVERIFY(res.contains(it.key()));
+            QCOMPARE(res[it.key()], it.value());
+        }
+    }
+
+    // Bad acess check default parameter value
+    {
+        dtkCoreParameterCollection collection(res);
+        // Wrong name
+        auto&& p = collection.parameter<dtk::d_path>("model/setting");
+        QVERIFY(p.label().isEmpty());
+        QVERIFY(p.documentation().isEmpty());
+        QVERIFY(p.filters().size() == 0);
+        QVERIFY(p.path().isEmpty());
+        // wrong type
+        dtk::d_real rr;
+        auto&& r = collection.parameter<dtk::d_real>("model/settings");
+        QVERIFY(r.label().isEmpty());
+        QVERIFY(r.documentation().isEmpty());
+        QVERIFY(r.value() == rr.value());
+        QVERIFY(r.min() == rr.min());
+        QVERIFY(r.max() == rr.max());
+        QVERIFY(r.decimals() == rr.decimals());
+    }
+
+    // Assigment operator and Variant
+    {
+        dtkCoreParameterCollection collection;
+        collection = res;
+        dtk::d_int& ii = *(static_cast<dtk::d_int*>(res["hyp"]));
+        auto v = collection.variant("hyp");
+        QVERIFY(v.isValid());
+        QVERIFY(v.userType() == qMetaTypeId<dtk::d_int>());
+        QCOMPARE(v.value<dtk::d_int>(), ii);
+
+        auto vmap = collection.toVariantMap();
+        auto it = collection.begin();
+        for (auto vit = vmap.begin(); vit != vmap.end(); ++vit, ++it) {
+            QCOMPARE(vit.key(), it.key());
+            QCOMPARE(vit.value().userType(), it.value()->typeId());
+        }
+
+        QQmlEngine *engine = new QQmlEngine();
+        QJSValue jsvalue = collection.toJSValue(engine);
+        QJSValue jsv;
+        QVERIFY(jsvalue.hasProperty("hyp"));
+
     }
 }
 

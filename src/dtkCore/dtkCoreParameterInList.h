@@ -8,7 +8,7 @@
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
 // ///////////////////////////////////////////////////////////////////
-
+template <typename T> class dtkCoreParameterInListObject;
 template <typename T>
 class dtkCoreParameterInList : public dtkCoreParameterBase<dtkCoreParameterInList<T>>
 {
@@ -23,16 +23,18 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterInList(void) = default;
-    ~dtkCoreParameterInList(void) = default;
+     dtkCoreParameterInList(void);
+    ~dtkCoreParameterInList(void);
 
-    dtkCoreParameterInList(const T&);
-    dtkCoreParameterInList(const QVariant&);
+    dtkCoreParameterInList(const T &value);
+    dtkCoreParameterInList(const QVariant &variant);
     dtkCoreParameterInList(const dtkCoreParameterInList&);
 
-    dtkCoreParameterInList(const QString&, const T&, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(const QString&, int, const QList<T>&, const QString& = QString());
-    dtkCoreParameterInList(const QString&, const QList<T>&, const QString& = QString());
+    dtkCoreParameterInList(const QString &label, const T &value, const QList<T> &available_values,
+                           const QString &doc = QString());
+    dtkCoreParameterInList(const QString &label, int value_index, const QList<T> &available_values,
+                           const QString &doc = QString());
+    dtkCoreParameterInList(const QString &label, const QList<T> &available_values, const QString &doc = QString());
 
     dtkCoreParameterInList& operator = (const T&);
     dtkCoreParameterInList& operator = (const QVariant&);
@@ -51,12 +53,17 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     QList<T> m_values;
     int m_value_index = -1;
+
+private:
+    dtkCoreParameterInListObject<T> *m_object = nullptr;
 };
 
 template <typename T>
@@ -75,6 +82,8 @@ namespace dtk {
     using d_inliststring = dtkCoreParameterInList<QString>;
     using d_inlistreal = dtkCoreParameterInList<double>;
     using d_inlistint = dtkCoreParameterInList<qlonglong>;
+    using d_inlistchar = dtkCoreParameterInList<char>;
+    using d_inlistuchar = dtkCoreParameterInList<uchar>;
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -84,6 +93,8 @@ namespace dtk {
 DTK_DECLARE_PARAMETER(dtk::d_inliststring);
 DTK_DECLARE_PARAMETER(dtk::d_inlistreal);
 DTK_DECLARE_PARAMETER(dtk::d_inlistint);
+DTK_DECLARE_PARAMETER(dtk::d_inlistchar);
+DTK_DECLARE_PARAMETER(dtk::d_inlistuchar);
 
 // ///////////////////////////////////////////////////////////////////
 

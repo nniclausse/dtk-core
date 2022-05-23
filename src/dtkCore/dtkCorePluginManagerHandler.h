@@ -33,14 +33,14 @@ public:
 
     QString    name(const QString& path) const;
     QString version(const QString& path) const;
-    QString concept(const QString& path) const;
+    QString dtkConcept(const QString& path) const;
 
     QString pluginsLayerVersion(const QString& path) const;
     QVariantList   dependencies(const QString& path) const;
 
     bool    hasName(const QString& name) const;
     bool hasVersion(const QString& version) const;
-    bool hasConcept(const QString& concept) const;
+    bool hasDtkConcept(const QString& dtkConcept) const;
 
     void scan(const QString& path, bool verboseLoading = false);
 
@@ -50,14 +50,14 @@ public:
     const_iterator versionsBegin(void) const;
     const_iterator   versionsEnd(void) const;
 
-    const_iterator conceptsBegin(void) const;
-    const_iterator   conceptsEnd(void) const;
+    const_iterator dtkConceptsBegin(void) const;
+    const_iterator   dtkConceptsEnd(void) const;
 
     QStringList pluginPaths(void) const;
 
     QStringList    names(void) const;
     QStringList versions(void) const;
-    QStringList concepts(void) const;
+    QStringList dtkConcepts(void) const;
 
 private:
     dtkCorePluginManagerHandler(void);

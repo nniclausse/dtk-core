@@ -24,6 +24,8 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreApplication_p.h
   dtkCoreApplication
   dtkCoreApplication.h
+  dtkCoreAsKeyValueRange
+  dtkCoreAsKeyValueRange.h
   dtkCoreIOCompressor
   dtkCoreIOCompressor.h
   dtkCoreLayerManager
@@ -60,6 +62,22 @@ set(${PROJECT_NAME}_HEADERS
   dtkCoreParameterSimple
   dtkCoreParameterSimple.h
   dtkCoreParameterSimple.tpp
+  dtkCoreParameterObject
+  dtkCoreParameterObject.h
+  dtkCoreParameterInListObject
+  dtkCoreParameterInListObject.h
+  dtkCoreParameterInListStringListObject
+  dtkCoreParameterInListStringListObject.h
+  dtkCoreParameterPathObject
+  dtkCoreParameterPathObject.h
+  dtkCoreParameterNumericObject
+  dtkCoreParameterNumericObject.h
+  dtkCoreParameterRangeObject
+  dtkCoreParameterRangeObject.h
+  dtkCoreParameterSimpleObject
+  dtkCoreParameterSimpleObject.h
+  dtkCoreParameterCollection
+  dtkCoreParameterCollection.h
   dtkCorePlugin
   dtkCorePlugin.h
   dtkCorePluginBase
@@ -98,6 +116,14 @@ set(${PROJECT_NAME}_SOURCES
   dtkCoreParameterPath.cpp
   dtkCoreParameterRange.cpp
   dtkCoreParameterSimple.cpp
+  dtkCoreParameterObject.cpp
+  dtkCoreParameterInListObject.cpp
+  dtkCoreParameterInListStringListObject.cpp
+  dtkCoreParameterPathObject.cpp
+  dtkCoreParameterNumericObject.cpp
+  dtkCoreParameterRangeObject.cpp
+  dtkCoreParameterSimpleObject.cpp
+  dtkCoreParameterCollection.cpp
   dtkCorePlugin.cpp
   dtkCorePluginFactory_p.cpp
   dtkCorePluginFactoryRecorder.cpp
@@ -134,6 +160,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC dtkLog)
 #endif(DTK_HAVE_ZLIB)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Qml)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${layer_SOURCE_DIR}>

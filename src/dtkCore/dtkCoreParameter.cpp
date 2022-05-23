@@ -74,6 +74,38 @@ namespace dtk {
             }
             return parameters;
         }
+
+        bool writeParameters(const dtkCoreParameters& map, const QString& filename)
+        {
+            QJsonObject parametersObject;
+            parametersObject["contents"] = toJson(map);
+
+            QJsonDocument savedoc(parametersObject);
+
+            QFile output_file(filename);
+            if (!output_file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
+                dtkWarn() << Q_FUNC_INFO << "output file" << filename << "cannot be opened in WriteOnly mode.";
+                return false;
+            }
+
+            output_file.write(savedoc.toJson());
+            output_file.close();
+
+            return true;
+        }
+
+        QJsonObject toJson(const dtkCoreParameters& map)
+        {
+            QVariantHash target_map;
+            for (auto it = map.begin(); it != map.end(); ++it) {
+                target_map[it.key()] = QVariant(it.value()->toVariantHash());
+            }
+
+            QJsonObject parametersObject = QJsonObject::fromVariantHash(target_map);
+
+            return parametersObject;
+        }
+
     }
 }
 
@@ -81,15 +113,32 @@ namespace dtk {
 // dtkCoreParameter implementation
 // ///////////////////////////////////////////////////////////////////
 
+dtkCoreParameter::dtkCoreParameter(const QString& label) : m_label(label)
+{
+
+}
+
 dtkCoreParameter::dtkCoreParameter(const QString& label, const QString& doc) : m_label(label), m_doc(doc)
 {
 
 }
 
-dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_label), m_doc(o.m_doc)
+dtkCoreParameter::dtkCoreParameter(const QString& label, const QString& doc, const QString& unit) : m_label(label), m_doc(doc), m_unit(unit)
+{
+
+}
+
+dtkCoreParameter::dtkCoreParameter(const dtkCoreParameter& o) : m_label(o.m_label), m_doc(o.m_doc), m_unit(o.m_unit)
 {
     if (o.m_enable_share_connection) {
         m_connection = o.m_connection;
+    }
+}
+
+dtkCoreParameter::~dtkCoreParameter(void)
+{
+    if (m_connection) {
+        m_connection->param_list.removeAll(this);
     }
 }
 
@@ -111,6 +160,16 @@ void dtkCoreParameter::setLabel(const QString& label)
 QString dtkCoreParameter::label(void) const
 {
     return this->m_label;
+}
+
+void dtkCoreParameter::setUnit(const QString& unit)
+{
+    this->m_unit = unit;
+}
+
+QString dtkCoreParameter::unit(void) const
+{
+    return this->m_unit;
 }
 
 void dtkCoreParameter::setDocumentation(const QString& doc)
@@ -187,6 +246,10 @@ void dtkCoreParameter::disconnectFail(void)
 
 void dtkCoreParameter::shareValue(QVariant v)
 {
+    if (!this->m_connection) {
+        this->setValue(v);
+        return;
+    }
     for (dtkCoreParameter *p: this->m_connection->param_list) {
         p->setValue(v);
     }

@@ -25,6 +25,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
+  dtkCoreAsKeyValueRangeTest.h
   dtkCoreIOCompressorTest.h
   dtkCoreMetaContainerSequentialTest.h
   dtkCoreMetaContainerSequentialTest.tpp
@@ -33,6 +34,7 @@ set(${PROJECT_NAME}_HEADERS
   dtkCorePluginFactoryTest.h)
 
 set(${PROJECT_NAME}_SOURCES
+  dtkCoreAsKeyValueRangeTest.cpp
   dtkCoreIOCompressorTest.cpp
   dtkCoreMetaContainerSequentialTest.cpp
   dtkCoreMetaTypeTest.cpp
@@ -72,12 +74,14 @@ target_link_libraries(${PROJECT_NAME} dtkCoreLayerTest)
 target_link_libraries(${PROJECT_NAME} dtkCoreConceptFooPlugin)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+target_link_libraries(${PROJECT_NAME} Qt5::Qml)
 target_link_libraries(${PROJECT_NAME} Qt5::Test)
 
 ## ###################################################################
 ## Test rules
 ## ###################################################################
 
+add_test(dtkCoreAsKeyValueRangeTest         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreAsKeyValueRangeTest)
 add_test(dtkCoreIOCompressorTest            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreIOCompressorTest)
 add_test(dtkCoreMetaTypeTest                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaTypeTest)
 add_test(dtkCoreMetaContainerSequentialTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} dtkCoreMetaContainerSequentialTest)

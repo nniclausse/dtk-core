@@ -41,11 +41,11 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
   host:
     - dtk-log >=2.4.0
-    - qt >=5.9.0
+    - qt =5.12
 
   run:
     - dtk-log >=2.4.0
-    - qt >=5.9.7
+    - qt =5.12
 
 about:
   home: https://gitlab.inria.fr/dtk/dtk-core

@@ -22,7 +22,7 @@ class dtkCoreConceptFooWidgetPrivate
 {
 public:
     QMetaObject::Connection connection;
-    dtkCoreConceptFoo *concept;
+    dtkCoreConceptFoo *dtkConcept;
 
 public:
     QSpinBox *id_sb;
@@ -36,7 +36,7 @@ void dtkCoreConceptFooWidgetPrivate::connect(void)
     QObject::connect(this->id_sb, QOverload<int>::of(&QSpinBox::valueChanged), [=] (int v) {
         QVariantHash params;
         params["id"] = v;
-        this->concept->setParameters(params);
+        this->dtkConcept->setParameters(params);
     });
 }
 
@@ -71,12 +71,12 @@ dtkCoreConceptFooWidget::dtkCoreConceptFooWidget(QWidget* parent) : QWidget(pare
 
             dtkAbstractCoreConcept *m = v.value<dtkAbstractCoreConcept *>();
             if (!m) {
-                dtkTrace() << Q_FUNC_INFO << "Wrong concept";
+                dtkTrace() << Q_FUNC_INFO << "Wrong dtkConcept";
                 return;
             }
 
-            d->concept = dynamic_cast<dtkCoreConceptFoo *>(m);
-            if (!d->concept) {
+            d->dtkConcept = dynamic_cast<dtkCoreConceptFoo *>(m);
+            if (!d->dtkConcept) {
                 dtkTrace() << Q_FUNC_INFO << "Wrong implementation";
                 return;
             }

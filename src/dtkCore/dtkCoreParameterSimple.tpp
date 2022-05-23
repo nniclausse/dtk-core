@@ -1,13 +1,28 @@
 // dtkCoreParameterSimple.tpp
 //
 
+#include "dtkCoreParameterSimpleObject.h"
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter simple version implementation
 // ///////////////////////////////////////////////////////////////////
 
 template <typename T, typename Enable>
+inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(void) : dtkCoreParameterBase<dtkCoreParameterSimple>()
+{
+    m_object = new dtkCoreParameterSimpleObject<T>(this);
+}
+
+template <typename T, typename Enable>
+inline dtkCoreParameterSimple<T, Enable>::~dtkCoreParameterSimple(void)
+{
+    delete m_object;
+}
+
+template <typename T, typename Enable>
 inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCoreParameter *p) : dtkCoreParameterBase<dtkCoreParameterSimple>()
 {
+    m_object = new dtkCoreParameterSimpleObject<T>(this);
     if (!p) {
         dtkWarn() << Q_FUNC_INFO << "Input parameter is null. Nothing is done.";
         return;
@@ -18,6 +33,7 @@ inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCorePa
 template <typename T, typename Enable>
 inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant& v) : dtkCoreParameterBase<dtkCoreParameterSimple>()
 {
+    m_object = new dtkCoreParameterSimpleObject<T>(this);
     if (v.canConvert<dtkCoreParameterSimple>()) {
         auto o(v.value<dtkCoreParameterSimple>());
         *this = o;
@@ -30,19 +46,20 @@ inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QVariant&
 template <typename T, typename Enable>
 inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const dtkCoreParameterSimple& o) : dtkCoreParameterBase<dtkCoreParameterSimple>(o), m_value(o.m_value)
 {
-
+    m_object = new dtkCoreParameterSimpleObject<T>(this);
 }
 
 template <typename T, typename Enable>
 inline dtkCoreParameterSimple<T, Enable>::dtkCoreParameterSimple(const QString& label, const T& t, const QString& doc) : dtkCoreParameterBase<dtkCoreParameterSimple>(label, doc), m_value(t)
 {
-
+    m_object = new dtkCoreParameterSimpleObject<T>(this);
 }
 
 template <typename T, typename Enable>
 inline auto dtkCoreParameterSimple<T, Enable>::operator = (const T& t) -> dtkCoreParameterSimple&
 {
     m_value = t;
+    m_object->notifyValue(m_value);
     this->sync();
     return *this;
 }
@@ -69,9 +86,13 @@ inline auto dtkCoreParameterSimple<T, Enable>::operator = (const QVariant& v) ->
         m_label = map["label"].toString();
         m_doc = map["doc"].toString();
         m_value = map["value"].value<T>();
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyValue(m_value);
 
     } else if (v.canConvert<T>()) {
         m_value = v.value<T>();
+        m_object->notifyValue(m_value);
 
     } else {
         return *this;
@@ -87,6 +108,9 @@ inline auto dtkCoreParameterSimple<T, Enable>::operator = (const dtkCoreParamete
         m_label = o.m_label;
         m_doc = o.m_doc;
         m_value = o.m_value;
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyValue(m_value);
         this->sync();
     }
     return *this;
@@ -103,6 +127,7 @@ inline void dtkCoreParameterSimple<T, Enable>::setValue(const T& t)
 {
     if (m_value != t) {
         m_value = t;
+        m_object->notifyValue(m_value);
         this->sync();
     }
 }
@@ -120,8 +145,13 @@ inline void dtkCoreParameterSimple<T, Enable>::setValue(const QVariant &v)
         m_doc = map["doc"].toString();
         m_value = map["value"].value<T>();
 
+        m_object->notifyLabel(m_label);
+        m_object->notifyDoc(m_doc);
+        m_object->notifyValue(m_value);
+
     } else if (v.canConvert<T>()) {
         m_value = v.value<T>();
+        m_object->notifyValue(m_value);
 
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
@@ -148,6 +178,12 @@ template <typename T, typename Enable>
 inline T dtkCoreParameterSimple<T, Enable>::value(void) const
 {
     return m_value;
+}
+
+template <typename T, typename Enable>
+inline dtkCoreParameterObject *dtkCoreParameterSimple<T, Enable>::object(void)
+{
+    return m_object;
 }
 
 template <typename T>

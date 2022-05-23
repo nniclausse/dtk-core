@@ -7,6 +7,8 @@
 
 #include <array>
 
+template <typename T> class dtkCoreParameterNumericObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameterNumeric for arithmetic types
 // ///////////////////////////////////////////////////////////////////
@@ -23,21 +25,37 @@ public:
     using dtkCoreParameter::setDocumentation;
     using dtkCoreParameter::label;
     using dtkCoreParameter::setLabel;
+    using dtkCoreParameter::unit;
+    using dtkCoreParameter::setUnit;
 
 public:
-     dtkCoreParameterNumeric(void) = default;
-    ~dtkCoreParameterNumeric(void) = default;
+     dtkCoreParameterNumeric(void);
+    ~dtkCoreParameterNumeric(void);
 
-    dtkCoreParameterNumeric(const T&);
+    dtkCoreParameterNumeric(const T &value);
     template <typename U, typename V = typename dtk::is_core_parameter<U>>
     dtkCoreParameterNumeric(const U *);
-    dtkCoreParameterNumeric(const QVariant&);
-    dtkCoreParameterNumeric(const dtkCoreParameterNumeric&);
+    dtkCoreParameterNumeric(const QVariant &variant);
+    dtkCoreParameterNumeric(const dtkCoreParameterNumeric &other);
 
-    dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const QString& doc = QString());
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum);
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const QString &doc);
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const QString &doc, const QString& unit);
 #ifndef SWIG
-    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>> dtkCoreParameterNumeric(const QString&, const T&, const T&, const T&, const int&, const QString& doc = QString());
-    template <typename U = T, typename = std::enable_if_t<std::is_same<U, bool>::value>>     dtkCoreParameterNumeric(const QString&, const T&, const QString& doc = QString());
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals, const QString &doc);
+    template <typename U = T, typename = std::enable_if_t<std::is_floating_point<U>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const T &minimum, const T &maximum,
+                            const int &nb_decimals, const QString &doc, const QString& unit);
+
+    template <typename U = T, typename = std::enable_if_t<std::is_same<U, bool>::value>>
+    dtkCoreParameterNumeric(const QString &label, const T &value, const QString &doc = QString());
 #endif
     template <typename U = T> dtk::parameter_arithmetic<U, dtkCoreParameterNumeric&> operator = (const U&);
     template <typename U> dtk::is_core_parameter<U, dtkCoreParameterNumeric&> operator = (const U *);
@@ -96,13 +114,19 @@ public:
 
     QVariantHash toVariantHash(void) const override;
 
+    dtkCoreParameterObject *object(void) override;
+
 protected:
     using dtkCoreParameter::m_label;
+    using dtkCoreParameter::m_unit;
     using dtkCoreParameter::m_doc;
 
     T m_val = T(0);
     std::array<T, 2> m_bounds = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max()};
     int m_decimals = std::numeric_limits<T>::max_digits10/1.75; // 9 decimals for double, 5 for float
+
+private:
+    dtkCoreParameterNumericObject<T> *m_object = nullptr;
 };
 
 template <typename T>

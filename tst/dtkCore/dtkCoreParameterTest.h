@@ -20,6 +20,7 @@ private slots:
     void testCreation(void);
     void testLabel(void);
     void testDocumentation(void);
+    void testUnit(void);
     void testValue(void);
     void testBounds(void);
     void testDecimals(void);
@@ -36,7 +37,9 @@ private slots:
     void testFile(void);
     void testReadParameters(void);
     void testReadParametersResources(void);
+    void testWriteParameters(void);
     void testToVariantHash(void);
+    void testCollection(void);
 
 private slots:
     void cleanupTestCase(void);

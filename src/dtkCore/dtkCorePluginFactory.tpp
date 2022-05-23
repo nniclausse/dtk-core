@@ -112,6 +112,7 @@ template <typename T> inline QStringList dtkCorePluginFactory<T>::keys(void) con
 {
     QStringList lkeys = this->creators.keys() ;
     lkeys << this->creators_plugins.keys();
+    lkeys.sort(Qt::CaseInsensitive);
     return lkeys;
 }
 

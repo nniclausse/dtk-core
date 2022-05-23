@@ -7,6 +7,8 @@
 
 #include "dtkCoreParameter.h"
 
+class dtkCoreParameterInListStringListObject;
+
 // ///////////////////////////////////////////////////////////////////
 // dtkCoreParameter contained in a given list
 // ///////////////////////////////////////////////////////////////////
@@ -24,14 +26,15 @@ public:
     using dtkCoreParameter::setLabel;
 
 public:
-     dtkCoreParameterInListStringList(void) = default;
-    ~dtkCoreParameterInListStringList(void) = default;
+     dtkCoreParameterInListStringList(void);
+    ~dtkCoreParameterInListStringList(void);
 
-    dtkCoreParameterInListStringList(const QStringList&);
-    dtkCoreParameterInListStringList(const QVariant&);
-    dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList&);
+    dtkCoreParameterInListStringList(const QStringList &selected_values);
+    dtkCoreParameterInListStringList(const QVariant &variant);
+    dtkCoreParameterInListStringList(const dtkCoreParameterInListStringList &other);
 
-    dtkCoreParameterInListStringList(const QString&, const QStringList&, const QStringList&, const QString& = QString());
+    dtkCoreParameterInListStringList(const QString &label, const QStringList &selected_values,
+                                     const QStringList &available_values, const QString &doc = QString());
 
     dtkCoreParameterInListStringList& operator = (const QStringList&);
     dtkCoreParameterInListStringList& operator = (const QVariant&);
@@ -39,22 +42,31 @@ public:
 
     int size(void) const;
     QStringList value(void) const;
-    QStringList values(void) const;
+    QStringList list(void) const;
 
     void addValue(const QString&);
     void removeValue(const QString&);
 
-    void setValues(const QStringList&);
     void setValue(const QStringList&);
-    void setValue(const QVariant&);
+    void setValue(const QVariant&) override;
+    void setList(const QStringList&);
+
     QVariantHash toVariantHash(void) const override;
+
+    dtkCoreParameterObject *object(void) override;
+
+    Q_DECL_DEPRECATED QStringList values(void) const;
+    Q_DECL_DEPRECATED void setValues(const QStringList&);
 
 private:
     using dtkCoreParameter::m_label;
     using dtkCoreParameter::m_doc;
 
     QStringList m_value;
-    QStringList m_values;
+    QStringList m_list;
+
+private:
+    dtkCoreParameterInListStringListObject *m_object = nullptr;
 };
 
 DTKCORE_EXPORT QDataStream& operator << (QDataStream&, const dtkCoreParameterInListStringList&);
