@@ -1,5 +1,15 @@
 # ChangeLog
 
+## version 2.12.0 - 2022-05-23
+- switch to c++17 (concept renamed to dtkConcept)
+- add units in dtkCoreParameter
+- fix dtkCoreParameter destructors
+- sort plugin factory keys
+- bugfix on parameter Range in method toVariantHash
+- addition of QObject counterparts for the parameters
+- add dtkCoreParameterCollection
+- add function writeParameters to export dtkCoreParameters to a json file
+
 ## version 2.11.0 - 2021-08-30
  - add operator[] for dtkCoreParameterRange
  - split dtkCoreParameter header
